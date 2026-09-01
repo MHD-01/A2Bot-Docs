@@ -2094,6 +2094,12 @@ sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> <
 <div class="highlight"><pre><span></span><code>ssh<span class="w"> </span>a2botX@a2botX-host.local
 </code></pre></div>
 </div>
+<p>Or in case you have the IP-Address of the robot, you can write:</p>
+<div class="admonition laptop">
+<p class="admonition-title">💻 Laptop</p>
+<div class="highlight"><pre><span></span><code>ssh<span class="w"> </span>a2botX@&lt;IP-Address&gt;
+</code></pre></div>
+</div>
 <p>Substitute the actual robot number for <code>X</code> in both places — a session on robot 5 would be <code>ssh a2bot5@a2bot5-host.local</code>. This is always run <strong>from your laptop</strong>, never on the Pi itself — you're using SSH to reach the Pi, not the other way around.</p>
 <h2 id="confirm-the-connection-before-you-continue">Confirm the connection before you continue<a class="headerlink" href="#confirm-the-connection-before-you-continue" title="Permanent link">&para;</a></h2>
 <p>Before the SSH session is established, your laptop checks whether the host is the expected device. This is a normal part of SSH and is the confirmation step that prevents connecting to the wrong machine.</p>
