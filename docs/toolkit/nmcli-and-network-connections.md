@@ -62,4 +62,4 @@ A single WiFi radio can be a connected client, *or* an access point broadcasting
 
 ## Where this shows up in the course
 
-The robot's own dashboard uses exactly these operations under the hood for its WiFi setup page — see [Discovering and Controlling A2Bot](../part0/discovering-and-controlling.md) for the guided version, and [Troubleshooting Index — Static Ethernet Link Setup](../appendices/troubleshooting-index.md#static-ethernet-link-setup) for `nmcli`'s role in configuring a wired connection instead of WiFi.
+The robot's own dashboard uses exactly these operations under the hood for its WiFi setup page — see [Discovering and Controlling A2Bot](../part0/discovering-and-controlling.md) for the guided version, and [IP Addresses & Your Network — Direct Ethernet link: a fixed private network](ip-addresses-and-your-network.md#direct-ethernet-link-a-fixed-private-network) for `nmcli`'s role in configuring a wired connection instead of WiFi.

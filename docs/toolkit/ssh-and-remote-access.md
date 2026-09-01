@@ -31,7 +31,7 @@ If the robot is connected by WiFi, your laptop must also be connected to the sam
 
 ### Ethernet case
 
-If the robot is connected by Ethernet, the connection should use the robot's static IP setup described in [Troubleshooting Index — Static Ethernet Link Setup](../appendices/troubleshooting-index.md#static-ethernet-link-setup). In this setup, the laptop and Pi are on the same private wired network, with a fixed address on the same subnet. This is the intended direct-connection case for Ethernet-based testing and debugging.
+If the robot is connected by Ethernet, the connection should use the robot's static IP setup described in [IP Addresses & Your Network — Direct Ethernet link: a fixed private network](ip-addresses-and-your-network.md#direct-ethernet-link-a-fixed-private-network). In this setup, the laptop and Pi are on the same private wired network, with a fixed address on the same subnet. This is the intended direct-connection case for Ethernet-based testing and debugging.
 
 If you are unsure whether both devices are on the same network, check the robot's IP address and compare it to the address range used by your laptop. A mismatch here is the most common reason SSH appears to "not work".
 
@@ -76,7 +76,7 @@ If you are not on the same network, or the connection is going to a different ma
 
 ## When the hostname doesn't resolve
 
-The `a2botX-host.local` form depends on mDNS working on whatever network you're currently on (see [IP Addresses & Your Network](ip-addresses-and-your-network.md) for why), which isn't guaranteed on every network. If `ssh a2botX@a2botX-host.local` can't find the host, fall back to connecting by the robot's raw IP address instead — both forms are shown side by side in [Setup 2, step 5](../part3/setup-2-laptop.md#5-get-on-the-same-network-as-the-robot) and the [Troubleshooting Index's Static Ethernet Link Setup entry](../appendices/troubleshooting-index.md#static-ethernet-link-setup). The dashboard's own post-connect panel (see [Discovering and Controlling A2Bot](../part0/discovering-and-controlling.md#4-reconnect-and-get-ssh-access)) will show you the exact working command for whichever address currently applies — that's the authoritative source in the moment, over trying to reconstruct it yourself.
+The `a2botX-host.local` form depends on mDNS working on whatever network you're currently on (see [IP Addresses & Your Network](ip-addresses-and-your-network.md) for why), which isn't guaranteed on every network. If `ssh a2botX@a2botX-host.local` can't find the host, fall back to connecting by the robot's raw IP address instead — both forms are shown side by side in [Setup 2, step 5](../part3/setup-2-laptop.md#5-get-on-the-same-network-as-the-robot) and the [Direct Ethernet link: a fixed private network](ip-addresses-and-your-network.md#direct-ethernet-link-a-fixed-private-network) tutorial. The dashboard's own post-connect panel (see [Discovering and Controlling A2Bot](../part0/discovering-and-controlling.md#4-reconnect-and-get-ssh-access)) will show you the exact working command for whichever address currently applies — that's the authoritative source in the moment, over trying to reconstruct it yourself.
 
 ## Password auth — what this project actually uses
 

@@ -6,18 +6,18 @@ The Pi has no monitor or keyboard attached during normal use — every previous 
 
 ## The WiFi provisioning hotspot
 
-If the Pi has no known WiFi network at boot, `wifi_manager` (via the dashboard, below) automatically raises a fallback access point at a **fixed** address, so it's never a moving target:
+If the Pi has no known WiFi network at boot, `wifi_manager` (via the dashboard, below) automatically raises a fallback access point, named and addressed after this robot's own number `X` — see [Discovering and Controlling A2Bot](../part0/discovering-and-controlling.md) for the full per-robot naming convention:
 
 | | |
 |---|---|
-| Network name | `A2Bot-Setup` |
+| Network name | `a2botX-setup` |
 | Password | `a2bot123` |
-| Address | `10.42.0.1` (fixed — put it on a sticker on the chassis) |
+| Address | `10.42.0.X` (put it on a sticker on the chassis) |
 
 !!! pi "🤖 Pi"
-    Connect a laptop or phone to `A2Bot-Setup`, then browse to:
+    Connect a laptop or phone to `a2botX-setup`, then browse to:
     ```
-    http://10.42.0.1:8888
+    http://10.42.0.X:8888
     ```
     This lands on the WiFi setup page — pick a real network and enter its password to get the robot online. Once connected, the hotspot profile is deleted automatically.
 

@@ -7,17 +7,21 @@ to*, and *drive* it — with no one standing over their shoulder to help?
 ## The one convention that ties everything together
 
 Every robot in the classroom is identified by a single number, **X**. That
-one number determines *everything* below it — the hostname, the hotspot
-name, its address, and its ROS2 domain. Keeping all four tied to the same
-number is deliberate: a mismatch between them (robot 5's hotspot but
-robot 3's domain ID) is exactly the kind of confusion that costs real time
-mid-session.
+one number determines *everything* below it — the hostname, the SSH login,
+the hotspot name and address, the direct-Ethernet IP, and its ROS2 domain.
+Keeping all of these tied to the same number is deliberate: a mismatch
+between them (robot 5's hotspot but robot 3's domain ID) is exactly the
+kind of confusion that costs real time mid-session. This table is the
+canonical robot specification — every other page's per-robot values are
+this same pattern, substituting in one robot's actual number.
 
 | Identifier | Pattern | Example (robot 5) |
 |---|---|---|
 | Hostname | `a2botX-host` | `a2bot5-host` |
-| Hotspot SSID | `A2BotX-setup` | `A2Bot5-setup` |
-| Hotspot address | `10.42.0.X` | `10.42.0.5` |
+| SSH login | `a2botX@a2botX-host` | `a2bot5@a2bot5-host` |
+| Hotspot SSID | `a2botX-setup` | `a2bot5-setup` |
+| Hotspot address (dashboard) | `10.42.0.X:8888` | `10.42.0.5:8888` |
+| Direct-Ethernet IP (`eth0`) | `10.0.0.10X` | `10.0.0.105` |
 | `ROS_DOMAIN_ID` | `X` | `5` |
 
 !!! note "Valid domain range"
@@ -42,14 +46,14 @@ approach a finished robot.
 On first boot with no known WiFi, the robot broadcasts its own network:
 
 ```
-A2BotX-setup
+a2botX-setup
 ```
 
 Connect a laptop or phone to it (password provided separately by the
 instructor, or printed on the robot itself).
 
 !!! note "Hotspot not showing up?"
-    If `A2BotX-setup` doesn't appear in the WiFi list, the robot is
+    If `a2botX-setup` doesn't appear in the WiFi list, the robot is
     already connected to a known network from a previous session — so it
     has no reason to broadcast its own hotspot. Press and **hold** the
     physical **WiFi reset** button on the robot until its LED blinks
@@ -76,7 +80,7 @@ connection, and a form to join a real network.
     device's **only** active connection. Ethernet, mobile data, or any
     other WiFi network active at the same time will stop the dashboard
     from loading. Turn off mobile data, unplug Ethernet, and make sure
-    `A2BotX-setup` is the sole connection before opening the dashboard
+    `a2botX-setup` is the sole connection before opening the dashboard
     address.
 
 ### 3. Connect the robot to a personal hotspot
@@ -88,13 +92,13 @@ prerequisite for everything after this step.
 
 !!! note "Can't find your personal hotspot in the list?"
     Press the **rescan** button on the dashboard's WiFi form. This makes
-    the robot briefly drop its own `A2BotX-setup` hotspot to scan for
+    the robot briefly drop its own `a2botX-setup` hotspot to scan for
     nearby networks — so your device will lose its connection to the
-    robot while that happens. Reconnect to `A2BotX-setup` afterward and
+    robot while that happens. Reconnect to `a2botX-setup` afterward and
     reopen the dashboard to see the refreshed network list.
 
 !!! warning "You will likely lose the page here — that's expected"
-    The instant the robot switches networks, it drops the `A2BotX-setup`
+    The instant the robot switches networks, it drops the `a2botX-setup`
     hotspot your browser was using. The connect request appearing to
     "fail" with a network error is the **normal, expected shape of
     success** — the robot switched networks out from under the very

@@ -30,14 +30,16 @@ Confirmed against `a2bot_description/urdf/a2bot.urdf` (the source of truth) and,
 
 | | |
 |---|---|
-| `ROS_DOMAIN_ID` | `42` (must match on every machine — **not** the ROS 2 default of 0) |
+| `ROS_DOMAIN_ID` | `X`, this robot's own number (must match on every machine — **not** the ROS 2 default of 0, and **not** shared with any other robot) |
 | RMW implementation | Not pinned to a specific value anywhere in this repo — use whatever your ROS 2 Humble install defaults to, or check with `echo $RMW_IMPLEMENTATION` |
-| WiFi hotspot SSID | `A2Bot-Setup` |
+| WiFi hotspot SSID | `a2botX-setup` |
 | WiFi hotspot password | `a2bot123` |
-| WiFi hotspot address | `10.42.0.1` (fixed) |
+| WiFi hotspot address | `10.42.0.X` |
 | Dashboard | `http://<robot-ip>:8888/dashboard` |
-| Direct Ethernet — Pi | `10.0.0.1/24` |
-| Direct Ethernet — laptop | `10.0.0.2/24` |
+| Direct Ethernet — Pi | `10.0.0.10X/24` |
+| Direct Ethernet — laptop | `10.0.0.250/24` |
+
+`X` above is this robot's own number — see [Discovering and Controlling A2Bot](../part0/discovering-and-controlling.md) for the full naming convention.
 
 ## USB device pinouts (udev)
 
