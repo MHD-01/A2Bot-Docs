@@ -1,0 +1,305 @@
+# Troubleshooting Index
+
+Symptom-first index of known A2Bot gotchas — each confirmed against this repository, not assumed from general ROS 2 experience.
+
+## brltty steals the Arduino
+
+**Symptom:** `/dev/arduino` briefly exists after plugging in, then vanishes with no error. `serial_bridge` fails to connect or connects then immediately loses the port.
+
+**Cause:** Ubuntu's `brltty` service (braille display accessibility support) misidentifies CH340 USB-serial adapters — used by most Arduino Nano clones — as braille hardware, and silently claims the device a few seconds after it appears.
+
+**Diagnose:**
+
+!!! pi "🤖 Pi"
+    ```bash
+    dmesg | grep -i brltty
+    ```
+
+    A line like `interface 0 claimed by ch341 while 'brltty' sets config #1` confirms it.
+
+**Fix:**
+
+!!! pi "🤖 Pi"
+    ```bash
+    sudo apt remove brltty
+    ```
+
+    Then unplug and replug the Arduino.
+
+## The GY-85 reads plausible garbage instead of erroring
+
+**Symptom:** IMU data looks like *numbers*, not obviously wrong, but the EKF's heading drifts strangely or the values don't match how you're actually moving the robot.
+
+**Cause:** The GY-85 is three separate chips at three I2C addresses (ADXL345 accelerometer at `0x53`, ITG-3200 gyroscope at `0x68`/`0x69`, an unused magnetometer), and critically, **the two chips in use have opposite byte order** — the accelerometer is little-endian, the gyroscope is big-endian, on the same board. Code written against a single-chip IMU won't crash against this; it will read garbage that still looks like plausible numbers.
+
+**Diagnose:** `a2bot_driver`'s `imu` node checks both chip IDs at startup and logs a warning if either is wrong — check its startup log. Manually:
+
+!!! pi "🤖 Pi"
+    ```bash
+    sudo i2cdetect -y 1     # expect devices at 0x53 and 0x68
+    ```
+
+    ADXL345 `DEVID` register (`0x00`) should read `0xe5`; ITG-3200 `WHO_AM_I` register (`0x00`) should read `0x68` or `0x69`. See [a2bot_driver](../part2/a2bot-driver.md#imu) and [Electronics & Hardware](../part2/electronics-hardware.md) for full register detail.
+
+## The EKF silently outputs nothing
+
+**Symptom:** `/odometry/filtered` never publishes, and there's no error message anywhere.
+
+**Cause:** `robot_localization`'s EKF needs **yaw and velocity**, not just x/y position, from at least one input to fully initialize — a config that takes only position from wheel odometry looks reasonable but never produces output.
+
+**Diagnose:**
+
+!!! pi "🤖 Pi"
+    ```bash
+    ros2 topic hz /odometry/filtered
+    ```
+
+    Zero Hz confirms the filter is stuck. A2Bot's shipped `ekf.yaml` is correctly configured (it does include yaw and velocity) — see [Sensor Fusion / EKF](../part2/sensor-fusion-ekf.md) for the exact fields and a note about a misleading comment in that same file.
+
+## nmcli fails with "not authorized"
+
+**Symptom:** The WiFi hotspot or network-join fails, sometimes silently.
+
+**Cause:** Creating a hotspot or joining a network via `nmcli` is a privileged NetworkManager operation. On Ubuntu 22.04's polkit 0.105, the modern `.rules` (JavaScript) format needed for a clean fix is silently ignored (needs 0.106+), and even the older `.pkla` format was found not to cover every operation needed (`con add`/`con delete` specifically).
+
+**Fix (the trade-off actually used in this project):**
+
+!!! pi "🤖 Pi"
+    ```bash
+    echo "$USER ALL=(ALL) NOPASSWD: /usr/bin/nmcli" | sudo tee /etc/sudoers.d/nmcli
+    sudo chmod 0440 /etc/sudoers.d/nmcli
+    ```
+
+    Acceptable for a classroom robot holding no sensitive data — not a general recommendation. See [Discovery & Dashboard](../part3/discovery-and-dashboard.md).
+
+## RViz shows no robot model
+
+**Symptom:** Topics and `tf` all look correct, but RViz shows an outline, or nothing, where the robot should be — even though everything is working over the network from a remote machine.
+
+**Cause:** RViz resolves the URDF's `package://a2bot_description/meshes/...` mesh references from the **local** filesystem via the ROS package index — it never fetches meshes over the network. A machine that has never built `a2bot_description` locally shows this exact confusing failure, because everything else (topics, tf) still works fine.
+
+**Fix:** Build the workspace locally on whichever machine is running RViz — see [Setup 2 — Laptop, step 3](../part3/setup-2-laptop.md#3-build-the-workspace-locally) (or [Setup 1 — Raspberry Pi, step 8](../part3/setup-1-raspberry-pi.md#8-clone-and-build-the-workspace) if it's the Pi itself running RViz).
+
+## ROS 2 topics work over ping/SSH but discovery fails
+
+**Symptom:** `ping` and `ssh` between the Pi and laptop both work fine, but `ros2 topic list` on one machine never shows the other's topics.
+
+**Cause:** AP/client isolation, common on shared or lab WiFi (and even some home routers), blocks device-to-device traffic on the same network while still allowing normal internet access. ROS 2 discovery depends on UDP multicast, which isolation blocks — with no error, since ping and SSH use different traffic paths that isolation doesn't touch.
+
+**Fix:** No software-side fix exists. Disable AP/client isolation on the router, or bypass it entirely with a direct Ethernet link — see below.
+
+## Static Ethernet Link Setup
+
+A direct Ethernet cable between laptop and Pi sidesteps WiFi entirely — no router, no isolation, no signal strength. Condensed from this project's original networking notes:
+
+**The plan:** no DHCP exists on a direct cable, so both ends get fixed addresses on a private `10.0.0.0/24` subnet, **no gateway set on this link** (a gateway here can make the Pi try to route *internet* traffic down the dead-end cable instead of WiFi — see below):
+
+- **Pi:** `10.0.0.X`, where `X` is the robot's own unique number (matching its hostname, hotspot, and `ROS_DOMAIN_ID` — see [Discovering and Controlling A2Bot](../part0/discovering-and-controlling.md)).
+- **Laptop:** `10.0.0.200` — a fixed address reserved for this purpose, chosen to stay outside the 0–101 range robot numbers use, so it never collides with any robot's own address.
+
+!!! pi "🤖 Pi"
+    ```bash
+    sudo nmcli connection add type ethernet con-name eth0-static ifname eth0 \
+      ipv4.method manual ipv4.addresses 10.0.0.X/24 \
+      connection.autoconnect yes
+    sudo nmcli connection up eth0-static
+    ```
+
+    Substitute the robot's actual number for `X`. On a fresh Ubuntu Server Pi, netplan may hand `eth0` to `systemd-networkd` instead of NetworkManager, in which case this profile won't survive a reboot. Check with `cat /etc/netplan/*.yaml` — if it doesn't say `renderer: NetworkManager`, either add that line and `sudo netplan apply`, or configure the static IP natively in a netplan YAML file instead of via `nmcli`.
+
+Linux names interfaces by hardware type and location, not a fixed `eth0`/`wlan0` scheme anymore — Ethernet ports show up as `enp3s0`, `eno1`, or (for a USB-to-Ethernet dongle) `enx<mac-address>`; WiFi radios show up as `wlp2s0` or `wlan0`. The prefix is the signal: `en` = Ethernet, `wl` = wireless. **You want an `en*` name, never a `wl*` one.**
+
+To find the exact name:
+
+!!! laptop "💻 Laptop"
+    ```bash
+    nmcli device status
+    ```
+
+    Look for the row with `TYPE` set to `ethernet`. Before the cable is plugged in it typically shows `unavailable`; plug the cable into both the laptop and the Pi and run the command again — that row should flip to `connecting` or `disconnected` (the "link detected, no IP yet" state), confirming it's the right one.
+
+    If more than one `ethernet` row appears (e.g. a built-in port plus a USB dongle), unplug the cable, run the command again, then plug it back in and compare — whichever row's state changes is your interface. `ip a` (or `ip -o link show`) shows the same information in a more raw format, if you prefer it.
+
+    If this laptop also uses its Ethernet port on other networks, set `connection.autoconnect no` on this profile so it doesn't grab the interface unexpectedly elsewhere.
+
+!!! laptop "💻 Laptop"
+    ```bash
+    sudo nmcli connection add type ethernet con-name robot-link ifname <your-iface> \
+      ipv4.method manual ipv4.addresses 10.0.0.200/24 \
+      connection.autoconnect yes
+    sudo nmcli connection up robot-link
+    ```
+
+    Substitute the interface name you found above for `<your-iface>`.
+
+**Test:**
+
+!!! laptop "💻 Laptop"
+    ```bash
+    ping 10.0.0.X
+    ssh a2botX@a2botX-host.local
+    ```
+
+    Substitute the robot's actual number for `X`. If `.local` mDNS resolution doesn't work, `ssh a2botX@10.0.0.X` (by IP) works over this link regardless.
+
+### Static IP works but no internet
+
+**Symptom:** After setting up the Ethernet link, the Pi can reach the laptop but `apt install` fails with `Temporary failure resolving ...`.
+
+**Cause:** Something is stealing the default route away from WiFi — either the Ethernet profile has a gateway set (it shouldn't), or the WiFi radio is in access-point mode instead of client mode (a single radio can only be one or the other).
+
+**Diagnose:**
+
+!!! pi "🤖 Pi"
+    ```bash
+    ip route              # look for "default via ... dev wlan0"
+    nmcli connection show --active     # is an AP profile (e.g. A2Bot-AP) holding wlan0?
+    ```
+
+**Fix:** disable the AP profile's autoconnect and bring up a real WiFi client connection:
+
+!!! pi "🤖 Pi"
+    ```bash
+    nmcli connection modify A2Bot-AP connection.autoconnect no
+    nmcli connection down A2Bot-AP
+    nmcli device wifi connect "YOUR_SSID" password "YOUR_PASSWORD"
+    ```
+
+    The direct Ethernet link keeps working in both modes regardless — it's a separate interface, so you can always reach `10.0.0.X` over the cable even while the Pi has no WiFi internet.
+
+## Stale build — code changes don't seem to take effect
+
+**Symptom:** You renamed or moved a file, rebuilt, but the old behavior persists.
+
+**Fix (the standard reflex, on either machine):**
+
+!!! both "🔗 Both"
+    ```bash
+    rm -rf build install log
+    colcon build --symlink-install
+    ```
+
+## Undervoltage on the Pi
+
+**Symptom:** Flaky WiFi, USB devices dropping out, unexplained reboots.
+
+**Diagnose:**
+
+!!! pi "🤖 Pi"
+    ```bash
+    dmesg | grep -i voltage
+    ```
+
+    Any "under-voltage detected" line means the power supply is the real culprit. A2Bot needs 5V/3A minimum.
+
+## A rename leaves stale files/folders that a text sweep can't fix
+
+**Symptom:** After renaming a ROS2 package project-wide (e.g. `old_name_driver` → `new_name_driver`), one of three things happens depending on which piece was missed:
+
+- `colcon build` fails with `can't copy '.../resource/<new_name>': doesn't exist or not a regular file`.
+- The package builds, but a built executable fails at launch with `package '<new_name>' found... but libexec directory '.../lib/<OLD_name>' does not exist` — note the message names the *new* package but the *old* path.
+- A launch file fails with a plain `No such file or directory` for a filename that still exists on disk under its old name.
+
+**Cause:** A text-content search-and-replace across `.py`/`.xml` files only rewrites what's *inside* files. Three specific things are identified by their filename itself, not their contents, so a content sweep is structurally incapable of catching them:
+
+1. **The ament resource marker** — an empty file at `<package>/resource/<package_name>`. Its entire job is to exist under that exact name; renaming an empty file's contents does nothing, since it has none. The name itself has to be renamed (`mv`).
+2. **`setup.cfg`**, sitting next to `setup.py`, commonly hardcodes the package name as a literal string in `script_dir`/`install_scripts` — completely independent of `setup.py`'s `package_name` variable. A sweep that only checks `setup.py` will miss this, and the mismatch is silent until something tries to launch the installed executable.
+3. **Any non-Python filename referenced by path rather than by import** — e.g. a URDF file opened by a launch file's file-open call. Renaming the launch file's *reference* to a new filename does not rename the actual file still sitting on disk under the old name.
+
+**Verified live in this repo:** items 1 and 3 are currently handled correctly — every package's `resource/<package_name>` marker matches its current name, and `a2bot_description/urdf/a2bot.urdf` matches what `description.launch.py`/`sim.launch.py` actually open. But item 2 is a **real, currently-present bug**, caught while writing this entry, not a hypothetical:
+
+```text
+a2bot_description/setup.py   -> package_name = 'a2bot_description'
+a2bot_description/setup.cfg  -> script_dir=$base/lib/A2Bot_description   (wrong case)
+
+a2bot_bringup/setup.py       -> package_name = 'a2bot_bringup'
+a2bot_bringup/setup.cfg      -> script_dir=$base/lib/A2Bot_bringup       (wrong case)
+```
+
+Both `setup.cfg` files still read the capitalized `A2Bot_*` form from before this project's naming was fully lowercased. Linux paths are case-sensitive, so this is exactly the silent-mismatch failure mode described above, just waiting for whichever of these two packages gets built and launched first.
+
+**Fix:**
+
+!!! both "🔗 Both"
+    ```bash
+    sed -i 's/A2Bot_description/a2bot_description/g' a2bot_ws/src/a2bot_description/setup.cfg
+    sed -i 's/A2Bot_bringup/a2bot_bringup/g' a2bot_ws/src/a2bot_bringup/setup.cfg
+    ```
+
+    Then rebuild both packages (`colcon build --symlink-install --packages-select a2bot_description a2bot_bringup`) and confirm the installed executables land under `install/<package>/lib/<package>/`, not a differently-cased directory.
+
+## A systemd service comes up "active" on the wrong ROS_DOMAIN_ID / RMW_IMPLEMENTATION
+
+**The risk:** `systemctl status a2bot-robot` reporting `active (running)`, with real processes alive and using real CPU, is not proof the service is on the right ROS graph. This project's setup pages ([Setup 1](../part3/setup-1-raspberry-pi.md#9-set-the-ros-domain-id), [Setup 2](../part3/setup-2-laptop.md#4-match-the-ros-domain-id)) have a human export `ROS_DOMAIN_ID` and `RMW_IMPLEMENTATION` from `~/.bashrc`. A systemd unit that starts its process via a login shell (`ExecStart=/bin/bash -l -c '...'`) runs a **login** shell, but not an **interactive** one — and `.bashrc`'s early-return guard for non-interactive shells means those `export` lines can be silently skipped, leaving a service alive but silently on the ROS 2 defaults (domain `0`, typically FastDDS) — invisible to `ros2 node list`/`ros2 topic list` from a correctly-configured terminal, which looks identical to "nothing is running."
+
+**Verified in `services/services_files/`: this project already learned this lesson and closed it.** Every service that actually touches ROS2 — `a2bot-dashboard.service`, `a2bot-gpio.service`, `a2bot-robot.service`, and `a2bot-rosbridge.service` — sets both variables explicitly in `[Service]`, independent of `.bashrc`:
+
+```ini
+Environment=ROS_DOMAIN_ID=42
+Environment=RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+```
+
+(`a2bot-webui.service` is the one exception, and correctly so — it only runs `npm run dev`, never calls the `ros2` CLI, so it has no need for either variable.)
+
+Worth noting: `a2bot-rosbridge.service`'s own comment justifies its `-l` flag by claiming a login shell alone sources `.bashrc` and provides `ROS_DOMAIN_ID` that way — which is the exact mechanism this entry is skeptical of (a non-interactive `-c` invocation typically still hits `.bashrc`'s interactive-only guard). It doesn't matter in practice here: the explicit `Environment=` line is set on that same service regardless, so it's correct either way `-l` actually behaves.
+
+**If you add a new ROS-touching service, don't skip this** — diagnose it the same way this project would have caught it originally, by checking the process's *actual* environment rather than trusting `systemctl status`:
+
+!!! pi "🤖 Pi"
+    ```bash
+    sudo systemctl show <service> -p MainPID
+    cat /proc/<that PID>/environ | tr '\0' '\n' | grep -E "ROS_DOMAIN_ID|RMW_IMPLEMENTATION"
+    ```
+
+    Empty output, or values that don't match this robot's number, means the new unit needs the same `Environment=` lines shown above added to its `[Service]` section.
+
+## Prefer an active readiness check over a fixed `sleep` for service startup ordering
+
+Not a bug — a pattern worth understanding, since this project actually uses **both** approaches side by side for different reasons, verified in `services/services_files/`. `Requires=`/`After=` in a systemd unit only guarantee that one service's *start attempt* happens after another's — not that the dependency is actually *ready* to serve requests by the time the second service starts.
+
+**Where a fixed `sleep` is still used, deliberately:**
+
+- `a2bot-robot.service` — `ExecStartPre=/bin/sleep 20`, because USB/I2C device enumeration after boot has no clean endpoint to poll; its own comment notes an earlier `5s` value wasn't enough and caused the lidar node to crash on start. 20s was arrived at empirically, not computed.
+- `a2bot-rosbridge.service` — `ExecStartPre=/bin/sleep 10`, a deliberate fixed gap after `a2bot-webui` is told to start, before rosbridge comes up.
+
+**Where the poll-based readiness gate is actually used:** exactly one place — `a2bot-webui.service`, waiting on `a2bot-dashboard`. Its own comment states the reasoning directly: `Requires=` only proves the dashboard *service* started, not that it's *answering requests* yet — "the exact 'active does not mean working' gap this project hit repeatedly with the ROS services." Its `ExecStartPre` polls the dashboard's own `/api/status` endpoint, which only responds once FastAPI is genuinely serving, retrying for up to 60 seconds before giving up:
+
+```bash
+ExecStartPre=/bin/bash -c '\
+  for i in $(seq 1 30); do \
+    curl -sf http://localhost:8888/api/status > /dev/null 2>&1 && exit 0; \
+    sleep 2; \
+  done; \
+  echo "Dashboard did not become ready in time"; exit 1'
+```
+
+**The distinction that decides which pattern fits:** a fixed `sleep` is the right call when there's no cheap, meaningful signal to poll for (hardware enumeration timing, an arbitrary "give it a moment" gap) — polling doesn't help if there's nothing to ask. The readiness-poll pattern is worth the extra script only when the dependency exposes something you can actually check (here, an HTTP endpoint that only responds once genuinely up). If you're adding a new service that depends on one with a real health/status endpoint, follow `a2bot-webui.service`'s pattern above rather than guessing a sleep duration.
+
+## The WiFi radio can't scan while the setup hotspot is up
+
+**Symptom:** The WiFi setup page's network dropdown shows only the hotspot's own network, or an empty list, even though real networks are nearby — or, if a naive implementation scanned by dropping the hotspot, the very device viewing the setup page loses its connection mid-scan.
+
+**Cause:** The Pi has a single WiFi radio, which can be an access point (broadcasting `A2Bot-Setup`) or a client scanning for networks — never both at the same instant. Scanning requires the radio to leave AP mode.
+
+**Verified in `wifi_manager.py`:** this is already handled with a pre-capture cache, not a live scan on every page load:
+
+- `_start_hotspot()` runs a real scan (`_raw_scan()`) **before** raising the access point, while the radio is still in client mode, and stores the result in module-level `_cached_networks` / `_cache_time`.
+- `scan_networks(force=False)` — what a routine page load or reload calls — just returns that cache. It never touches the radio, so it can't disconnect anyone or return an empty "just the hotspot" list.
+- `scan_networks(force=True)` — the dashboard's explicit **Rescan** action — is the only path that actually drops the hotspot, re-scans, and restores it afterward (`wifi.html`'s `rescan()` shows a `confirm()` warning about the ~10s disconnection before calling it, for exactly this reason).
+
+No fix needed here — this entry exists so the cache/force split isn't mistaken for a bug the next time someone reads the code looking for "why doesn't this just scan live."
+
+## A hold-to-confirm GPIO button could re-fire while still held
+
+**Symptom (the failure mode this guards against):** A hold-to-confirm loop that just checks "has N seconds elapsed" on every poll will keep re-satisfying that condition for as long as the button stays down past the threshold — a human does not release at the exact instant the threshold is hit. Without a guard, this could re-run the action (a second `reboot`, another `forget_current_network()` call) multiple times during one long hold.
+
+**Verified in `gpio_watcher.py`'s `watch_button()`:** this is already guarded against with an explicit triggered-state flag, not a bare threshold check:
+
+- A `triggered` boolean starts `False` and is set `True` the instant the hold is accepted.
+- The action only ever fires inside `if not triggered and held >= HOLD_SECONDS:` — once `triggered` flips, that branch can't run again for the rest of this hold.
+- Deliberately no `return` after the action fires: the code falls through with the LED turned off and keeps polling `while button.is_pressed`, rather than looping back into the threshold check — so a long or stuck hold sits idle instead of re-arming.
+- Two visually distinct LED signals mark two different events, not the same action twice: **3 blinks** the instant the hold is accepted (action fired), and a separate **1 blink** only once the button is actually released (confirms release, not a second trigger).
+
+## Not covered here
+
+A systemd-service-plus-Node.js PATH interaction (where `nvm`'s `.bashrc` fix doesn't apply to non-interactive shells) is a known general gotcha in projects that run a Node.js service under systemd. This repository's dashboard and gesture services are Python (FastAPI/Flask), not Node — no systemd-managed Node.js service was found here, so this gotcha is **not** documented as applying to A2Bot. If a Node-based service is added later, revisit this.

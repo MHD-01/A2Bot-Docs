@@ -1,0 +1,80 @@
+site_name: A2Bot Docs
+site_description: Documentation for the A2Bot ROS 2 Humble educational robot
+docs_dir: docs
+
+theme:
+  name: material
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - navigation.indexes
+    - content.code.copy
+    - toc.follow
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight
+  - tables
+  - toc:
+      permalink: true
+
+extra_css:
+  - stylesheets/extra.css
+
+nav:
+  - Part 0 — Getting Started:
+      - What is A2Bot: index.md
+      - What You Need: part0/what-you-need.md
+      - Choose Your Path: part0/choose-your-path.md
+      - Discovering and Controlling A2Bot: part0/discovering-and-controlling.md
+  - Toolkit:
+      - Toolkit: toolkit/index.md
+      - Ubuntu Terminal Basics: toolkit/ubuntu-terminal-basics.md
+      - IP Addresses & Your Network: toolkit/ip-addresses-and-your-network.md
+      - SSH & Remote Access: toolkit/ssh-and-remote-access.md
+      - VS Code Remote Development: toolkit/vscode-remote-development.md
+      - "~/.bashrc": toolkit/bashrc.md
+      - Managing Multiple Terminals: toolkit/managing-multiple-terminals.md
+      - ROS 2 CLI Reference: toolkit/ros2-cli-reference.md
+      - rqt: toolkit/rqt.md
+      - nmcli & Network Connections: toolkit/nmcli-and-network-connections.md
+      - systemd & Services: toolkit/systemd-and-services.md
+  - Part 1 — ROS2 Fundamentals:
+      - Install & Source: part1/install-and-source.md
+      - CLI Tools & Core Concepts: part1/cli-tools-core-concepts.md
+      - Writing Your Own Nodes: part1/writing-your-own-nodes.md
+  - Part 2 — How A2Bot Is Built:
+      - Electronics & Hardware: part2/electronics-hardware.md
+      - Software Architecture: part2/software-architecture.md
+      - "The Driver: a2bot_driver": part2/a2bot-driver.md
+      - "The Robot Model: a2bot_description": part2/a2bot-description.md
+      - Sensor Fusion / EKF: part2/sensor-fusion-ekf.md
+  - Part 3 — Setup, Connection & Use:
+      - "Setup 1 — Raspberry Pi": part3/setup-1-raspberry-pi.md
+      - "Setup 2 — Laptop": part3/setup-2-laptop.md
+      - ROS2 on Real Hardware: part3/ros2-on-real-hardware.md
+      - Bringup & Driving: part3/bringup-and-driving.md
+      - Discovery & Dashboard: part3/discovery-and-dashboard.md
+      - SLAM & Navigation: part3/slam-and-navigation.md
+      - Capstone: part3/capstone.md
+  - Appendices:
+      - Flashing the Arduino Firmware: appendices/flashing-arduino-firmware.md
+      - Troubleshooting Index: appendices/troubleshooting-index.md
+      - Quick Reference: appendices/quick-reference.md

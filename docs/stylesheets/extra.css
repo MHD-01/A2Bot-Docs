@@ -1,0 +1,56 @@
+/* Machine-tag admonitions: every command block on the site is wrapped in
+   one of these three so a reader always knows which machine it runs on. */
+
+.md-typeset .admonition.laptop,
+.md-typeset details.laptop {
+  border-color: #2962ff;
+}
+.md-typeset .laptop > .admonition-title,
+.md-typeset .laptop > summary {
+  background-color: rgba(41, 98, 255, 0.1);
+  border-color: #2962ff;
+}
+.md-typeset .laptop > .admonition-title::before,
+.md-typeset .laptop > summary::before {
+  background-color: #2962ff;
+  -webkit-mask-image: var(--md-admonition-icon--laptop);
+          mask-image: var(--md-admonition-icon--laptop);
+}
+
+.md-typeset .admonition.pi,
+.md-typeset details.pi {
+  border-color: #d50000;
+}
+.md-typeset .pi > .admonition-title,
+.md-typeset .pi > summary {
+  background-color: rgba(213, 0, 0, 0.1);
+  border-color: #d50000;
+}
+.md-typeset .pi > .admonition-title::before,
+.md-typeset .pi > summary::before {
+  background-color: #d50000;
+  -webkit-mask-image: var(--md-admonition-icon--pi);
+          mask-image: var(--md-admonition-icon--pi);
+}
+
+.md-typeset .admonition.both,
+.md-typeset details.both {
+  border-color: #00897b;
+}
+.md-typeset .both > .admonition-title,
+.md-typeset .both > summary {
+  background-color: rgba(0, 137, 123, 0.1);
+  border-color: #00897b;
+}
+.md-typeset .both > .admonition-title::before,
+.md-typeset .both > summary::before {
+  background-color: #00897b;
+  -webkit-mask-image: var(--md-admonition-icon--both);
+          mask-image: var(--md-admonition-icon--both);
+}
+
+:root {
+  --md-admonition-icon--laptop: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 6h16v10H4V6m16 12H4a2 2 0 0 1-2-2h20a2 2 0 0 1-2 2Z"/></svg>');
+  --md-admonition-icon--pi: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 4h16v16H4V4m3 3v10h2V7H7m4 0v10h2v-4h3a3 3 0 0 0 0-6h-5m2 2h3a1 1 0 0 1 0 2h-3V9Z"/></svg>');
+  --md-admonition-icon--both: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9 3a1 1 0 0 0-1 1v2H4a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1h-4V4a1 1 0 0 0-1-1H9m1 2h4v1h-4V5M5 8h14v9H5V8Z"/></svg>');
+}
