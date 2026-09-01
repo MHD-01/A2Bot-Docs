@@ -1714,6 +1714,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#ssh-connection-troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SSH connection troubleshooting
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#the-gy-85-reads-plausible-garbage-instead-of-erroring" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1966,6 +1977,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#ssh-connection-troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SSH connection troubleshooting
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#the-gy-85-reads-plausible-garbage-instead-of-erroring" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2172,6 +2194,39 @@
 </code></pre></div>
 <p>Then unplug and replug the Arduino.</p>
 </div>
+<h2 id="ssh-connection-troubleshooting">SSH connection troubleshooting<a class="headerlink" href="#ssh-connection-troubleshooting" title="Permanent link">&para;</a></h2>
+<p><strong>Symptom:</strong> <code>ssh</code> times out, says the host is not found, asks for a password and then rejects it, or fails before the terminal opens.</p>
+<p><strong>Common causes:</strong></p>
+<ul>
+<li>The robot and laptop are not on the same network.</li>
+<li>The hostname or robot number is wrong.</li>
+<li>The Ethernet cable is not connected properly or the link is not live.</li>
+<li>The robot's static Ethernet link is not configured on the same subnet.</li>
+<li>The SSH password is correct but the username in the command is misspelled.</li>
+</ul>
+<p><strong>Checks to do first:</strong></p>
+<ol>
+<li>Confirm both devices are on the same network.</li>
+<li>For WiFi, follow the dashboard and network setup flow in <a href="../../part0/discovering-and-controlling/">Discovering and Controlling A2Bot</a>.</li>
+<li>For Ethernet, follow <a href="#static-ethernet-link-setup">Static Ethernet Link Setup</a>.</li>
+<li>Check the exact SSH command and robot number.
+   <div class="highlight"><pre><span></span><code>ssh<span class="w"> </span>a2botX@a2botX-host.local
+</code></pre></div>
+   Replace <code>X</code> with the robot's actual number, and check that the username and hostname match exactly.</li>
+<li>If hostname resolution fails, connect by IP instead of <code>.local</code>.
+   <div class="highlight"><pre><span></span><code>ssh<span class="w"> </span>a2botX@10.42.0.X
+</code></pre></div>
+   or, for the direct Ethernet link:
+   <div class="highlight"><pre><span></span><code>ssh<span class="w"> </span>a2botX@10.0.0.X
+</code></pre></div></li>
+<li>Make sure the Ethernet cable is seated correctly and the link is active.
+   <div class="highlight"><pre><span></span><code>nmcli<span class="w"> </span>device<span class="w"> </span>status
+ip<span class="w"> </span>a
+</code></pre></div></li>
+<li>If the password prompt appears and the password is rejected even though it seems correct, re-check the username before assuming the password is wrong. A common mistake is typing the wrong robot number or misspelling the username (<code>a2bot5</code> instead of the correct value).</li>
+</ol>
+<p><strong>If you are using the direct Ethernet setup:</strong> the robot should be configured with a fixed address on the same private subnet as the laptop. See <a href="#static-ethernet-link-setup">Static Ethernet Link Setup</a> for the exact <code>nmcli</code>/<code>netplan</code> procedure and the address conventions used in this project.</p>
+<p><strong>Fix:</strong> once the network, cable, hostname, and username are all correct, reconnect and complete the SSH host confirmation prompt with <code>yes</code> when prompted.</p>
 <h2 id="the-gy-85-reads-plausible-garbage-instead-of-erroring">The GY-85 reads plausible garbage instead of erroring<a class="headerlink" href="#the-gy-85-reads-plausible-garbage-instead-of-erroring" title="Permanent link">&para;</a></h2>
 <p><strong>Symptom:</strong> IMU data looks like <em>numbers</em>, not obviously wrong, but the EKF's heading drifts strangely or the values don't match how you're actually moving the robot.</p>
 <p><strong>Cause:</strong> The GY-85 is three separate chips at three I2C addresses (ADXL345 accelerometer at <code>0x53</code>, ITG-3200 gyroscope at <code>0x68</code>/<code>0x69</code>, an unused magnetometer), and critically, <strong>the two chips in use have opposite byte order</strong> — the accelerometer is little-endian, the gyroscope is big-endian, on the same board. Code written against a single-chip IMU won't crash against this; it will read garbage that still looks like plausible numbers.</p>

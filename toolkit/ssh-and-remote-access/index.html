@@ -867,6 +867,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Troubleshooting
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#where-this-shows-up-in-the-course" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2016,6 +2027,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Troubleshooting
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#where-this-shows-up-in-the-course" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2047,29 +2069,24 @@
 <h2 id="what-this-is-and-why-it-matters">What this is, and why it matters<a class="headerlink" href="#what-this-is-and-why-it-matters" title="Permanent link">&para;</a></h2>
 <p>The robot's Raspberry Pi has no monitor or keyboard attached during normal use — every interaction with it happens remotely, from your laptop, over the network. <strong>SSH</strong> (Secure Shell) is what makes that possible: it opens a real terminal session on the Pi, running commands on it as if you were sitting in front of it, with everything encrypted over the connection. This page covers the underlying <code>ssh</code> command itself — a separate future Toolkit page will cover using SSH from inside an editor like VS Code specifically, which is a different (if related) workflow built on top of this one.</p>
 <h2 id="install-ssh-on-your-laptop-first">Install SSH on your laptop first<a class="headerlink" href="#install-ssh-on-your-laptop-first" title="Permanent link">&para;</a></h2>
-<p>Before you try to connect, make sure the SSH client is installed on the machine you are using as your laptop or development computer.</p>
-<p>On Ubuntu or Debian-based Linux:</p>
+<p>Before you try to connect, make sure the SSH client is installed on your Ubuntu laptop.</p>
 <div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>apt<span class="w"> </span>update
 sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>openssh-client
 </code></pre></div>
-<p>On macOS, OpenSSH is usually already installed as part of the base system. You can check with:</p>
-<div class="highlight"><pre><span></span><code>ssh<span class="w"> </span>-V
-</code></pre></div>
-<p>On Windows, use the built-in OpenSSH client if available, or install the Windows OpenSSH package through the system settings or PowerShell. If <code>ssh</code> is not recognized, install the OpenSSH client and reopen the terminal before continuing.</p>
-<p>Once the command is available, confirm it works by running:</p>
+<p>Once it is installed, confirm the client is available:</p>
 <div class="highlight"><pre><span></span><code>ssh<span class="w"> </span>-V
 </code></pre></div>
 <p>If that prints a version string, you're ready to connect.</p>
 <h2 id="make-sure-the-robot-and-your-device-are-on-the-same-network">Make sure the robot and your device are on the same network<a class="headerlink" href="#make-sure-the-robot-and-your-device-are-on-the-same-network" title="Permanent link">&para;</a></h2>
 <p>You can only reach the robot over SSH when your laptop and the robot are on the same local network. This is a required first check before you even try to connect.</p>
 <h3 id="wifi-case">WiFi case<a class="headerlink" href="#wifi-case" title="Permanent link">&para;</a></h3>
-<p>If the robot is connected by WiFi, your laptop must also be connected to the same WiFi network as the robot. In other words, both devices need to be on the same LAN. If the robot is on one WiFi network and your laptop is on another, the host will not resolve and the SSH session will fail.</p>
+<p>If the robot is connected by WiFi, your laptop must also be connected to the same WiFi network as the robot. The robot's WiFi setup and dashboard flow are described in <a href="../../part0/discovering-and-controlling/">Discovering and Controlling A2Bot</a>. If the robot and your laptop are on different networks, the hostname will not resolve and the SSH session will fail.</p>
 <h3 id="ethernet-case">Ethernet case<a class="headerlink" href="#ethernet-case" title="Permanent link">&para;</a></h3>
-<p>If the robot is connected by Ethernet, your laptop should also be connected to the same local network, usually through the same router, switch, or direct network setup. When using a wired connection, the robot and your laptop still must share the same network segment for SSH to work reliably.</p>
-<p>If you are unsure whether both devices are on the same network, check the robot's IP address and compare it to the address range of the network your laptop is using. A mismatch here is the most common reason SSH appears to "not work".</p>
+<p>If the robot is connected by Ethernet, the connection should use the robot's static IP setup described in <a href="../../appendices/troubleshooting-index/#static-ethernet-link-setup">Troubleshooting Index — Static Ethernet Link Setup</a>. In this setup, the laptop and Pi are on the same private wired network, with a fixed address on the same subnet. This is the intended direct-connection case for Ethernet-based testing and debugging.</p>
+<p>If you are unsure whether both devices are on the same network, check the robot's IP address and compare it to the address range used by your laptop. A mismatch here is the most common reason SSH appears to "not work".</p>
 <h2 id="qr-code-information-for-the-robot">QR code information for the robot<a class="headerlink" href="#qr-code-information-for-the-robot" title="Permanent link">&para;</a></h2>
-<p>The robot dashboard or setup display includes a QR code that holds the robot connection information. This is meant to help you connect quickly without having to remember the IP address or password. Scan the QR code to see the robot's current static IP and the SSH password for that robot.</p>
-<p>This is especially useful when you are first setting up a robot or reconnecting after a reboot. The QR code gives you the information needed to start the SSH session with the correct address and password.</p>
+<p>A QR code may be physically attached to the robot and contains the robot's connection information in plain text. This is meant to help you connect quickly without having to remember the IP address or password. If the QR code is not physically present on the robot, ask the instructor for the robot information instead.</p>
+<p>The QR code contains the robot's current static IP and the SSH password for that robot. This is especially useful when you are first setting up a robot or reconnecting after a reboot. The QR code gives you the information needed to start the SSH session with the correct address and password.</p>
 <h2 id="the-basic-command">The basic command<a class="headerlink" href="#the-basic-command" title="Permanent link">&para;</a></h2>
 <p>The shape is always the same: <code>ssh &lt;username&gt;@&lt;host&gt;</code>. In this course, that's the robot's own username and its <code>.local</code> hostname, both built from the robot's number (see <a href="../../part0/discovering-and-controlling/">Discovering and Controlling A2Bot</a> for the full naming convention):</p>
 <div class="admonition laptop">
@@ -2092,6 +2109,16 @@ Are you sure you want to continue connecting (yes/no/[fingerprint])?
 <h2 id="password-auth-what-this-project-actually-uses">Password auth — what this project actually uses<a class="headerlink" href="#password-auth-what-this-project-actually-uses" title="Permanent link">&para;</a></h2>
 <p>SSH supports both password-based login and key-based login, and both are valid ways to authenticate in general. This course's robots use <strong>password authentication</strong> as the standard setup: every robot has a shared account password, shown directly on the dashboard's post-connect panel right alongside the <code>ssh</code> command itself, so it's never something you need to remember or look up separately. When you connect, you'll be prompted for that password after the host-authenticity check above.</p>
 <p>SSH key authentication also exists as a supported option in many environments, but it is not the default workflow for this project and is not described here in detail. The important point is that you do not need to set up any special key infrastructure just to start using the robot in this course.</p>
+<h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">&para;</a></h2>
+<p>Most SSH problems in this course are connection issues, not software problems. If you need a full list of the common failure modes, see <a href="../../appendices/troubleshooting-index/#ssh-connection-troubleshooting">Troubleshooting Index</a>. The most common cases are:</p>
+<ul>
+<li>The robot and your laptop are not on the same network.</li>
+<li>The hostname or robot number is mistyped.</li>
+<li>The robot is connected by Ethernet but the cable or link is not working.</li>
+<li>The password is rejected even though the user is sure it is correct; in this case, the most common cause is a misspelled or wrong username.</li>
+<li>The robot is reachable by IP but <code>.local</code> hostname resolution fails on the current network.</li>
+</ul>
+<p>If you see a password prompt and then a message saying the password is wrong, first re-check the username in the command. A common mistake is using the wrong robot number or misspelling the username. The password itself is usually correct; the username is the part most often typed incorrectly.</p>
 <h2 id="where-this-shows-up-in-the-course">Where this shows up in the course<a class="headerlink" href="#where-this-shows-up-in-the-course" title="Permanent link">&para;</a></h2>
 <p>You'll use this constantly once a robot is built or joined: <a href="../../part0/discovering-and-controlling/#4-reconnect-and-get-ssh-access">Discovering and Controlling A2Bot, step 4</a> is the first real SSH session of the course, and <a href="../../part3/setup-2-laptop/#7-ssh-in-optional">Setup 2, step 7</a> uses the same command any time you need a terminal on the Pi itself rather than just seeing its ROS 2 topics over the network.</p>
 
