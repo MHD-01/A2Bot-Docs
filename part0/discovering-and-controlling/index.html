@@ -1983,11 +1983,13 @@ every service is running, how does a student actually <em>find</em>, <em>connect
 to</em>, and <em>drive</em> it — with no one standing over their shoulder to help?</p>
 <h2 id="the-one-convention-that-ties-everything-together">The one convention that ties everything together<a class="headerlink" href="#the-one-convention-that-ties-everything-together" title="Permanent link">&para;</a></h2>
 <p>Every robot in the classroom is identified by a single number, <strong>X</strong>. That
-one number determines <em>everything</em> below it — the hostname, the hotspot
-name, its address, and its ROS2 domain. Keeping all four tied to the same
-number is deliberate: a mismatch between them (robot 5's hotspot but
-robot 3's domain ID) is exactly the kind of confusion that costs real time
-mid-session.</p>
+one number determines <em>everything</em> below it — the hostname, the SSH login,
+the hotspot name and address, the direct-Ethernet IP, and its ROS2 domain.
+Keeping all of these tied to the same number is deliberate: a mismatch
+between them (robot 5's hotspot but robot 3's domain ID) is exactly the
+kind of confusion that costs real time mid-session. This table is the
+canonical robot specification — every other page's per-robot values are
+this same pattern, substituting in one robot's actual number.</p>
 <table>
 <thead>
 <tr>
@@ -2003,14 +2005,24 @@ mid-session.</p>
 <td><code>a2bot5-host</code></td>
 </tr>
 <tr>
-<td>Hotspot SSID</td>
-<td><code>A2BotX-setup</code></td>
-<td><code>A2Bot5-setup</code></td>
+<td>SSH login</td>
+<td><code>a2botX@a2botX-host</code></td>
+<td><code>a2bot5@a2bot5-host</code></td>
 </tr>
 <tr>
-<td>Hotspot address</td>
-<td><code>10.42.0.X</code></td>
-<td><code>10.42.0.5</code></td>
+<td>Hotspot SSID</td>
+<td><code>a2botX-setup</code></td>
+<td><code>a2bot5-setup</code></td>
+</tr>
+<tr>
+<td>Hotspot address (dashboard)</td>
+<td><code>10.42.0.X:8888</code></td>
+<td><code>10.42.0.5:8888</code></td>
+</tr>
+<tr>
+<td>Direct-Ethernet IP (<code>eth0</code>)</td>
+<td><code>10.0.0.10X</code></td>
+<td><code>10.0.0.105</code></td>
 </tr>
 <tr>
 <td><code>ROS_DOMAIN_ID</code></td>
@@ -2035,13 +2047,13 @@ for the concepts this table relies on.</p>
 approach a finished robot.</p>
 <h3 id="1-find-the-robots-hotspot">1. Find the robot's hotspot<a class="headerlink" href="#1-find-the-robots-hotspot" title="Permanent link">&para;</a></h3>
 <p>On first boot with no known WiFi, the robot broadcasts its own network:</p>
-<div class="highlight"><pre><span></span><code>A2BotX-setup
+<div class="highlight"><pre><span></span><code>a2botX-setup
 </code></pre></div>
 <p>Connect a laptop or phone to it (password provided separately by the
 instructor, or printed on the robot itself).</p>
 <div class="admonition note">
 <p class="admonition-title">Hotspot not showing up?</p>
-<p>If <code>A2BotX-setup</code> doesn't appear in the WiFi list, the robot is
+<p>If <code>a2botX-setup</code> doesn't appear in the WiFi list, the robot is
 already connected to a known network from a previous session — so it
 has no reason to broadcast its own hotspot. Press and <strong>hold</strong> the
 physical <strong>WiFi reset</strong> button on the robot until its LED blinks
@@ -2066,7 +2078,7 @@ connection, and a form to join a real network.</p>
 device's <strong>only</strong> active connection. Ethernet, mobile data, or any
 other WiFi network active at the same time will stop the dashboard
 from loading. Turn off mobile data, unplug Ethernet, and make sure
-<code>A2BotX-setup</code> is the sole connection before opening the dashboard
+<code>a2botX-setup</code> is the sole connection before opening the dashboard
 address.</p>
 </div>
 <h3 id="3-connect-the-robot-to-a-personal-hotspot">3. Connect the robot to a personal hotspot<a class="headerlink" href="#3-connect-the-robot-to-a-personal-hotspot" title="Permanent link">&para;</a></h3>
@@ -2077,14 +2089,14 @@ prerequisite for everything after this step.</p>
 <div class="admonition note">
 <p class="admonition-title">Can't find your personal hotspot in the list?</p>
 <p>Press the <strong>rescan</strong> button on the dashboard's WiFi form. This makes
-the robot briefly drop its own <code>A2BotX-setup</code> hotspot to scan for
+the robot briefly drop its own <code>a2botX-setup</code> hotspot to scan for
 nearby networks — so your device will lose its connection to the
-robot while that happens. Reconnect to <code>A2BotX-setup</code> afterward and
+robot while that happens. Reconnect to <code>a2botX-setup</code> afterward and
 reopen the dashboard to see the refreshed network list.</p>
 </div>
 <div class="admonition warning">
 <p class="admonition-title">You will likely lose the page here — that's expected</p>
-<p>The instant the robot switches networks, it drops the <code>A2BotX-setup</code>
+<p>The instant the robot switches networks, it drops the <code>a2botX-setup</code>
 hotspot your browser was using. The connect request appearing to
 "fail" with a network error is the <strong>normal, expected shape of
 success</strong> — the robot switched networks out from under the very

@@ -2024,7 +2024,7 @@
 <tbody>
 <tr>
 <td><code>ROS_DOMAIN_ID</code></td>
-<td><code>42</code> (must match on every machine — <strong>not</strong> the ROS 2 default of 0)</td>
+<td><code>X</code>, this robot's own number (must match on every machine — <strong>not</strong> the ROS 2 default of 0, and <strong>not</strong> shared with any other robot)</td>
 </tr>
 <tr>
 <td>RMW implementation</td>
@@ -2032,7 +2032,7 @@
 </tr>
 <tr>
 <td>WiFi hotspot SSID</td>
-<td><code>A2Bot-Setup</code></td>
+<td><code>a2botX-setup</code></td>
 </tr>
 <tr>
 <td>WiFi hotspot password</td>
@@ -2040,7 +2040,7 @@
 </tr>
 <tr>
 <td>WiFi hotspot address</td>
-<td><code>10.42.0.1</code> (fixed)</td>
+<td><code>10.42.0.X</code></td>
 </tr>
 <tr>
 <td>Dashboard</td>
@@ -2048,14 +2048,15 @@
 </tr>
 <tr>
 <td>Direct Ethernet — Pi</td>
-<td><code>10.0.0.1/24</code></td>
+<td><code>10.0.0.10X/24</code></td>
 </tr>
 <tr>
 <td>Direct Ethernet — laptop</td>
-<td><code>10.0.0.2/24</code></td>
+<td><code>10.0.0.250/24</code></td>
 </tr>
 </tbody>
 </table>
+<p><code>X</code> above is this robot's own number — see <a href="../../part0/discovering-and-controlling/">Discovering and Controlling A2Bot</a> for the full naming convention.</p>
 <h2 id="usb-device-pinouts-udev">USB device pinouts (udev)<a class="headerlink" href="#usb-device-pinouts-udev" title="Permanent link">&para;</a></h2>
 <table>
 <thead>

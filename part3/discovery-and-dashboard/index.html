@@ -1925,7 +1925,7 @@
 <h2 id="concept-finding-a-robot-with-no-screen">Concept: finding a robot with no screen<a class="headerlink" href="#concept-finding-a-robot-with-no-screen" title="Permanent link">&para;</a></h2>
 <p>The Pi has no monitor or keyboard attached during normal use — every previous page assumed you already knew its IP address. <code>a2bot_extras</code> exists to solve exactly this "how do I find and recover a headless robot" problem, as an <strong>optional</strong> package: nothing in <code>a2bot_driver</code>, <code>a2bot_description</code>, <code>a2bot_bringup</code>, or <code>a2bot_navigation</code> depends on it.</p>
 <h2 id="the-wifi-provisioning-hotspot">The WiFi provisioning hotspot<a class="headerlink" href="#the-wifi-provisioning-hotspot" title="Permanent link">&para;</a></h2>
-<p>If the Pi has no known WiFi network at boot, <code>wifi_manager</code> (via the dashboard, below) automatically raises a fallback access point at a <strong>fixed</strong> address, so it's never a moving target:</p>
+<p>If the Pi has no known WiFi network at boot, <code>wifi_manager</code> (via the dashboard, below) automatically raises a fallback access point, named and addressed after this robot's own number <code>X</code> — see <a href="../../part0/discovering-and-controlling/">Discovering and Controlling A2Bot</a> for the full per-robot naming convention:</p>
 <table>
 <thead>
 <tr>
@@ -1936,7 +1936,7 @@
 <tbody>
 <tr>
 <td>Network name</td>
-<td><code>A2Bot-Setup</code></td>
+<td><code>a2botX-setup</code></td>
 </tr>
 <tr>
 <td>Password</td>
@@ -1944,14 +1944,14 @@
 </tr>
 <tr>
 <td>Address</td>
-<td><code>10.42.0.1</code> (fixed — put it on a sticker on the chassis)</td>
+<td><code>10.42.0.X</code> (put it on a sticker on the chassis)</td>
 </tr>
 </tbody>
 </table>
 <div class="admonition pi">
 <p class="admonition-title">🤖 Pi</p>
-<p>Connect a laptop or phone to <code>A2Bot-Setup</code>, then browse to:
-<div class="highlight"><pre><span></span><code>http://10.42.0.1:8888
+<p>Connect a laptop or phone to <code>a2botX-setup</code>, then browse to:
+<div class="highlight"><pre><span></span><code>http://10.42.0.X:8888
 </code></pre></div>
 This lands on the WiFi setup page — pick a real network and enter its password to get the robot online. Once connected, the hotspot profile is deleted automatically.</p>
 </div>
