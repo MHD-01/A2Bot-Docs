@@ -49,6 +49,12 @@ The shape is always the same: `ssh <username>@<host>`. In this course, that's th
     ```bash
     ssh a2botX@a2botX-host.local
     ```
+Or in case you have the IP-Address of the robot, you can write:
+
+!!! laptop "💻 Laptop"
+    ```bash
+    ssh a2botX@<IP-Address>
+    ```
 
 Substitute the actual robot number for `X` in both places — a session on robot 5 would be `ssh a2bot5@a2bot5-host.local`. This is always run **from your laptop**, never on the Pi itself — you're using SSH to reach the Pi, not the other way around.
 
