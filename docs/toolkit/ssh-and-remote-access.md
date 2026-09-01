@@ -6,24 +6,14 @@ The robot's Raspberry Pi has no monitor or keyboard attached during normal use â
 
 ## Install SSH on your laptop first
 
-Before you try to connect, make sure the SSH client is installed on the machine you are using as your laptop or development computer.
-
-On Ubuntu or Debian-based Linux:
+Before you try to connect, make sure the SSH client is installed on your Ubuntu laptop.
 
 ```bash
 sudo apt update
 sudo apt install openssh-client
 ```
 
-On macOS, OpenSSH is usually already installed as part of the base system. You can check with:
-
-```bash
-ssh -V
-```
-
-On Windows, use the built-in OpenSSH client if available, or install the Windows OpenSSH package through the system settings or PowerShell. If `ssh` is not recognized, install the OpenSSH client and reopen the terminal before continuing.
-
-Once the command is available, confirm it works by running:
+Once it is installed, confirm the client is available:
 
 ```bash
 ssh -V
@@ -37,19 +27,19 @@ You can only reach the robot over SSH when your laptop and the robot are on the 
 
 ### WiFi case
 
-If the robot is connected by WiFi, your laptop must also be connected to the same WiFi network as the robot. In other words, both devices need to be on the same LAN. If the robot is on one WiFi network and your laptop is on another, the host will not resolve and the SSH session will fail.
+If the robot is connected by WiFi, your laptop must also be connected to the same WiFi network as the robot. The robot's WiFi setup and dashboard flow are described in [Discovering and Controlling A2Bot](../part0/discovering-and-controlling.md). If the robot and your laptop are on different networks, the hostname will not resolve and the SSH session will fail.
 
 ### Ethernet case
 
-If the robot is connected by Ethernet, your laptop should also be connected to the same local network, usually through the same router, switch, or direct network setup. When using a wired connection, the robot and your laptop still must share the same network segment for SSH to work reliably.
+If the robot is connected by Ethernet, the connection should use the robot's static IP setup described in [Troubleshooting Index â€” Static Ethernet Link Setup](../appendices/troubleshooting-index.md#static-ethernet-link-setup). In this setup, the laptop and Pi are on the same private wired network, with a fixed address on the same subnet. This is the intended direct-connection case for Ethernet-based testing and debugging.
 
-If you are unsure whether both devices are on the same network, check the robot's IP address and compare it to the address range of the network your laptop is using. A mismatch here is the most common reason SSH appears to "not work".
+If you are unsure whether both devices are on the same network, check the robot's IP address and compare it to the address range used by your laptop. A mismatch here is the most common reason SSH appears to "not work".
 
 ## QR code information for the robot
 
-The robot dashboard or setup display includes a QR code that holds the robot connection information. This is meant to help you connect quickly without having to remember the IP address or password. Scan the QR code to see the robot's current static IP and the SSH password for that robot.
+A QR code may be physically attached to the robot and contains the robot's connection information in plain text. This is meant to help you connect quickly without having to remember the IP address or password. If the QR code is not physically present on the robot, ask the instructor for the robot information instead.
 
-This is especially useful when you are first setting up a robot or reconnecting after a reboot. The QR code gives you the information needed to start the SSH session with the correct address and password.
+The QR code contains the robot's current static IP and the SSH password for that robot. This is especially useful when you are first setting up a robot or reconnecting after a reboot. The QR code gives you the information needed to start the SSH session with the correct address and password.
 
 ## The basic command
 
@@ -87,6 +77,18 @@ The `a2botX-host.local` form depends on mDNS working on whatever network you're 
 SSH supports both password-based login and key-based login, and both are valid ways to authenticate in general. This course's robots use **password authentication** as the standard setup: every robot has a shared account password, shown directly on the dashboard's post-connect panel right alongside the `ssh` command itself, so it's never something you need to remember or look up separately. When you connect, you'll be prompted for that password after the host-authenticity check above.
 
 SSH key authentication also exists as a supported option in many environments, but it is not the default workflow for this project and is not described here in detail. The important point is that you do not need to set up any special key infrastructure just to start using the robot in this course.
+
+## Troubleshooting
+
+Most SSH problems in this course are connection issues, not software problems. If you need a full list of the common failure modes, see [Troubleshooting Index](../appendices/troubleshooting-index.md#ssh-connection-troubleshooting). The most common cases are:
+
+- The robot and your laptop are not on the same network.
+- The hostname or robot number is mistyped.
+- The robot is connected by Ethernet but the cable or link is not working.
+- The password is rejected even though the user is sure it is correct; in this case, the most common cause is a misspelled or wrong username.
+- The robot is reachable by IP but `.local` hostname resolution fails on the current network.
+
+If you see a password prompt and then a message saying the password is wrong, first re-check the username in the command. A common mistake is using the wrong robot number or misspelling the username. The password itself is usually correct; the username is the part most often typed incorrectly.
 
 ## Where this shows up in the course
 

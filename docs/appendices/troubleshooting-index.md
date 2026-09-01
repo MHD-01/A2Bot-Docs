@@ -26,6 +26,47 @@ Symptom-first index of known A2Bot gotchas — each confirmed against this repos
 
     Then unplug and replug the Arduino.
 
+## SSH connection troubleshooting
+
+**Symptom:** `ssh` times out, says the host is not found, asks for a password and then rejects it, or fails before the terminal opens.
+
+**Common causes:**
+
+- The robot and laptop are not on the same network.
+- The hostname or robot number is wrong.
+- The Ethernet cable is not connected properly or the link is not live.
+- The robot's static Ethernet link is not configured on the same subnet.
+- The SSH password is correct but the username in the command is misspelled.
+
+**Checks to do first:**
+
+1. Confirm both devices are on the same network.
+   - For WiFi, follow the dashboard and network setup flow in [Discovering and Controlling A2Bot](../part0/discovering-and-controlling.md).
+   - For Ethernet, follow [Static Ethernet Link Setup](#static-ethernet-link-setup).
+2. Check the exact SSH command and robot number.
+   ```bash
+   ssh a2botX@a2botX-host.local
+   ```
+   Replace `X` with the robot's actual number, and check that the username and hostname match exactly.
+3. If hostname resolution fails, connect by IP instead of `.local`.
+   ```bash
+   ssh a2botX@10.42.0.X
+   ```
+   or, for the direct Ethernet link:
+   ```bash
+   ssh a2botX@10.0.0.X
+   ```
+4. Make sure the Ethernet cable is seated correctly and the link is active.
+   ```bash
+   nmcli device status
+   ip a
+   ```
+5. If the password prompt appears and the password is rejected even though it seems correct, re-check the username before assuming the password is wrong. A common mistake is typing the wrong robot number or misspelling the username (`a2bot5` instead of the correct value).
+
+**If you are using the direct Ethernet setup:** the robot should be configured with a fixed address on the same private subnet as the laptop. See [Static Ethernet Link Setup](#static-ethernet-link-setup) for the exact `nmcli`/`netplan` procedure and the address conventions used in this project.
+
+**Fix:** once the network, cable, hostname, and username are all correct, reconnect and complete the SSH host confirmation prompt with `yes` when prompted.
+
 ## The GY-85 reads plausible garbage instead of erroring
 
 **Symptom:** IMU data looks like *numbers*, not obviously wrong, but the EKF's heading drifts strangely or the values don't match how you're actually moving the robot.
