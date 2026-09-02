@@ -2,7 +2,7 @@
 
 ## What this is, and why it matters
 
-systemd is Ubuntu's service manager — it starts, stops, and supervises long-running background processes ("services," defined by **unit files**) automatically, including right at boot with no one logged in. This project runs its own software this way: `a2bot-robot`, `a2bot-dashboard`, `a2bot-rosbridge`, `a2bot-webui`, and `a2bot-gpio` are all systemd services on the Pi, specifically so a student never has to SSH in and manually start five different programs by hand every time the robot powers on.
+systemd is Ubuntu's service manager — it starts, stops, and supervises long-running background processes ("services," defined by **unit files**) automatically, including right at boot with no one logged in. This project runs its own software this way: `a2bot-robot`, `a2bot-dashboard`, `a2bot-rosbridge`, `a2bot-webui`, `ros2-ready`, and `a2bot-gpio` are all systemd services on the Pi, specifically so a student never has to SSH in and manually start six different programs by hand every time the robot powers on — see [Setup 1 — Raspberry Pi, step 15](../part3/setup-1-raspberry-pi.md#15-set-up-the-systemd-services) for what each one does.
 
 ## The core commands
 
@@ -48,6 +48,59 @@ Reading its output, rather than just whether it's running:
     ```
 
     Print just its last 50 log lines and exit, rather than opening an interactive pager.
+
+## Anatomy of a unit file, and writing one from scratch
+
+Most of the time you're only ever pointing the commands above at a service someone else already wrote. Occasionally you need to write one yourself, or edit an existing `.service` file that ships with this project's software — this section is the general reference for that.
+
+A unit file is a plain-text config file, one per service, split into three sections:
+
+```ini
+[Unit]
+Description=Short human-readable description of what this does
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/some-command --with-flags
+Environment=SOME_VAR=value
+WorkingDirectory=/home/user/some/directory
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+```
+
+- **`[Unit]`** — metadata and ordering, not the program itself. `Description=` is what shows up in `systemctl status`. `After=`/`Wants=`/`Requires=` control *when* this service starts relative to others — but only when, not whether the thing it's ordered after is actually ready; see [What "active" actually proves](#what-active-actually-proves-and-what-it-doesnt) below for why that distinction matters.
+- **`[Service]`** — what actually runs. `ExecStart=` is the command systemd launches. `Type=simple` (the default, and the only type this project uses) means systemd considers the service "started" the instant that process launches, with no readiness signal expected back. `Environment=` sets one environment variable per line — this is the only reliable way to hand a systemd-managed process a variable that would otherwise come from `~/.bashrc`, since a unit does not source it (see [~/.bashrc — Where this bites](bashrc.md#where-this-bites-in-this-project-specifically)). `WorkingDirectory=` sets the directory the process runs from, equivalent to `cd`-ing there first. `Restart=on-failure` restarts the process automatically if it crashes, but not if you stop it deliberately with `systemctl stop`.
+- **`[Install]`** — what `enable` actually wires up. `WantedBy=multi-user.target` means "start this at normal multi-user boot" — the standard choice for a background service with no GUI dependency, which covers every service this project runs.
+
+### Where it goes
+
+!!! pi "🤖 Pi"
+    ```bash
+    sudo nano /etc/systemd/system/my-service.service
+    ```
+
+    `/etc/systemd/system/` is where locally-written or locally-installed unit files live — distinct from `/lib/systemd/system/`, which holds units that came from an apt package. Anything you write or copy in for this project belongs in `/etc/systemd/system/`.
+
+### Bringing it to life {#bringing-it-to-life}
+
+Every one of these steps is necessary, in this order, whether you just wrote a brand-new unit or only edited an existing one:
+
+!!! pi "🤖 Pi"
+    ```bash
+    sudo systemctl daemon-reload
+    sudo systemctl enable --now my-service
+    systemctl status my-service
+    ```
+
+    - `daemon-reload` tells systemd to re-read unit files from disk — without it, systemd keeps using whatever it last loaded into memory, so an edit you just saved has **no effect** until this runs, with no error to explain why.
+    - `enable --now` both starts it immediately and makes it start at every future boot — see [The core commands](#the-core-commands) above if you only want one half of that.
+    - `status` confirms it's actually running — remember that "active" alone doesn't prove the software inside is *working*, only that it started; see below.
+
+Edited a unit file and nothing seems to have changed? A missing `daemon-reload` is the first thing to check — it's a common, silent way for a change to appear to do nothing.
 
 ## What "active" actually proves — and what it doesn't
 

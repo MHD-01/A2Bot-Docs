@@ -33,7 +33,19 @@ Write the image, then boot the Pi with it connected to Ethernet or in range of t
 
 Assemble the chassis, wire the motors to the Arduino, and connect the Arduino, RPLidar, GY-85 IMU, and camera to the Pi's USB/I2C. See [Electronics & Hardware](../part2/electronics-hardware.md) for the full component list and pinout notes.
 
-## 3. Update the system
+## 3. Make sure the SSH server is actually installed
+
+Imager's "Enable SSH" setting from [step 1](#1-flash-the-pi) is supposed to make this unnecessary — but in practice, a fresh Ubuntu Server flash doesn't always come up with `openssh-server` actually installed and running, even with that box checked. Confirm it explicitly, first thing, before anything else on this page assumes you can reach the Pi remotely:
+
+!!! pi "🤖 Pi"
+    ```bash
+    sudo apt install -y openssh-server
+    sudo systemctl enable --now ssh
+    ```
+
+    Run this over SSH if it happens to already work, or from a directly attached keyboard and monitor for this one command if it doesn't. If SSH was already working, this is a no-op — `apt` reports it's already installed, and `enable --now` on an already-running service just confirms it's on.
+
+## 4. Update the system
 
 A freshly flashed image's package list is already out of date, and everything installed later on this page should build on current versions, not stale ones from the image.
 
@@ -43,7 +55,7 @@ A freshly flashed image's package list is already out of date, and everything in
     ```
     `update` refreshes the local list of what's available from each repository; `upgrade` actually installs newer versions of what's already on the system. This can take a while — a fresh image typically has a lot waiting, and speed depends entirely on the Pi's internet connection.
 
-## 4. Disable automatic updates
+## 5. Disable automatic updates
 
 Ubuntu Server ships with `unattended-upgrades` running on a timer in the background, applying its own updates whenever it feels like it. It holds the same apt lock every `apt install` on the rest of this page needs — if it's mid-run when you type one, that command just hangs waiting on a lock that might not free up for a while. Turning it off hands control of *when* updates happen back to you, which matters with the number of `apt install`s still ahead.
 
@@ -53,7 +65,7 @@ Ubuntu Server ships with `unattended-upgrades` running on a timer in the backgro
     ```
     `--now` stops all three immediately, as well as preventing them from starting again at every future boot.
 
-## 5. Install ROS 2 Humble
+## 6. Install ROS 2 Humble
 
 ROS 2 doesn't come from Ubuntu's own package repositories — it needs its own apt source registered first. The Pi uses the current officially-recommended method, a small `.deb` that adds ROS 2's repository and signing key in one step (a newer approach than the manual keyring method [Install & Source](../part1/install-and-source.md) walks through for the laptop; both end up with the same working install).
 
@@ -80,7 +92,7 @@ Source it automatically in every new terminal, the same way every machine in thi
     ```
     See [~/.bashrc](../toolkit/bashrc.md) for why this pattern is used everywhere in this course instead of sourcing by hand each time.
 
-## 6. Switch to Cyclone DDS
+## 7. Switch to Cyclone DDS
 
 ROS 2 can run on several different DDS implementations underneath, and two machines must use the *same* one to discover each other reliably. Cyclone DDS is used here because it is what the robots themselves are already configured with — a mismatched RMW implementation between a laptop and a robot is a real, silent cause of "why can't I see any topics" that matches no error message.
 
@@ -97,7 +109,7 @@ ROS 2 can run on several different DDS implementations underneath, and two machi
     ros2 pkg list | grep cyclonedds
     ```
 
-## 7. Set the ROS Domain ID
+## 8. Set the ROS Domain ID
 
 `ROS_DOMAIN_ID` is a ROS 2-level number, not a network address — it decides which ROS 2 processes are even willing to discover each other, independent of whether they can already `ping`/`ssh` each other fine. See [IP Addresses & Your Network — A different kind of "address"](../toolkit/ip-addresses-and-your-network.md#a-different-kind-of-address-ros_domain_id) if you want the fuller mental model.
 
@@ -109,23 +121,36 @@ ROS 2 can run on several different DDS implementations underneath, and two machi
 
     Substitute this robot's own number for `X` (robot 5 → `ROS_DOMAIN_ID=5`) — **not** the ROS 2 default of 0, and **not** shared with any other robot in the classroom. It's the same `X` that names this robot's hostname and hotspot; see [Discovering and Controlling A2Bot](../part0/discovering-and-controlling.md) for the full convention. It must match exactly on every machine that needs to see the robot — see [Setup 2 — Laptop](setup-2-laptop.md#4-match-the-ros-domain-id) for setting it on your laptop to match.
 
-## 8. Install ROS 2 robot dependencies
+## 9. Clone the a2bot workspace
 
-Beyond the base `ros-humble-desktop` install, A2Bot's own packages depend on several more ROS 2 packages:
+!!! pi "🤖 Pi"
+    ```bash
+    git clone FIXME:<your-a2bot-repo-url> ~/a2bot
+    ```
 
-| Package | Purpose |
-|---|---|
-| `ros-humble-navigation2` | Nav2 itself — autonomous path planning and obstacle avoidance |
-| `ros-humble-nav2-bringup` | Launch files and default config that tie Nav2's many nodes together |
-| `ros-humble-slam-toolbox` | Builds a map from lidar scans while driving (SLAM) |
-| `ros-humble-robot-localization` | The EKF that fuses wheel odometry and IMU data into one pose estimate — see [Sensor Fusion / EKF](../part2/sensor-fusion-ekf.md) |
-| `ros-humble-rplidar-ros` | Driver for the RPLidar A1 |
-| `ros-humble-camera-ros` | Driver for the Pi camera |
-| `ros-humble-teleop-twist-keyboard` | Manual keyboard driving, for testing before autonomy is involved |
-| `ros-humble-rosbridge-suite` | WebSocket bridge that lets a browser (the dashboard, the web control interface) talk to ROS 2 topics |
-| `ros-humble-tf2-tools` | `tf2` inspection/debugging utilities |
+Everything from here on — dependency installs, the build, the web control interface — reaches into this cloned tree. Nothing in the next few steps works until this one has finished.
 
-You don't have to install these one by one — every package here is already declared as a dependency in A2Bot's own `package.xml` files, so once the workspace is cloned (next), `rosdep` installs all of them automatically:
+## 10. Install workspace dependencies
+
+A mix of ROS packages, plain Python packages, and Node.js packages the cloned code actually needs — none of it installs itself.
+
+### ROS 2 packages
+
+A2Bot's own packages depend on several more ROS 2 packages beyond the base `ros-humble-desktop` install:
+
+| Package | Purpose | Installed by |
+|---|---|---|
+| `ros-humble-navigation2` | Nav2 itself — autonomous path planning and obstacle avoidance | `rosdep` |
+| `ros-humble-nav2-bringup` | Launch files and default config that tie Nav2's many nodes together | `rosdep` |
+| `ros-humble-slam-toolbox` | Builds a map from lidar scans while driving (SLAM) | `rosdep` |
+| `ros-humble-robot-localization` | The EKF that fuses wheel odometry and IMU data into one pose estimate — see [Sensor Fusion / EKF](../part2/sensor-fusion-ekf.md) | **explicit apt install**, below |
+| `ros-humble-rplidar-ros` | Driver for the RPLidar A1 | **explicit apt install**, below |
+| `ros-humble-camera-ros` | Driver for the Pi camera | `rosdep` |
+| `ros-humble-teleop-twist-keyboard` | Manual keyboard driving, for testing before autonomy is involved | `rosdep` |
+| `ros-humble-rosbridge-suite` | WebSocket bridge that lets a browser (the dashboard, the web control interface) talk to ROS 2 topics | `rosdep` |
+| `ros-humble-tf2-tools` | `tf2` inspection/debugging utilities | `rosdep` |
+
+Most of these are declared as dependencies in A2Bot's own `package.xml` files, so `rosdep` installs them automatically by reading the workspace you just cloned:
 
 !!! pi "🤖 Pi"
     ```bash
@@ -133,23 +158,76 @@ You don't have to install these one by one — every package here is already dec
     rosdep install --from-paths src --ignore-src -r -y
     ```
 
-    The table above exists so you know *what* just got installed and *why* — see [step 12](#12-clone-and-build-the-a2bot-workspace) below for where this actually runs in sequence.
+`robot_localization` and `rplidar_ros` are the two exceptions in the table above — neither is actually declared in any package's `package.xml`, so `rosdep` silently skips both without any warning that something is missing. Install them explicitly:
 
-## 9. Hardware enablement
+!!! pi "🤖 Pi"
+    ```bash
+    sudo apt install -y ros-humble-robot-localization ros-humble-rplidar-ros
+    ```
+
+### Python packages
+
+!!! pi "🤖 Pi"
+    ```bash
+    sudo apt install -y python3-pip
+    ```
+    Ubuntu Server doesn't ship `pip` by default — every `pip install` below needs this first.
+
+    ```bash
+    pip install pyserial
+    ```
+    `serial_bridge` (see [The Driver: a2bot_driver](../part2/a2bot-driver.md#serial_bridge)) uses this to talk to the Arduino over `/dev/arduino`.
+
+    ```bash
+    pip install fastapi "uvicorn[standard]" websockets python-multipart
+    ```
+    What the `a2bot-dashboard` service actually runs on: FastAPI is the web framework it's built with, `uvicorn` serves it, `websockets` backs its live telemetry push, and `python-multipart` handles its form/file-upload routes.
+
+### The web control interface (Node.js)
+
+Node.js and npm are needed on the Pi for the web control interface (the `a2bot-webui` service, see [step 15](#15-set-up-the-systemd-services)) — Ubuntu 22.04's own apt repository ships a Node version too old for it, so install from NodeSource instead:
+
+!!! pi "🤖 Pi"
+    ```bash
+    curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+    sudo apt install -y nodejs
+    ```
+    Confirm with `node -v` (18 or newer). Then `cd` into the web control interface's own directory inside the workspace you just cloned, and install its packages there:
+
+    ```bash
+    cd ~/a2bot/a2bot_ws/src/a2bot_extras/a2bot_extras/"Turtlebot interface"/robot-control-interface
+    npm install
+    ```
+    That path has a literal space in it (`Turtlebot interface`) — the quotes around that one segment are required, exactly as shown, or the shell splits it into two arguments and `cd` fails with "too many arguments."
+
+!!! note "MediaPipe / gesture control does not go on the Pi"
+    Gesture control runs on your **laptop**, not the Pi — it needs a webcam and more spare compute than a Pi 4 has left over while also running SLAM and Nav2. See [Discovery & Dashboard — Gesture control](discovery-and-dashboard.md#gesture-control-optional-demo) for the install step, which belongs on Setup 2, not here.
+
+## 11. Build the workspace
+
+!!! pi "🤖 Pi"
+    ```bash
+    cd ~/a2bot/a2bot_ws
+    colcon build --symlink-install
+    echo "source ~/a2bot/a2bot_ws/install/setup.bash" >> ~/.bashrc
+    source ~/.bashrc
+    ```
+
+    `--symlink-install` links the install directory back to the source files instead of copying them — a change to a Python file takes effect immediately on the next run, with no rebuild needed. (A change to a non-Python file that `colcon` processes at build time, like a URDF or a package's `setup.cfg`, still needs a real rebuild.)
+
+## 12. Hardware enablement
 
 ### Camera overlay
 
 A CSI ribbon camera needs its sensor driver enabled in the Pi's firmware config before Linux will see it — a USB camera needs none of this and can be skipped straight to the next section.
 
+`/boot/firmware/config.txt` is read top-to-bottom, and a line placed inside a `[pi4]`/`[pi5]`-style section only applies to that specific board — appending to the very end of the file, after every such section, is what guarantees a line applies regardless of which Pi model this happens to be. Check first so the same line never gets added twice — a duplicate `dtoverlay=` line doesn't error, it just tries to enable the same overlay a second time, which can leave the camera silently uninitialized instead of failing loudly:
+
 !!! pi "🤖 Pi"
     ```bash
-    sudo nano /boot/firmware/config.txt
+    grep -qxF 'dtoverlay=imx219' /boot/firmware/config.txt || echo 'dtoverlay=imx219' | sudo tee -a /boot/firmware/config.txt
     ```
-    Add a line naming your specific sensor, for example:
-    ```
-    dtoverlay=imx219
-    ```
-    Substitute the overlay for whatever sensor your camera module actually uses — check the module's documentation if you're not sure. Reboot for it to take effect.
+    Substitute the overlay for whatever sensor your camera module actually uses — check the module's documentation if you're not sure. `grep -qxF` checks whether that **exact** line already exists before adding anything; `tee -a` appends at the true end of the file, after any model-specific sections above it. Safe to run more than once. Reboot for it to take effect.
 
 ### Stable device names (udev rules)
 
@@ -180,15 +258,11 @@ Ubuntu's `brltty` service (accessibility support for braille displays) misidenti
 
 ### Enable I2C
 
-The GY-85 IMU talks to the Pi over I2C, which is disabled by default. Unlike Raspberry Pi OS, Ubuntu Server has no `raspi-config` — I2C is enabled the same way as the camera, via the firmware config file:
+The GY-85 IMU talks to the Pi over I2C, which is disabled by default. Unlike Raspberry Pi OS, Ubuntu Server has no `raspi-config` — I2C is enabled the same way as the camera above, via the firmware config file, with the same idempotent append:
 
 !!! pi "🤖 Pi"
     ```bash
-    sudo nano /boot/firmware/config.txt
-    ```
-    Add:
-    ```
-    dtparam=i2c_arm=on
+    grep -qxF 'dtparam=i2c_arm=on' /boot/firmware/config.txt || echo 'dtparam=i2c_arm=on' | sudo tee -a /boot/firmware/config.txt
     ```
     Then install the tools used to talk to I2C devices directly (used throughout [Troubleshooting Index](../appendices/troubleshooting-index.md#the-gy-85-reads-plausible-garbage-instead-of-erroring) to check the IMU is alive):
     ```bash
@@ -218,30 +292,11 @@ Each group below lets a normal user account (rather than `sudo` every time) acce
 
     Log out and back in (or reboot) — group membership doesn't apply to an already-open session.
 
-## 10. Python and system packages
+## 13. Flash the Arduino firmware
 
-!!! pi "🤖 Pi"
-    ```bash
-    pip install pyserial
-    ```
-    `serial_bridge` (see [The Driver: a2bot_driver](../part2/a2bot-driver.md#serial_bridge)) uses this to talk to the Arduino over `/dev/arduino`.
+The udev rule and brltty removal from [step 12](#12-hardware-enablement) already give the Arduino a stable, uncontested `/dev/arduino` symlink — but the board still needs to be running firmware that actually speaks the serial protocol `serial_bridge` expects before any of this talks to real hardware. See [Flashing the Arduino Firmware](../appendices/flashing-arduino-firmware.md) for the full process.
 
-Node.js and npm are needed on the Pi for the web control interface (`a2bot-webui`, see [step 13](#13-set-up-the-systemd-services)) — Ubuntu 22.04's own apt repository ships a Node version too old for it, so install from NodeSource instead:
-
-!!! pi "🤖 Pi"
-    ```bash
-    curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
-    sudo apt install -y nodejs
-    ```
-    Confirm with `node -v` (18 or newer). Then, inside the web control interface's own directory in the workspace (check `a2bot-webui.service`'s `WorkingDirectory=` if you're not sure which one):
-    ```bash
-    npm install
-    ```
-
-!!! note "MediaPipe / gesture control does not go on the Pi"
-    Gesture control runs on your **laptop**, not the Pi — it needs a webcam and more spare compute than a Pi 4 has left over while also running SLAM and Nav2. See [Discovery & Dashboard — Gesture control](discovery-and-dashboard.md#gesture-control-optional-demo) for the install step, which belongs on Setup 2, not here.
-
-## 11. Networking
+## 14. Networking
 
 By this point the Pi already has whatever network Imager configured in [step 1](#1-flash-the-pi). Two more networking pieces are relevant once you're actually driving the robot, both fully covered elsewhere rather than repeated here:
 
@@ -250,57 +305,48 @@ By this point the Pi already has whatever network Imager configured in [step 1](
 
 Nothing about either is specific to the *build* — both work the same regardless of how the Pi got its OS.
 
-## 12. Clone and build the a2bot workspace
+## 15. Set up the systemd services
 
-!!! pi "🤖 Pi"
-    ```bash
-    git clone FIXME:<your-a2bot-repo-url> ~/a2bot
-    cd ~/a2bot/a2bot_ws
-    rosdep install --from-paths src --ignore-src -r -y
-    colcon build --symlink-install
-    echo "source ~/a2bot/a2bot_ws/install/setup.bash" >> ~/.bashrc
-    source ~/.bashrc
-    ```
-
-    `--symlink-install` links the install directory back to the source files instead of copying them — a change to a Python file takes effect immediately on the next run, with no rebuild needed. (A change to a non-Python file that `colcon` processes at build time, like a URDF or a package's `setup.cfg`, still needs a real rebuild.)
-
-## 13. Set up the systemd services
-
-A2Bot's own software runs as five background services on the Pi, so no one has to SSH in and start five programs by hand every time it powers on:
+A2Bot's own software runs as six background services on the Pi, so no one has to SSH in and start six programs by hand every time it powers on. The repo ships their unit files; you copy them into place rather than writing them from scratch — see [systemd & Services — Anatomy of a unit file](../toolkit/systemd-and-services.md#anatomy-of-a-unit-file-and-writing-one-from-scratch) if you want to understand what's actually inside one, or ever need to write a new one.
 
 | Service | Job |
 |---|---|
 | `a2bot-robot` | The driver stack — `serial_bridge`, `diff_drive`, `odometry`, the IMU node, the EKF, and the lidar |
 | `a2bot-dashboard` | The FastAPI dashboard — live telemetry and the WiFi setup page |
-| `a2bot-webui` | The Node.js web control interface set up in [step 10](#10-python-and-system-packages) |
+| `a2bot-webui` | The Node.js web control interface set up in [step 10](#10-install-workspace-dependencies) |
 | `a2bot-rosbridge` | The WebSocket bridge the dashboard and web control interface use to reach ROS 2 topics |
+| `ros2-ready` | A readiness gate other services can depend on, so they don't start before the ROS 2 graph itself is confirmed up |
 | `a2bot-gpio` | The physical recovery buttons, running independently of the ROS stack so it still works if ROS never started |
-
-Every service here except `a2bot-webui` calls the `ros2` CLI, and a systemd unit does **not** source `~/.bashrc` the way an interactive terminal does — so each one sets `ROS_DOMAIN_ID` and `RMW_IMPLEMENTATION` explicitly in its own unit file rather than relying on it, using this robot's own domain ID:
-
-```ini
-Environment=ROS_DOMAIN_ID=X
-Environment=RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
-```
-
-Substitute this robot's own number for `X`, matching [step 7](#7-set-the-ros-domain-id) above.
-
-See [~/.bashrc — Where this bites](../toolkit/bashrc.md#where-this-bites-in-this-project-specifically) for why `.bashrc` alone isn't enough here, and [Troubleshooting Index](../appendices/troubleshooting-index.md#a-systemd-service-comes-up-active-on-the-wrong-ros_domain_id-rmw_implementation) if a service ever comes up "active" but silently on the wrong domain.
-
-Enable all five to start automatically at boot:
 
 !!! pi "🤖 Pi"
     ```bash
-    sudo systemctl enable --now a2bot-robot a2bot-dashboard a2bot-webui a2bot-rosbridge a2bot-gpio
+    sudo cp ~/a2bot/services/services_files/*.service /etc/systemd/system/
     ```
 
-    See [systemd & Services](../toolkit/systemd-and-services.md) for the general `systemctl`/`journalctl` commands to check on any of these afterward.
+Before enabling anything, two lines inside these copied files need editing **per robot** — copying them as-is from another robot's build points this Pi at the wrong domain and the wrong home directory:
 
-## 14. Flash the Arduino firmware
+- **`Environment=ROS_DOMAIN_ID=...`** — must be this robot's own number `X` (see [step 8](#8-set-the-ros-domain-id)), not whatever number the file shipped with.
+- **`Environment=PATH=...`** — bakes in a literal username as part of the path (e.g. `/home/a2bot5/...`); if this robot's username doesn't match, fix every occurrence to this robot's actual `a2botX` username.
 
-The udev rule from [step 9](#9-hardware-enablement) already gives the Arduino a stable `/dev/arduino` symlink the moment it's plugged in — but the board still needs to be running firmware that actually speaks the serial protocol `serial_bridge` expects before any of this talks to real hardware. See [Flashing the Arduino Firmware](../appendices/flashing-arduino-firmware.md) for the full process.
+!!! pi "🤖 Pi"
+    ```bash
+    sudo nano /etc/systemd/system/a2bot-robot.service
+    # repeat for each of the six .service files
+    ```
 
-## 15. Convenience: aliases and QR stickers
+Every service here except `a2bot-webui` calls the `ros2` CLI, and a systemd unit does **not** source `~/.bashrc` the way an interactive terminal does — which is exactly why these `Environment=` lines have to be set explicitly rather than relying on it. See [~/.bashrc — Where this bites](../toolkit/bashrc.md#where-this-bites-in-this-project-specifically) and [Troubleshooting Index](../appendices/troubleshooting-index.md#a-systemd-service-comes-up-active-on-the-wrong-ros_domain_id-rmw_implementation) if a service ever comes up "active" but silently on the wrong domain.
+
+Once edited, reload and enable all six to start automatically at boot:
+
+!!! pi "🤖 Pi"
+    ```bash
+    sudo systemctl daemon-reload
+    sudo systemctl enable --now a2bot-robot a2bot-dashboard a2bot-webui a2bot-rosbridge ros2-ready a2bot-gpio
+    ```
+
+    `daemon-reload` is what makes systemd actually notice the edits you just made — see [systemd & Services](../toolkit/systemd-and-services.md#bringing-it-to-life) if that's not obvious yet. See that same page generally for the `systemctl`/`journalctl` commands to check on any of these afterward.
+
+## 16. Convenience: aliases and QR stickers
 
 A shared `~/.a2bot_aliases` file is a good place to collect shortcuts for commands you'll otherwise retype constantly — for example:
 

@@ -1788,23 +1788,6 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Static Ethernet Link Setup">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#static-ip-works-but-no-internet" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Static IP works but no internet
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
         <li class="md-nav__item">
@@ -2051,23 +2034,6 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Static Ethernet Link Setup">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#static-ip-works-but-no-internet" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Static IP works but no internet
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
         <li class="md-nav__item">
@@ -2208,7 +2174,7 @@
 <ol>
 <li>Confirm both devices are on the same network.</li>
 <li>For WiFi, follow the dashboard and network setup flow in <a href="../../part0/discovering-and-controlling/">Discovering and Controlling A2Bot</a>.</li>
-<li>For Ethernet, follow <a href="#static-ethernet-link-setup">Static Ethernet Link Setup</a>.</li>
+<li>For Ethernet, follow <a href="../../toolkit/ip-addresses-and-your-network/#direct-ethernet-link-a-fixed-private-network">IP Addresses &amp; Your Network — Direct Ethernet link: a fixed private network</a>.</li>
 <li>Check the exact SSH command and robot number.
    <div class="highlight"><pre><span></span><code>ssh<span class="w"> </span>a2botX@a2botX-host.local
 </code></pre></div>
@@ -2217,7 +2183,7 @@
    <div class="highlight"><pre><span></span><code>ssh<span class="w"> </span>a2botX@10.42.0.X
 </code></pre></div>
    or, for the direct Ethernet link:
-   <div class="highlight"><pre><span></span><code>ssh<span class="w"> </span>a2botX@10.0.0.X
+   <div class="highlight"><pre><span></span><code>ssh<span class="w"> </span>a2botX@10.0.0.10X
 </code></pre></div></li>
 <li>Make sure the Ethernet cable is seated correctly and the link is active.
    <div class="highlight"><pre><span></span><code>nmcli<span class="w"> </span>device<span class="w"> </span>status
@@ -2225,7 +2191,7 @@ ip<span class="w"> </span>a
 </code></pre></div></li>
 <li>If the password prompt appears and the password is rejected even though it seems correct, re-check the username before assuming the password is wrong. A common mistake is typing the wrong robot number or misspelling the username (<code>a2bot5</code> instead of the correct value).</li>
 </ol>
-<p><strong>If you are using the direct Ethernet setup:</strong> the robot should be configured with a fixed address on the same private subnet as the laptop. See <a href="#static-ethernet-link-setup">Static Ethernet Link Setup</a> for the exact <code>nmcli</code>/<code>netplan</code> procedure and the address conventions used in this project.</p>
+<p><strong>If you are using the direct Ethernet setup:</strong> the robot should be configured with a fixed address on the same private subnet as the laptop. See <a href="../../toolkit/ip-addresses-and-your-network/#direct-ethernet-link-a-fixed-private-network">IP Addresses &amp; Your Network — Direct Ethernet link: a fixed private network</a> for the exact <code>nmcli</code>/<code>netplan</code> procedure and the address conventions used in this project.</p>
 <p><strong>Fix:</strong> once the network, cable, hostname, and username are all correct, reconnect and complete the SSH host confirmation prompt with <code>yes</code> when prompted.</p>
 <h2 id="the-gy-85-reads-plausible-garbage-instead-of-erroring">The GY-85 reads plausible garbage instead of erroring<a class="headerlink" href="#the-gy-85-reads-plausible-garbage-instead-of-erroring" title="Permanent link">&para;</a></h2>
 <p><strong>Symptom:</strong> IMU data looks like <em>numbers</em>, not obviously wrong, but the EKF's heading drifts strangely or the values don't match how you're actually moving the robot.</p>
@@ -2261,73 +2227,13 @@ sudo<span class="w"> </span>chmod<span class="w"> </span><span class="m">0440</s
 <h2 id="rviz-shows-no-robot-model">RViz shows no robot model<a class="headerlink" href="#rviz-shows-no-robot-model" title="Permanent link">&para;</a></h2>
 <p><strong>Symptom:</strong> Topics and <code>tf</code> all look correct, but RViz shows an outline, or nothing, where the robot should be — even though everything is working over the network from a remote machine.</p>
 <p><strong>Cause:</strong> RViz resolves the URDF's <code>package://a2bot_description/meshes/...</code> mesh references from the <strong>local</strong> filesystem via the ROS package index — it never fetches meshes over the network. A machine that has never built <code>a2bot_description</code> locally shows this exact confusing failure, because everything else (topics, tf) still works fine.</p>
-<p><strong>Fix:</strong> Build the workspace locally on whichever machine is running RViz — see <a href="../../part3/setup-2-laptop/#3-build-the-workspace-locally">Setup 2 — Laptop, step 3</a> (or <a href="../../part3/setup-1-raspberry-pi/#8-clone-and-build-the-workspace">Setup 1 — Raspberry Pi, step 8</a> if it's the Pi itself running RViz).</p>
+<p><strong>Fix:</strong> Build the workspace locally on whichever machine is running RViz — see <a href="../../part3/setup-2-laptop/#3-build-the-workspace-locally">Setup 2 — Laptop, step 3</a> (or <a href="../../part3/setup-1-raspberry-pi/#12-clone-and-build-the-a2bot-workspace">Setup 1 — Raspberry Pi, step 12</a> if it's the Pi itself running RViz).</p>
 <h2 id="ros-2-topics-work-over-pingssh-but-discovery-fails">ROS 2 topics work over ping/SSH but discovery fails<a class="headerlink" href="#ros-2-topics-work-over-pingssh-but-discovery-fails" title="Permanent link">&para;</a></h2>
 <p><strong>Symptom:</strong> <code>ping</code> and <code>ssh</code> between the Pi and laptop both work fine, but <code>ros2 topic list</code> on one machine never shows the other's topics.</p>
 <p><strong>Cause:</strong> AP/client isolation, common on shared or lab WiFi (and even some home routers), blocks device-to-device traffic on the same network while still allowing normal internet access. ROS 2 discovery depends on UDP multicast, which isolation blocks — with no error, since ping and SSH use different traffic paths that isolation doesn't touch.</p>
 <p><strong>Fix:</strong> No software-side fix exists. Disable AP/client isolation on the router, or bypass it entirely with a direct Ethernet link — see below.</p>
 <h2 id="static-ethernet-link-setup">Static Ethernet Link Setup<a class="headerlink" href="#static-ethernet-link-setup" title="Permanent link">&para;</a></h2>
-<p>A direct Ethernet cable between laptop and Pi sidesteps WiFi entirely — no router, no isolation, no signal strength. Condensed from this project's original networking notes:</p>
-<p><strong>The plan:</strong> no DHCP exists on a direct cable, so both ends get fixed addresses on a private <code>10.0.0.0/24</code> subnet, <strong>no gateway set on this link</strong> (a gateway here can make the Pi try to route <em>internet</em> traffic down the dead-end cable instead of WiFi — see below):</p>
-<ul>
-<li><strong>Pi:</strong> <code>10.0.0.X</code>, where <code>X</code> is the robot's own unique number (matching its hostname, hotspot, and <code>ROS_DOMAIN_ID</code> — see <a href="../../part0/discovering-and-controlling/">Discovering and Controlling A2Bot</a>).</li>
-<li><strong>Laptop:</strong> <code>10.0.0.200</code> — a fixed address reserved for this purpose, chosen to stay outside the 0–101 range robot numbers use, so it never collides with any robot's own address.</li>
-</ul>
-<div class="admonition pi">
-<p class="admonition-title">🤖 Pi</p>
-<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>nmcli<span class="w"> </span>connection<span class="w"> </span>add<span class="w"> </span><span class="nb">type</span><span class="w"> </span>ethernet<span class="w"> </span>con-name<span class="w"> </span>eth0-static<span class="w"> </span>ifname<span class="w"> </span>eth0<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>ipv4.method<span class="w"> </span>manual<span class="w"> </span>ipv4.addresses<span class="w"> </span><span class="m">10</span>.0.0.X/24<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>connection.autoconnect<span class="w"> </span>yes
-sudo<span class="w"> </span>nmcli<span class="w"> </span>connection<span class="w"> </span>up<span class="w"> </span>eth0-static
-</code></pre></div>
-<p>Substitute the robot's actual number for <code>X</code>. On a fresh Ubuntu Server Pi, netplan may hand <code>eth0</code> to <code>systemd-networkd</code> instead of NetworkManager, in which case this profile won't survive a reboot. Check with <code>cat /etc/netplan/*.yaml</code> — if it doesn't say <code>renderer: NetworkManager</code>, either add that line and <code>sudo netplan apply</code>, or configure the static IP natively in a netplan YAML file instead of via <code>nmcli</code>.</p>
-</div>
-<p>Linux names interfaces by hardware type and location, not a fixed <code>eth0</code>/<code>wlan0</code> scheme anymore — Ethernet ports show up as <code>enp3s0</code>, <code>eno1</code>, or (for a USB-to-Ethernet dongle) <code>enx&lt;mac-address&gt;</code>; WiFi radios show up as <code>wlp2s0</code> or <code>wlan0</code>. The prefix is the signal: <code>en</code> = Ethernet, <code>wl</code> = wireless. <strong>You want an <code>en*</code> name, never a <code>wl*</code> one.</strong></p>
-<p>To find the exact name:</p>
-<div class="admonition laptop">
-<p class="admonition-title">💻 Laptop</p>
-<div class="highlight"><pre><span></span><code>nmcli<span class="w"> </span>device<span class="w"> </span>status
-</code></pre></div>
-<p>Look for the row with <code>TYPE</code> set to <code>ethernet</code>. Before the cable is plugged in it typically shows <code>unavailable</code>; plug the cable into both the laptop and the Pi and run the command again — that row should flip to <code>connecting</code> or <code>disconnected</code> (the "link detected, no IP yet" state), confirming it's the right one.</p>
-<p>If more than one <code>ethernet</code> row appears (e.g. a built-in port plus a USB dongle), unplug the cable, run the command again, then plug it back in and compare — whichever row's state changes is your interface. <code>ip a</code> (or <code>ip -o link show</code>) shows the same information in a more raw format, if you prefer it.</p>
-<p>If this laptop also uses its Ethernet port on other networks, set <code>connection.autoconnect no</code> on this profile so it doesn't grab the interface unexpectedly elsewhere.</p>
-</div>
-<div class="admonition laptop">
-<p class="admonition-title">💻 Laptop</p>
-<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>nmcli<span class="w"> </span>connection<span class="w"> </span>add<span class="w"> </span><span class="nb">type</span><span class="w"> </span>ethernet<span class="w"> </span>con-name<span class="w"> </span>robot-link<span class="w"> </span>ifname<span class="w"> </span>&lt;your-iface&gt;<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>ipv4.method<span class="w"> </span>manual<span class="w"> </span>ipv4.addresses<span class="w"> </span><span class="m">10</span>.0.0.200/24<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>connection.autoconnect<span class="w"> </span>yes
-sudo<span class="w"> </span>nmcli<span class="w"> </span>connection<span class="w"> </span>up<span class="w"> </span>robot-link
-</code></pre></div>
-<p>Substitute the interface name you found above for <code>&lt;your-iface&gt;</code>.</p>
-</div>
-<p><strong>Test:</strong></p>
-<div class="admonition laptop">
-<p class="admonition-title">💻 Laptop</p>
-<div class="highlight"><pre><span></span><code>ping<span class="w"> </span><span class="m">10</span>.0.0.X
-ssh<span class="w"> </span>a2botX@a2botX-host.local
-</code></pre></div>
-<p>Substitute the robot's actual number for <code>X</code>. If <code>.local</code> mDNS resolution doesn't work, <code>ssh a2botX@10.0.0.X</code> (by IP) works over this link regardless.</p>
-</div>
-<h3 id="static-ip-works-but-no-internet">Static IP works but no internet<a class="headerlink" href="#static-ip-works-but-no-internet" title="Permanent link">&para;</a></h3>
-<p><strong>Symptom:</strong> After setting up the Ethernet link, the Pi can reach the laptop but <code>apt install</code> fails with <code>Temporary failure resolving ...</code>.</p>
-<p><strong>Cause:</strong> Something is stealing the default route away from WiFi — either the Ethernet profile has a gateway set (it shouldn't), or the WiFi radio is in access-point mode instead of client mode (a single radio can only be one or the other).</p>
-<p><strong>Diagnose:</strong></p>
-<div class="admonition pi">
-<p class="admonition-title">🤖 Pi</p>
-<div class="highlight"><pre><span></span><code>ip<span class="w"> </span>route<span class="w">              </span><span class="c1"># look for "default via ... dev wlan0"</span>
-nmcli<span class="w"> </span>connection<span class="w"> </span>show<span class="w"> </span>--active<span class="w">     </span><span class="c1"># is an AP profile (e.g. A2Bot-AP) holding wlan0?</span>
-</code></pre></div>
-</div>
-<p><strong>Fix:</strong> disable the AP profile's autoconnect and bring up a real WiFi client connection:</p>
-<div class="admonition pi">
-<p class="admonition-title">🤖 Pi</p>
-<div class="highlight"><pre><span></span><code>nmcli<span class="w"> </span>connection<span class="w"> </span>modify<span class="w"> </span>A2Bot-AP<span class="w"> </span>connection.autoconnect<span class="w"> </span>no
-nmcli<span class="w"> </span>connection<span class="w"> </span>down<span class="w"> </span>A2Bot-AP
-nmcli<span class="w"> </span>device<span class="w"> </span>wifi<span class="w"> </span>connect<span class="w"> </span><span class="s2">"YOUR_SSID"</span><span class="w"> </span>password<span class="w"> </span><span class="s2">"YOUR_PASSWORD"</span>
-</code></pre></div>
-<p>The direct Ethernet link keeps working in both modes regardless — it's a separate interface, so you can always reach <code>10.0.0.X</code> over the cable even while the Pi has no WiFi internet.</p>
-</div>
+<p>For the direct Ethernet static-IP tutorial, see <a href="../../toolkit/ip-addresses-and-your-network/#direct-ethernet-link-a-fixed-private-network">IP Addresses &amp; Your Network — Direct Ethernet link: a fixed private network</a>. That section is now the canonical learning reference for the fixed <code>10.0.0.0/24</code> setup used in this project.</p>
 <h2 id="stale-build-code-changes-dont-seem-to-take-effect">Stale build — code changes don't seem to take effect<a class="headerlink" href="#stale-build-code-changes-dont-seem-to-take-effect" title="Permanent link">&para;</a></h2>
 <p><strong>Symptom:</strong> You renamed or moved a file, rebuilt, but the old behavior persists.</p>
 <p><strong>Fix (the standard reflex, on either machine):</strong></p>
@@ -2376,11 +2282,12 @@ sed<span class="w"> </span>-i<span class="w"> </span><span class="s1">'s/A2Bot_b
 <p>Then rebuild both packages (<code>colcon build --symlink-install --packages-select a2bot_description a2bot_bringup</code>) and confirm the installed executables land under <code>install/&lt;package&gt;/lib/&lt;package&gt;/</code>, not a differently-cased directory.</p>
 </div>
 <h2 id="a-systemd-service-comes-up-active-on-the-wrong-ros_domain_id-rmw_implementation">A systemd service comes up "active" on the wrong ROS_DOMAIN_ID / RMW_IMPLEMENTATION<a class="headerlink" href="#a-systemd-service-comes-up-active-on-the-wrong-ros_domain_id-rmw_implementation" title="Permanent link">&para;</a></h2>
-<p><strong>The risk:</strong> <code>systemctl status a2bot-robot</code> reporting <code>active (running)</code>, with real processes alive and using real CPU, is not proof the service is on the right ROS graph. This project's setup pages (<a href="../../part3/setup-1-raspberry-pi/#9-set-the-ros-domain-id">Setup 1</a>, <a href="../../part3/setup-2-laptop/#4-match-the-ros-domain-id">Setup 2</a>) have a human export <code>ROS_DOMAIN_ID</code> and <code>RMW_IMPLEMENTATION</code> from <code>~/.bashrc</code>. A systemd unit that starts its process via a login shell (<code>ExecStart=/bin/bash -l -c '...'</code>) runs a <strong>login</strong> shell, but not an <strong>interactive</strong> one — and <code>.bashrc</code>'s early-return guard for non-interactive shells means those <code>export</code> lines can be silently skipped, leaving a service alive but silently on the ROS 2 defaults (domain <code>0</code>, typically FastDDS) — invisible to <code>ros2 node list</code>/<code>ros2 topic list</code> from a correctly-configured terminal, which looks identical to "nothing is running."</p>
-<p><strong>Verified in <code>services/services_files/</code>: this project already learned this lesson and closed it.</strong> Every service that actually touches ROS2 — <code>a2bot-dashboard.service</code>, <code>a2bot-gpio.service</code>, <code>a2bot-robot.service</code>, and <code>a2bot-rosbridge.service</code> — sets both variables explicitly in <code>[Service]</code>, independent of <code>.bashrc</code>:</p>
-<div class="highlight"><pre><span></span><code><span class="na">Environment</span><span class="o">=</span><span class="s">ROS_DOMAIN_ID=42</span>
+<p><strong>The risk:</strong> <code>systemctl status a2bot-robot</code> reporting <code>active (running)</code>, with real processes alive and using real CPU, is not proof the service is on the right ROS graph. This project's setup pages (<a href="../../part3/setup-1-raspberry-pi/#7-set-the-ros-domain-id">Setup 1</a>, <a href="../../part3/setup-2-laptop/#4-match-the-ros-domain-id">Setup 2</a>) have a human export <code>ROS_DOMAIN_ID</code> and <code>RMW_IMPLEMENTATION</code> from <code>~/.bashrc</code>. A systemd unit that starts its process via a login shell (<code>ExecStart=/bin/bash -l -c '...'</code>) runs a <strong>login</strong> shell, but not an <strong>interactive</strong> one — and <code>.bashrc</code>'s early-return guard for non-interactive shells means those <code>export</code> lines can be silently skipped, leaving a service alive but silently on the ROS 2 defaults (domain <code>0</code>, typically FastDDS) — invisible to <code>ros2 node list</code>/<code>ros2 topic list</code> from a correctly-configured terminal, which looks identical to "nothing is running."</p>
+<p><strong>Verified in <code>services/services_files/</code>: this project already learned this lesson and closed it.</strong> Every service that actually touches ROS2 — <code>a2bot-dashboard.service</code>, <code>a2bot-gpio.service</code>, <code>a2bot-robot.service</code>, and <code>a2bot-rosbridge.service</code> — sets both variables explicitly in <code>[Service]</code>, independent of <code>.bashrc</code>, using <strong>this robot's own domain ID</strong> rather than a value shared across the fleet:</p>
+<div class="highlight"><pre><span></span><code><span class="na">Environment</span><span class="o">=</span><span class="s">ROS_DOMAIN_ID=X</span>
 <span class="na">Environment</span><span class="o">=</span><span class="s">RMW_IMPLEMENTATION=rmw_cyclonedds_cpp</span>
 </code></pre></div>
+<p>(<code>X</code> = this robot's own number, matching its hostname and hotspot — see <a href="../../part0/discovering-and-controlling/">Discovering and Controlling A2Bot</a>. A unit file with a domain ID that doesn't match this robot's own number is exactly the kind of mismatch the diagnostic below exists to catch.)</p>
 <p>(<code>a2bot-webui.service</code> is the one exception, and correctly so — it only runs <code>npm run dev</code>, never calls the <code>ros2</code> CLI, so it has no need for either variable.)</p>
 <p>Worth noting: <code>a2bot-rosbridge.service</code>'s own comment justifies its <code>-l</code> flag by claiming a login shell alone sources <code>.bashrc</code> and provides <code>ROS_DOMAIN_ID</code> that way — which is the exact mechanism this entry is skeptical of (a non-interactive <code>-c</code> invocation typically still hits <code>.bashrc</code>'s interactive-only guard). It doesn't matter in practice here: the explicit <code>Environment=</code> line is set on that same service regardless, so it's correct either way <code>-l</code> actually behaves.</p>
 <p><strong>If you add a new ROS-touching service, don't skip this</strong> — diagnose it the same way this project would have caught it originally, by checking the process's <em>actual</em> environment rather than trusting <code>systemctl status</code>:</p>
@@ -2409,7 +2316,7 @@ cat<span class="w"> </span>/proc/&lt;that<span class="w"> </span>PID&gt;/environ
 <p><strong>The distinction that decides which pattern fits:</strong> a fixed <code>sleep</code> is the right call when there's no cheap, meaningful signal to poll for (hardware enumeration timing, an arbitrary "give it a moment" gap) — polling doesn't help if there's nothing to ask. The readiness-poll pattern is worth the extra script only when the dependency exposes something you can actually check (here, an HTTP endpoint that only responds once genuinely up). If you're adding a new service that depends on one with a real health/status endpoint, follow <code>a2bot-webui.service</code>'s pattern above rather than guessing a sleep duration.</p>
 <h2 id="the-wifi-radio-cant-scan-while-the-setup-hotspot-is-up">The WiFi radio can't scan while the setup hotspot is up<a class="headerlink" href="#the-wifi-radio-cant-scan-while-the-setup-hotspot-is-up" title="Permanent link">&para;</a></h2>
 <p><strong>Symptom:</strong> The WiFi setup page's network dropdown shows only the hotspot's own network, or an empty list, even though real networks are nearby — or, if a naive implementation scanned by dropping the hotspot, the very device viewing the setup page loses its connection mid-scan.</p>
-<p><strong>Cause:</strong> The Pi has a single WiFi radio, which can be an access point (broadcasting <code>A2Bot-Setup</code>) or a client scanning for networks — never both at the same instant. Scanning requires the radio to leave AP mode.</p>
+<p><strong>Cause:</strong> The Pi has a single WiFi radio, which can be an access point (broadcasting <code>a2botX-setup</code>) or a client scanning for networks — never both at the same instant. Scanning requires the radio to leave AP mode.</p>
 <p><strong>Verified in <code>wifi_manager.py</code>:</strong> this is already handled with a pre-capture cache, not a live scan on every page load:</p>
 <ul>
 <li><code>_start_hotspot()</code> runs a real scan (<code>_raw_scan()</code>) <strong>before</strong> raising the access point, while the radio is still in client mode, and stores the result in module-level <code>_cached_networks</code> / <code>_cache_time</code>.</li>

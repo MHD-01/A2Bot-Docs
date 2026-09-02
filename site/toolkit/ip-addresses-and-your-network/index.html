@@ -756,6 +756,34 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#direct-ethernet-link-a-fixed-private-network" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Direct Ethernet link: a fixed private network
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Direct Ethernet link: a fixed private network">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#static-ip-works-but-no-internet" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Static IP works but no internet
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#private-vs-public-ip-ranges-briefly" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1894,6 +1922,34 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#direct-ethernet-link-a-fixed-private-network" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Direct Ethernet link: a fixed private network
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Direct Ethernet link: a fixed private network">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#static-ip-works-but-no-internet" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Static IP works but no internet
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#private-vs-public-ip-ranges-briefly" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1973,12 +2029,74 @@
 <h2 id="subnets-enough-to-reason-about-same-network">Subnets: enough to reason about "same network"<a class="headerlink" href="#subnets-enough-to-reason-about-same-network" title="Permanent link">&para;</a></h2>
 <p>An address is normally written with a subnet size attached, like <code>10.0.0.5/24</code>. The <code>/24</code> says the first three numbers (<code>10.0.0</code>) identify the <em>network</em>, and only the last number (<code>5</code>) identifies <em>this device</em> on it — every other device on that same network also starts with <code>10.0.0.</code> and differs only in that last number.</p>
 <p>This is why <code>192.168.0.x</code> and <code>192.168.1.x</code> are <strong>different</strong> networks even though they look almost identical — the third number is part of the network identity, not just a device number. Two devices on those two different <code>/24</code>s can't reach each other directly, no router or configuration change aside.</p>
-<p>This project's direct-Ethernet link (see <a href="../../appendices/troubleshooting-index/#static-ethernet-link-setup">Troubleshooting Index — Static Ethernet Link Setup</a>) is a concrete <code>/24</code> example: the Pi takes <code>10.0.0.X</code> (X being the robot's own number) and the laptop takes a fixed <code>10.0.0.200</code> — both on the same <code>10.0.0.0/24</code> network, which is exactly what lets them talk directly over the cable with no router in between.</p>
+<p>This project's direct-Ethernet link (see <a href="#direct-ethernet-link-a-fixed-private-network">Direct Ethernet link: a fixed private network</a>) is a concrete <code>/24</code> example: the Pi takes <code>10.0.0.10X</code> (X being the robot's own number, so robot 5 is <code>10.0.0.105</code>) and the laptop takes a fixed <code>10.0.0.250</code> — both on the same <code>10.0.0.0/24</code> network, which is exactly what lets them talk directly over the cable with no router in between.</p>
+<h2 id="direct-ethernet-link-a-fixed-private-network">Direct Ethernet link: a fixed private network<a class="headerlink" href="#direct-ethernet-link-a-fixed-private-network" title="Permanent link">&para;</a></h2>
+<p>A direct Ethernet cable between the laptop and the Pi sidesteps WiFi entirely — no router, no AP/client isolation, no signal strength issues. This is a good learning example because it makes the network rules simple: both devices get addresses on the same private <code>/24</code> network, and each end knows exactly where the other one is.</p>
+<p><strong>The plan:</strong> no DHCP exists on a direct cable, so both ends get fixed addresses on a private <code>10.0.0.0/24</code> subnet. Do not set a gateway on this link — a gateway here can make the Pi try to route internet traffic down the dead-end cable instead of over WiFi.</p>
+<ul>
+<li><strong>Pi:</strong> <code>10.0.0.10X</code> — the last octet is <strong>100 plus</strong> the robot's own unique number (matching its hostname, hotspot, and <code>ROS_DOMAIN_ID</code> — see <a href="../../part0/discovering-and-controlling/">Discovering and Controlling A2Bot</a>). Robot 5 is <code>10.0.0.105</code>.</li>
+<li><strong>Laptop:</strong> <code>10.0.0.250</code> — a fixed address reserved for this purpose, chosen to stay outside the <code>10.0.0.100</code>–<code>10.0.0.201</code> range robot numbers occupy, so it never collides with any robot's own address.</li>
+</ul>
+<div class="admonition pi">
+<p class="admonition-title">🤖 Pi</p>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>nmcli<span class="w"> </span>connection<span class="w"> </span>add<span class="w"> </span><span class="nb">type</span><span class="w"> </span>ethernet<span class="w"> </span>con-name<span class="w"> </span>eth0-static<span class="w"> </span>ifname<span class="w"> </span>eth0<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>ipv4.method<span class="w"> </span>manual<span class="w"> </span>ipv4.addresses<span class="w"> </span><span class="m">10</span>.0.0.10X/24<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>connection.autoconnect<span class="w"> </span>yes
+sudo<span class="w"> </span>nmcli<span class="w"> </span>connection<span class="w"> </span>up<span class="w"> </span>eth0-static
+</code></pre></div>
+<p>Substitute <code>100 + the robot's number</code> for <code>10X</code> (robot 5 → <code>10.0.0.105</code>). On a fresh Ubuntu Server Pi, netplan may hand <code>eth0</code> to <code>systemd-networkd</code> instead of NetworkManager, in which case this profile will not survive a reboot. Check with <code>cat /etc/netplan/*.yaml</code> — if it does not say <code>renderer: NetworkManager</code>, either add that line and <code>sudo netplan apply</code>, or configure the static IP natively in a netplan YAML file instead of via <code>nmcli</code>.</p>
+</div>
+<p>Linux names interfaces by hardware type and location, not by a fixed <code>eth0</code>/<code>wlan0</code> scheme anymore — Ethernet ports show up as <code>enp3s0</code>, <code>eno1</code>, or (for a USB-to-Ethernet dongle) <code>enx&lt;mac-address&gt;</code>, while WiFi radios show up as <code>wlp2s0</code> or <code>wlan0</code>. The prefix is the signal: <code>en</code> means Ethernet, <code>wl</code> means wireless. You want an <code>en*</code> name, never a <code>wl*</code> one.</p>
+<p>To find the exact name:</p>
+<div class="admonition laptop">
+<p class="admonition-title">💻 Laptop</p>
+<div class="highlight"><pre><span></span><code>nmcli<span class="w"> </span>device<span class="w"> </span>status
+</code></pre></div>
+<p>Look for the row with <code>TYPE</code> set to <code>ethernet</code>. Before the cable is plugged in it typically shows <code>unavailable</code>; plug the cable into both the laptop and the Pi and run the command again — that row should flip to <code>connecting</code> or <code>disconnected</code> (the "link detected, no IP yet" state), confirming it is the right interface.</p>
+<p>If more than one <code>ethernet</code> row appears (for example, a built-in port plus a USB dongle), unplug the cable, run the command again, then plug it back in and compare — whichever row's state changes is your interface. <code>ip a</code> (or <code>ip -o link show</code>) shows the same information in a more raw format if you prefer it.</p>
+<p>If this laptop also uses its Ethernet port on other networks, set <code>connection.autoconnect no</code> on this profile so it does not grab the interface unexpectedly elsewhere.</p>
+</div>
+<div class="admonition laptop">
+<p class="admonition-title">💻 Laptop</p>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>nmcli<span class="w"> </span>connection<span class="w"> </span>add<span class="w"> </span><span class="nb">type</span><span class="w"> </span>ethernet<span class="w"> </span>con-name<span class="w"> </span>robot-link<span class="w"> </span>ifname<span class="w"> </span>&lt;your-iface&gt;<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>ipv4.method<span class="w"> </span>manual<span class="w"> </span>ipv4.addresses<span class="w"> </span><span class="m">10</span>.0.0.250/24<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>connection.autoconnect<span class="w"> </span>yes
+sudo<span class="w"> </span>nmcli<span class="w"> </span>connection<span class="w"> </span>up<span class="w"> </span>robot-link
+</code></pre></div>
+<p>Substitute the interface name you found above for <code>&lt;your-iface&gt;</code>.</p>
+</div>
+<p><strong>Test:</strong></p>
+<div class="admonition laptop">
+<p class="admonition-title">💻 Laptop</p>
+<div class="highlight"><pre><span></span><code>ping<span class="w"> </span><span class="m">10</span>.0.0.10X
+ssh<span class="w"> </span>a2botX@a2botX-host.local
+</code></pre></div>
+<p>Substitute the robot's actual number for <code>X</code> (robot 5 → <code>ping 10.0.0.105</code>). If <code>.local</code> mDNS resolution does not work, <code>ssh a2botX@10.0.0.10X</code> (by IP) works over this link regardless.</p>
+</div>
+<h3 id="static-ip-works-but-no-internet">Static IP works but no internet<a class="headerlink" href="#static-ip-works-but-no-internet" title="Permanent link">&para;</a></h3>
+<p><strong>Symptom:</strong> After setting up the Ethernet link, the Pi can reach the laptop but <code>apt install</code> fails with <code>Temporary failure resolving ...</code>.</p>
+<p><strong>Cause:</strong> Something is stealing the default route away from WiFi — either the Ethernet profile has a gateway set (it should not), or the WiFi radio is in access-point mode instead of client mode (a single radio can only be one or the other).</p>
+<p><strong>Diagnose:</strong></p>
+<div class="admonition pi">
+<p class="admonition-title">🤖 Pi</p>
+<div class="highlight"><pre><span></span><code>ip<span class="w"> </span>route<span class="w">              </span><span class="c1"># look for "default via ... dev wlan0"</span>
+nmcli<span class="w"> </span>connection<span class="w"> </span>show<span class="w"> </span>--active<span class="w">     </span><span class="c1"># is an AP profile (e.g. A2Bot-AP) holding wlan0?</span>
+</code></pre></div>
+</div>
+<p><strong>Fix:</strong> disable the AP profile's autoconnect and bring up a real WiFi client connection:</p>
+<div class="admonition pi">
+<p class="admonition-title">🤖 Pi</p>
+<div class="highlight"><pre><span></span><code>nmcli<span class="w"> </span>connection<span class="w"> </span>modify<span class="w"> </span>A2Bot-AP<span class="w"> </span>connection.autoconnect<span class="w"> </span>no
+nmcli<span class="w"> </span>connection<span class="w"> </span>down<span class="w"> </span>A2Bot-AP
+nmcli<span class="w"> </span>device<span class="w"> </span>wifi<span class="w"> </span>connect<span class="w"> </span><span class="s2">"YOUR_SSID"</span><span class="w"> </span>password<span class="w"> </span><span class="s2">"YOUR_PASSWORD"</span>
+</code></pre></div>
+<p>The direct Ethernet link keeps working in both modes regardless — it is a separate interface, so you can always reach <code>10.0.0.10X</code> over the cable even while the Pi has no WiFi internet.</p>
+</div>
 <h2 id="private-vs-public-ip-ranges-briefly">Private vs. public IP ranges, briefly<a class="headerlink" href="#private-vs-public-ip-ranges-briefly" title="Permanent link">&para;</a></h2>
-<p>Address ranges starting with <code>10.x.x.x</code>, <code>172.16.x.x</code>–<code>172.31.x.x</code>, or <code>192.168.x.x</code> are <strong>private</strong> — reserved for local networks and never reachable directly from the open internet. Every address you'll actually see in this course is one of these: the robot's hotspot lives at <code>10.42.0.1</code>, and the direct-Ethernet link uses <code>10.0.0.x</code> — both private, both meaningful only on that one specific local link, never as an address you could reach from anywhere else.</p>
+<p>Address ranges starting with <code>10.x.x.x</code>, <code>172.16.x.x</code>–<code>172.31.x.x</code>, or <code>192.168.x.x</code> are <strong>private</strong> — reserved for local networks and never reachable directly from the open internet. Every address you'll actually see in this course is one of these: the robot's hotspot lives at <code>10.42.0.X</code>, and the direct-Ethernet link uses <code>10.0.0.x</code> — both private, both meaningful only on that one specific local link, never as an address you could reach from anywhere else.</p>
 <h2 id="hostnames-and-local-resolution-mdns">Hostnames and <code>.local</code> resolution (mDNS)<a class="headerlink" href="#hostnames-and-local-resolution-mdns" title="Permanent link">&para;</a></h2>
 <p>Typing a raw IP address works, but it's easy to mistype and can change between sessions. <strong>mDNS</strong> lets devices on the same local network resolve a friendly <code>&lt;name&gt;.local</code> hostname to whatever IP that device currently has — no internet connection or DNS server required, just both devices being on the same network.</p>
-<p>This is exactly what this course's SSH flow relies on: connecting with <code>a2botX-host.local</code> (X being the robot's number) rather than remembering its numeric address, as <a href="../../part0/discovering-and-controlling/#4-reconnect-and-get-ssh-access">Discovering and Controlling A2Bot</a> and <a href="../../part3/setup-2-laptop/">Setup 2</a> both use. mDNS isn't universally supported on every network or OS, though — when <code>.local</code> resolution fails, falling back to the robot's raw IP address is the documented recovery, covered in <a href="../../part3/setup-2-laptop/#5-get-on-the-same-network-as-the-robot">Setup 2, step 5</a> and the <a href="../../appendices/troubleshooting-index/#static-ethernet-link-setup">Static Ethernet Link Setup</a> entry.</p>
+<p>This is exactly what this course's SSH flow relies on: connecting with <code>a2botX-host.local</code> (X being the robot's number) rather than remembering its numeric address, as <a href="../../part0/discovering-and-controlling/#4-reconnect-and-get-ssh-access">Discovering and Controlling A2Bot</a> and <a href="../../part3/setup-2-laptop/">Setup 2</a> both use. mDNS isn't universally supported on every network or OS, though — when <code>.local</code> resolution fails, falling back to the robot's raw IP address is the documented recovery, covered in <a href="../../part3/setup-2-laptop/#5-get-on-the-same-network-as-the-robot">Setup 2, step 5</a> and the <a href="#direct-ethernet-link-a-fixed-private-network">Direct Ethernet link: a fixed private network</a> section above.</p>
 <h2 id="this-projects-real-addresses-gathered-in-one-place">This project's real addresses, gathered in one place<a class="headerlink" href="#this-projects-real-addresses-gathered-in-one-place" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -1996,13 +2114,13 @@
 </tr>
 <tr>
 <td>Direct-Ethernet link, Pi side</td>
-<td><code>10.0.0.X</code></td>
-<td>X = the robot's own number</td>
+<td><code>10.0.0.10X</code></td>
+<td>100 + the robot's own number</td>
 </tr>
 <tr>
 <td>Direct-Ethernet link, laptop side</td>
-<td><code>10.0.0.200</code></td>
-<td>Fixed, chosen to never collide with a robot number</td>
+<td><code>10.0.0.250</code></td>
+<td>Fixed, chosen to stay outside the <code>.100</code>–<code>.201</code> range robot numbers occupy</td>
 </tr>
 <tr>
 <td>Hostname (any connection method)</td>

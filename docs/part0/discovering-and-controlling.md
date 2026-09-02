@@ -163,7 +163,7 @@ standalone references — useful well beyond this one page:
 [nmcli & Network Connections](../toolkit/nmcli-and-network-connections.md)
 and [systemd & Services](../toolkit/systemd-and-services.md).
 
-The robot's core software runs as five background services, always
+The robot's core software runs as six background services, always
 running, starting automatically at boot:
 
 ```
@@ -171,6 +171,7 @@ a2bot-robot        the driver, description, and lidar
 a2bot-dashboard     the web dashboard and WiFi setup page
 a2bot-rosbridge      the WebSocket bridge for browser-based control
 a2bot-webui           the web control interface
+ros2-ready            readiness gate for the ROS 2 graph itself
 a2bot-gpio             the physical recovery buttons
 ```
 

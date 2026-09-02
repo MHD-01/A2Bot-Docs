@@ -119,7 +119,7 @@ Symptom-first index of known A2Bot gotchas — each confirmed against this repos
 
 **Cause:** RViz resolves the URDF's `package://a2bot_description/meshes/...` mesh references from the **local** filesystem via the ROS package index — it never fetches meshes over the network. A machine that has never built `a2bot_description` locally shows this exact confusing failure, because everything else (topics, tf) still works fine.
 
-**Fix:** Build the workspace locally on whichever machine is running RViz — see [Setup 2 — Laptop, step 3](../part3/setup-2-laptop.md#3-build-the-workspace-locally) (or [Setup 1 — Raspberry Pi, step 12](../part3/setup-1-raspberry-pi.md#12-clone-and-build-the-a2bot-workspace) if it's the Pi itself running RViz).
+**Fix:** Build the workspace locally on whichever machine is running RViz — see [Setup 2 — Laptop, step 3](../part3/setup-2-laptop.md#3-build-the-workspace-locally) (or [Setup 1 — Raspberry Pi, step 11](../part3/setup-1-raspberry-pi.md#11-build-the-workspace) if it's the Pi itself running RViz).
 
 ## ROS 2 topics work over ping/SSH but discovery fails
 
@@ -196,7 +196,7 @@ Both `setup.cfg` files still read the capitalized `A2Bot_*` form from before thi
 
 ## A systemd service comes up "active" on the wrong ROS_DOMAIN_ID / RMW_IMPLEMENTATION
 
-**The risk:** `systemctl status a2bot-robot` reporting `active (running)`, with real processes alive and using real CPU, is not proof the service is on the right ROS graph. This project's setup pages ([Setup 1](../part3/setup-1-raspberry-pi.md#7-set-the-ros-domain-id), [Setup 2](../part3/setup-2-laptop.md#4-match-the-ros-domain-id)) have a human export `ROS_DOMAIN_ID` and `RMW_IMPLEMENTATION` from `~/.bashrc`. A systemd unit that starts its process via a login shell (`ExecStart=/bin/bash -l -c '...'`) runs a **login** shell, but not an **interactive** one — and `.bashrc`'s early-return guard for non-interactive shells means those `export` lines can be silently skipped, leaving a service alive but silently on the ROS 2 defaults (domain `0`, typically FastDDS) — invisible to `ros2 node list`/`ros2 topic list` from a correctly-configured terminal, which looks identical to "nothing is running."
+**The risk:** `systemctl status a2bot-robot` reporting `active (running)`, with real processes alive and using real CPU, is not proof the service is on the right ROS graph. This project's setup pages ([Setup 1](../part3/setup-1-raspberry-pi.md#8-set-the-ros-domain-id), [Setup 2](../part3/setup-2-laptop.md#4-match-the-ros-domain-id)) have a human export `ROS_DOMAIN_ID` and `RMW_IMPLEMENTATION` from `~/.bashrc`. A systemd unit that starts its process via a login shell (`ExecStart=/bin/bash -l -c '...'`) runs a **login** shell, but not an **interactive** one — and `.bashrc`'s early-return guard for non-interactive shells means those `export` lines can be silently skipped, leaving a service alive but silently on the ROS 2 defaults (domain `0`, typically FastDDS) — invisible to `ros2 node list`/`ros2 topic list` from a correctly-configured terminal, which looks identical to "nothing is running."
 
 **Verified in `services/services_files/`: this project already learned this lesson and closed it.** Every service that actually touches ROS2 — `a2bot-dashboard.service`, `a2bot-gpio.service`, `a2bot-robot.service`, and `a2bot-rosbridge.service` — sets both variables explicitly in `[Service]`, independent of `.bashrc`, using **this robot's own domain ID** rather than a value shared across the fleet:
 
