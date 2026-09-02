@@ -1860,7 +1860,7 @@
 <h2 id="concept-discovery-over-a-real-network">Concept: discovery over a real network<a class="headerlink" href="#concept-discovery-over-a-real-network" title="Permanent link">&para;</a></h2>
 <p>In Part 1, every node was on one machine, so ROS 2's discovery (nodes automatically finding each other) had nothing to cross. With A2Bot, the Pi and your laptop are separate machines exchanging discovery traffic over actual WiFi or Ethernet — which means real-world network behavior now matters in a way it never did with turtlesim:</p>
 <ul>
-<li>Both machines must share the same <strong><code>ROS_DOMAIN_ID</code></strong> (this robot's own number, <code>X</code> — see <a href="../setup-1-raspberry-pi/#7-set-the-ros-domain-id">Setup 1</a> or <a href="../setup-2-laptop/#4-match-the-ros-domain-id">Setup 2</a>), so ROS 2 doesn't lump you in with every other domain-0 ROS system on the same network.</li>
+<li>Both machines must share the same <strong><code>ROS_DOMAIN_ID</code></strong> (this robot's own number, <code>X</code> — see <a href="../setup-1-raspberry-pi/#8-set-the-ros-domain-id">Setup 1</a> or <a href="../setup-2-laptop/#4-match-the-ros-domain-id">Setup 2</a>), so ROS 2 doesn't lump you in with every other domain-0 ROS system on the same network.</li>
 <li>Discovery relies on <strong>UDP multicast</strong>, which some networks quietly block or isolate even while normal ping/SSH traffic works fine — see the AP-isolation note in <a href="../setup-2-laptop/#5-get-on-the-same-network-as-the-robot">Setup 2</a>.</li>
 <li>Unlike turtlesim, hardware nodes fail in ways a simulator never does: a dropped USB cable, a stalled I2C bus, a serial port claimed by another process. Expect to spend more time reading log output here than you did in Part 1.</li>
 </ul>

@@ -969,6 +969,45 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#anatomy-of-a-unit-file-and-writing-one-from-scratch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Anatomy of a unit file, and writing one from scratch
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Anatomy of a unit file, and writing one from scratch">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#where-it-goes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Where it goes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bringing-it-to-life" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bringing it to life
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#what-active-actually-proves-and-what-it-doesnt" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1839,6 +1878,45 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#anatomy-of-a-unit-file-and-writing-one-from-scratch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Anatomy of a unit file, and writing one from scratch
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Anatomy of a unit file, and writing one from scratch">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#where-it-goes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Where it goes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bringing-it-to-life" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bringing it to life
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#what-active-actually-proves-and-what-it-doesnt" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1879,7 +1957,7 @@
 
 <h1 id="systemd-services">systemd &amp; Services<a class="headerlink" href="#systemd-services" title="Permanent link">&para;</a></h1>
 <h2 id="what-this-is-and-why-it-matters">What this is, and why it matters<a class="headerlink" href="#what-this-is-and-why-it-matters" title="Permanent link">&para;</a></h2>
-<p>systemd is Ubuntu's service manager — it starts, stops, and supervises long-running background processes ("services," defined by <strong>unit files</strong>) automatically, including right at boot with no one logged in. This project runs its own software this way: <code>a2bot-robot</code>, <code>a2bot-dashboard</code>, <code>a2bot-rosbridge</code>, <code>a2bot-webui</code>, and <code>a2bot-gpio</code> are all systemd services on the Pi, specifically so a student never has to SSH in and manually start five different programs by hand every time the robot powers on.</p>
+<p>systemd is Ubuntu's service manager — it starts, stops, and supervises long-running background processes ("services," defined by <strong>unit files</strong>) automatically, including right at boot with no one logged in. This project runs its own software this way: <code>a2bot-robot</code>, <code>a2bot-dashboard</code>, <code>a2bot-rosbridge</code>, <code>a2bot-webui</code>, <code>ros2-ready</code>, and <code>a2bot-gpio</code> are all systemd services on the Pi, specifically so a student never has to SSH in and manually start six different programs by hand every time the robot powers on — see <a href="../../part3/setup-1-raspberry-pi/#15-set-up-the-systemd-services">Setup 1 — Raspberry Pi, step 15</a> for what each one does.</p>
 <h2 id="the-core-commands">The core commands<a class="headerlink" href="#the-core-commands" title="Permanent link">&para;</a></h2>
 <div class="admonition pi">
 <p class="admonition-title">🤖 Pi</p>
@@ -1909,6 +1987,51 @@ sudo<span class="w"> </span>systemctl<span class="w"> </span>disable<span class=
 </code></pre></div>
 <p>Print just its last 50 log lines and exit, rather than opening an interactive pager.</p>
 </div>
+<h2 id="anatomy-of-a-unit-file-and-writing-one-from-scratch">Anatomy of a unit file, and writing one from scratch<a class="headerlink" href="#anatomy-of-a-unit-file-and-writing-one-from-scratch" title="Permanent link">&para;</a></h2>
+<p>Most of the time you're only ever pointing the commands above at a service someone else already wrote. Occasionally you need to write one yourself, or edit an existing <code>.service</code> file that ships with this project's software — this section is the general reference for that.</p>
+<p>A unit file is a plain-text config file, one per service, split into three sections:</p>
+<div class="highlight"><pre><span></span><code><span class="k">[Unit]</span>
+<span class="na">Description</span><span class="o">=</span><span class="s">Short human-readable description of what this does</span>
+<span class="na">After</span><span class="o">=</span><span class="s">network-online.target</span>
+<span class="na">Wants</span><span class="o">=</span><span class="s">network-online.target</span>
+
+<span class="k">[Service]</span>
+<span class="na">Type</span><span class="o">=</span><span class="s">simple</span>
+<span class="na">ExecStart</span><span class="o">=</span><span class="s">/usr/bin/some-command --with-flags</span>
+<span class="na">Environment</span><span class="o">=</span><span class="s">SOME_VAR=value</span>
+<span class="na">WorkingDirectory</span><span class="o">=</span><span class="s">/home/user/some/directory</span>
+<span class="na">Restart</span><span class="o">=</span><span class="s">on-failure</span>
+
+<span class="k">[Install]</span>
+<span class="na">WantedBy</span><span class="o">=</span><span class="s">multi-user.target</span>
+</code></pre></div>
+<ul>
+<li><strong><code>[Unit]</code></strong> — metadata and ordering, not the program itself. <code>Description=</code> is what shows up in <code>systemctl status</code>. <code>After=</code>/<code>Wants=</code>/<code>Requires=</code> control <em>when</em> this service starts relative to others — but only when, not whether the thing it's ordered after is actually ready; see <a href="#what-active-actually-proves-and-what-it-doesnt">What "active" actually proves</a> below for why that distinction matters.</li>
+<li><strong><code>[Service]</code></strong> — what actually runs. <code>ExecStart=</code> is the command systemd launches. <code>Type=simple</code> (the default, and the only type this project uses) means systemd considers the service "started" the instant that process launches, with no readiness signal expected back. <code>Environment=</code> sets one environment variable per line — this is the only reliable way to hand a systemd-managed process a variable that would otherwise come from <code>~/.bashrc</code>, since a unit does not source it (see <a href="../bashrc/#where-this-bites-in-this-project-specifically">~/.bashrc — Where this bites</a>). <code>WorkingDirectory=</code> sets the directory the process runs from, equivalent to <code>cd</code>-ing there first. <code>Restart=on-failure</code> restarts the process automatically if it crashes, but not if you stop it deliberately with <code>systemctl stop</code>.</li>
+<li><strong><code>[Install]</code></strong> — what <code>enable</code> actually wires up. <code>WantedBy=multi-user.target</code> means "start this at normal multi-user boot" — the standard choice for a background service with no GUI dependency, which covers every service this project runs.</li>
+</ul>
+<h3 id="where-it-goes">Where it goes<a class="headerlink" href="#where-it-goes" title="Permanent link">&para;</a></h3>
+<div class="admonition pi">
+<p class="admonition-title">🤖 Pi</p>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>nano<span class="w"> </span>/etc/systemd/system/my-service.service
+</code></pre></div>
+<p><code>/etc/systemd/system/</code> is where locally-written or locally-installed unit files live — distinct from <code>/lib/systemd/system/</code>, which holds units that came from an apt package. Anything you write or copy in for this project belongs in <code>/etc/systemd/system/</code>.</p>
+</div>
+<h3 id="bringing-it-to-life">Bringing it to life<a class="headerlink" href="#bringing-it-to-life" title="Permanent link">&para;</a></h3>
+<p>Every one of these steps is necessary, in this order, whether you just wrote a brand-new unit or only edited an existing one:</p>
+<div class="admonition pi">
+<p class="admonition-title">🤖 Pi</p>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>systemctl<span class="w"> </span>daemon-reload
+sudo<span class="w"> </span>systemctl<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>--now<span class="w"> </span>my-service
+systemctl<span class="w"> </span>status<span class="w"> </span>my-service
+</code></pre></div>
+<ul>
+<li><code>daemon-reload</code> tells systemd to re-read unit files from disk — without it, systemd keeps using whatever it last loaded into memory, so an edit you just saved has <strong>no effect</strong> until this runs, with no error to explain why.</li>
+<li><code>enable --now</code> both starts it immediately and makes it start at every future boot — see <a href="#the-core-commands">The core commands</a> above if you only want one half of that.</li>
+<li><code>status</code> confirms it's actually running — remember that "active" alone doesn't prove the software inside is <em>working</em>, only that it started; see below.</li>
+</ul>
+</div>
+<p>Edited a unit file and nothing seems to have changed? A missing <code>daemon-reload</code> is the first thing to check — it's a common, silent way for a change to appear to do nothing.</p>
 <h2 id="what-active-actually-proves-and-what-it-doesnt">What "active" actually proves — and what it doesn't<a class="headerlink" href="#what-active-actually-proves-and-what-it-doesnt" title="Permanent link">&para;</a></h2>
 <p><code>systemctl status</code> reporting <code>active (running)</code> only proves the process <strong>started and has stayed alive</strong>. It says nothing about whether the software inside it is actually doing anything useful — a process can be alive, using real CPU, and still be silently non-functional underneath. Two entries in the <a href="../../appendices/troubleshooting-index/">Troubleshooting Index</a> are direct consequences of that gap, and this page's job is just to make the mechanism behind both make sense, not to repeat their fixes:</p>
 <ul>
