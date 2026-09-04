@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "md-slides": {
+      "source": "zl190/md-slides",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/md-slides/SKILL.md",
+      "computedHash": "ec5f5002f41c8b93fdffbbc7c0d51155d4ff8b56ae7ad6462e14021011a1cba1"
+    }
+  }
+}

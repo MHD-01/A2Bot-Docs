@@ -4,7 +4,7 @@
 
 A ROS 2 robot is rarely one program — it's a collection of small, focused packages, each independently buildable, that a launch file starts together. This keeps any one piece (say, the motor driver) simple enough to understand and test on its own, while the launch file handles wiring them together at runtime.
 
-## A2Bot's five packages
+## A2Bot's six packages
 
 | Package | Job |
 |---|---|
@@ -12,9 +12,10 @@ A ROS 2 robot is rarely one program — it's a collection of small, focused pack
 | **a2bot_description** | The URDF robot model — physical geometry, sensor frames, and Gazebo simulation config. |
 | **a2bot_bringup** | Launch files that start the driver chain together, plus the EKF sensor-fusion config. |
 | **a2bot_navigation** | SLAM (`slam_toolbox`) and Nav2 configuration for mapping and autonomous driving. |
-| **a2bot_extras** | Optional, decoupled add-ons: a web dashboard, WiFi provisioning, gesture control. Nothing in the other four packages depends on this one. |
+| **a2bot_service** | A single node exposing move/turn/return-home/stop as request-response services, closing the loop against `/odom` instead of leaving `/cmd_vel` timing to a human. See [Closed-Loop Motion: a2bot_service](a2bot-service.md). |
+| **a2bot_extras** | Optional add-ons: a web dashboard, WiFi provisioning, gesture control. Nothing in `a2bot_driver`, `a2bot_description`, `a2bot_bringup`, or `a2bot_navigation` depends on this one — though `a2bot_extras` itself does depend on `a2bot_service`, since the dashboard's movement controls call straight into its services. |
 
-All five are plain Python (`ament_python` build type) — there is no C++ and no `ros2_control` hardware-interface layer anywhere in this stack. If you've seen ROS 2 robots built on `ros2_control`, set that model aside; A2Bot's driver nodes talk to hardware directly.
+`a2bot_service` is the one package here that uses `ament_cmake` rather than `ament_python` — it needs `rosidl_generate_interfaces` to build its two custom service types, `MoveDistance` and `TurnAngle`. The rest are plain Python. There is no C++ and no `ros2_control` hardware-interface layer anywhere in this stack. If you've seen ROS 2 robots built on `ros2_control`, set that model aside; A2Bot's driver nodes talk to hardware directly.
 
 ## The node graph
 
@@ -59,7 +60,7 @@ Serial port: `/dev/arduino` (a udev symlink, not a raw device name — see [Elec
 
 - `driver.launch.py` — the three `a2bot_driver` motion nodes plus the IMU and EKF.
 - `a2bot_description`'s `description.launch.py` — `robot_state_publisher`, turning the URDF into `tf`.
-- `robot.launch.py` (in `a2bot_bringup`) — includes both of the above, plus the lidar node.
+- `robot.launch.py` (in `a2bot_bringup`) — includes both of the above, plus the lidar node and `a2bot_service`'s `service_server` node.
 
 Deliberately **absent**: any `static_transform_publisher` for the lidar or IMU frames. The URDF already defines `base_link → lidar_link` and `base_link → imu_link`, published by `robot_state_publisher`; a second, separate transform publisher for the same link would create two publishers of one transform — a source of hard-to-diagnose tf conflicts that recurs throughout this stack's design (see [Sensor Fusion / EKF](sensor-fusion-ekf.md) for the same principle applied to `odom → base_link`).
 

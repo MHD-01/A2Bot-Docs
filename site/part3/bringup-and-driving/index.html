@@ -1080,6 +1080,8 @@
       
         
       
+        
+      
     
     
     
@@ -1252,6 +1254,34 @@
     
   
     Sensor Fusion / EKF
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../part2/a2bot-service/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Closed-Loop Motion: a2bot_service
   
 
     
@@ -1533,6 +1563,17 @@
     <span class="md-ellipsis">
       
         Drive it manually
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#drive-it-with-closed-loop-commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Drive it with closed-loop commands
       
     </span>
   </a>
@@ -1872,6 +1913,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#drive-it-with-closed-loop-commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Drive it with closed-loop commands
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#simulating-instead" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1908,7 +1960,7 @@
 <div class="highlight"><pre><span></span><code>ros2<span class="w"> </span>launch<span class="w"> </span>a2bot_bringup<span class="w"> </span>robot.launch.py
 </code></pre></div>
 </div>
-<p>This starts the full driver chain (<code>serial_bridge</code>, <code>diff_drive</code>, <code>odometry</code>, <code>imu</code>, the EKF — see <a href="../../part2/a2bot-driver/">a2bot_driver</a>), <code>robot_state_publisher</code> (see <a href="../../part2/a2bot-description/">a2bot_description</a>), and the lidar node. After this, the robot can be driven and its full <code>tf</code> tree exists, but no map or navigation is running yet — that's <a href="../slam-and-navigation/">SLAM &amp; Navigation</a>.</p>
+<p>This starts the full driver chain (<code>serial_bridge</code>, <code>diff_drive</code>, <code>odometry</code>, <code>imu</code>, the EKF — see <a href="../../part2/a2bot-driver/">a2bot_driver</a>), <code>robot_state_publisher</code> (see <a href="../../part2/a2bot-description/">a2bot_description</a>), the lidar node, and <code>a2bot_service</code>'s <code>service_server</code> (see below). After this, the robot can be driven and its full <code>tf</code> tree exists, but no map or navigation is running yet — that's <a href="../slam-and-navigation/">SLAM &amp; Navigation</a>.</p>
 <h2 id="visualize-it">Visualize it<a class="headerlink" href="#visualize-it" title="Permanent link">&para;</a></h2>
 <div class="admonition laptop">
 <p class="admonition-title">💻 Laptop</p>
@@ -1935,6 +1987,16 @@
 </code></pre></div>
 <p>Teleop now publishes to <code>/cmd_vel_nav</code>, the smoother publishes the smoothed result to <code>/cmd_vel</code>, and <code>diff_drive</code> never sees a sudden jump in requested speed.</p>
 </div>
+<h2 id="drive-it-with-closed-loop-commands">Drive it with closed-loop commands<a class="headerlink" href="#drive-it-with-closed-loop-commands" title="Permanent link">&para;</a></h2>
+<p>Teleop leaves it to you to watch the robot and release the key at the right moment. For "move exactly 1 m" or "turn exactly 90°" instead, <code>a2bot_service</code> (started automatically above) exposes that as a request that only returns once the odometry confirms the target was reached:</p>
+<div class="admonition laptop">
+<p class="admonition-title">💻 Laptop</p>
+<div class="highlight"><pre><span></span><code>ros2<span class="w"> </span>run<span class="w"> </span>a2bot_service<span class="w"> </span>move_client<span class="w"> </span><span class="m">1</span>.0<span class="w"> </span>--speed<span class="w"> </span><span class="m">0</span>.2
+ros2<span class="w"> </span>run<span class="w"> </span>a2bot_service<span class="w"> </span>turn_client<span class="w"> </span><span class="m">90</span><span class="w"> </span>--speed<span class="w"> </span><span class="m">0</span>.5
+ros2<span class="w"> </span>run<span class="w"> </span>a2bot_service<span class="w"> </span>return_home_client
+</code></pre></div>
+</div>
+<p>See <a href="../../part2/a2bot-service/">Closed-Loop Motion: a2bot_service</a> for the full service list, and a known limitation of <code>return_home</code> after a stopped or timed-out move.</p>
 <h2 id="simulating-instead">Simulating instead<a class="headerlink" href="#simulating-instead" title="Permanent link">&para;</a></h2>
 <p>No physical robot handy? The same launch pattern works in Gazebo — see <a href="../../part2/a2bot-description/#simulation-gazebo-classic">a2bot_description</a>:</p>
 <div class="admonition laptop">

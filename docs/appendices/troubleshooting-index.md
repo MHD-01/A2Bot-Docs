@@ -268,6 +268,14 @@ No fix needed here — this entry exists so the cache/force split isn't mistaken
 - Deliberately no `return` after the action fires: the code falls through with the LED turned off and keeps polling `while button.is_pressed`, rather than looping back into the threshold check — so a long or stuck hold sits idle instead of re-arming.
 - Two visually distinct LED signals mark two different events, not the same action twice: **3 blinks** the instant the hold is accepted (action fired), and a separate **1 blink** only once the button is actually released (confirms release, not a second trigger).
 
+## return_home overshoots after a stopped or timed-out move
+
+**Symptom:** After a `move_distance`/`turn_angle` call that was interrupted by `/a2bot/stop` or that timed out partway, calling `/a2bot/return_home` drives further than needed to get back to the actual starting point.
+
+**Cause:** Verified in `a2bot_service/a2bot_service/service_server.py`'s `_move_cb`/`_turn_cb`: every attempted move/turn is recorded for `return_home` to undo, but what gets recorded is the **requested** distance/angle, not how far the robot actually travelled before it was interrupted. A move stopped 0.3 m into a requested 1.0 m still gets reversed as a full 1.0 m, overshooting the real start point by 0.7 m. A move/turn that completes normally is unaffected — the tolerance keeps requested and actual amounts effectively equal.
+
+**Fix:** none yet — see [Closed-Loop Motion: a2bot_service](../part2/a2bot-service.md#return_home) for the full explanation. Until it's fixed, treat `return_home` as unreliable after any move/turn that reported `success: false`.
+
 ## Not covered here
 
 A systemd-service-plus-Node.js PATH interaction (where `nvm`'s `.bashrc` fix doesn't apply to non-interactive shells) is a known general gotcha in projects that run a Node.js service under systemd. This repository's dashboard and gesture services are Python (FastAPI/Flask), not Node — no systemd-managed Node.js service was found here, so this gotcha is **not** documented as applying to A2Bot. If a Node-based service is added later, revisit this.

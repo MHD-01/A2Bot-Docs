@@ -66,6 +66,7 @@ nav:
       - "The Driver: a2bot_driver": part2/a2bot-driver.md
       - "The Robot Model: a2bot_description": part2/a2bot-description.md
       - Sensor Fusion / EKF: part2/sensor-fusion-ekf.md
+      - "Closed-Loop Motion: a2bot_service": part2/a2bot-service.md
   - Part 3 — Setup, Connection & Use:
       - "Setup 1 — Raspberry Pi": part3/setup-1-raspberry-pi.md
       - "Setup 2 — Laptop": part3/setup-2-laptop.md

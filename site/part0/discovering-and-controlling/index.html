@@ -1226,6 +1226,8 @@
       
         
       
+        
+      
     
     
     
@@ -1398,6 +1400,34 @@
     
   
     Sensor Fusion / EKF
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../part2/a2bot-service/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Closed-Loop Motion: a2bot_service
   
 
     
@@ -2144,12 +2174,13 @@ services constantly. Rather than a command table here, see the full
 standalone references — useful well beyond this one page:
 <a href="../../toolkit/nmcli-and-network-connections/">nmcli &amp; Network Connections</a>
 and <a href="../../toolkit/systemd-and-services/">systemd &amp; Services</a>.</p>
-<p>The robot's core software runs as five background services, always
+<p>The robot's core software runs as six background services, always
 running, starting automatically at boot:</p>
 <div class="highlight"><pre><span></span><code>a2bot-robot        the driver, description, and lidar
 a2bot-dashboard     the web dashboard and WiFi setup page
 a2bot-rosbridge      the WebSocket bridge for browser-based control
 a2bot-webui           the web control interface
+ros2-ready            readiness gate for the ROS 2 graph itself
 a2bot-gpio             the physical recovery buttons
 </code></pre></div>
 <div class="admonition danger">

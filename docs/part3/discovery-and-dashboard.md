@@ -44,7 +44,7 @@ Once the robot has network access, a small FastAPI web server shows live telemet
     ros2 run a2bot_extras dashboard
     ```
 
-    Browse to `http://<robot-ip>:8888/dashboard` for pose, wheel velocities, which nodes are alive, WiFi status, and a live camera stream (if a camera is running). It also relays start/stop commands to gesture control running on your laptop — see below.
+    Browse to `http://<robot-ip>:8888/dashboard` for pose, wheel velocities, which nodes are alive, WiFi status, and a live camera stream (if a camera is running). Its move/turn/return-home/stop controls call straight into [a2bot_service](../part2/a2bot-service.md)'s services — the dashboard doesn't drive the robot itself. It also relays start/stop commands to gesture control running on your laptop — see below.
 
 The dashboard runs `ros2 node list` in a subprocess to check which nodes are alive, which means it must explicitly set up the ROS environment (`PATH`, `AMENT_PREFIX_PATH`, etc.) itself — this matters if you ever run the dashboard from `systemd`, since a systemd service does **not** automatically source `~/.bashrc` the way an interactive terminal does.
 

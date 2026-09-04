@@ -38,4 +38,4 @@ Check it's actually producing fused output:
     ros2 topic hz /odometry/filtered
     ```
 
-Next: [Part 3 — Setup 1: Raspberry Pi](../part3/setup-1-raspberry-pi.md) or [Setup 2: Laptop](../part3/setup-2-laptop.md).
+Next: [Closed-Loop Motion: a2bot_service](a2bot-service.md).

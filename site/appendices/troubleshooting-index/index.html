@@ -1080,6 +1080,8 @@
       
         
       
+        
+      
     
     
     
@@ -1252,6 +1254,34 @@
     
   
     Sensor Fusion / EKF
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../part2/a2bot-service/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Closed-Loop Motion: a2bot_service
   
 
     
@@ -1868,6 +1898,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#return_home-overshoots-after-a-stopped-or-timed-out-move" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        return_home overshoots after a stopped or timed-out move
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#not-covered-here" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2114,6 +2155,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#return_home-overshoots-after-a-stopped-or-timed-out-move" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        return_home overshoots after a stopped or timed-out move
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#not-covered-here" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2227,7 +2279,7 @@ sudo<span class="w"> </span>chmod<span class="w"> </span><span class="m">0440</s
 <h2 id="rviz-shows-no-robot-model">RViz shows no robot model<a class="headerlink" href="#rviz-shows-no-robot-model" title="Permanent link">&para;</a></h2>
 <p><strong>Symptom:</strong> Topics and <code>tf</code> all look correct, but RViz shows an outline, or nothing, where the robot should be — even though everything is working over the network from a remote machine.</p>
 <p><strong>Cause:</strong> RViz resolves the URDF's <code>package://a2bot_description/meshes/...</code> mesh references from the <strong>local</strong> filesystem via the ROS package index — it never fetches meshes over the network. A machine that has never built <code>a2bot_description</code> locally shows this exact confusing failure, because everything else (topics, tf) still works fine.</p>
-<p><strong>Fix:</strong> Build the workspace locally on whichever machine is running RViz — see <a href="../../part3/setup-2-laptop/#3-build-the-workspace-locally">Setup 2 — Laptop, step 3</a> (or <a href="../../part3/setup-1-raspberry-pi/#12-clone-and-build-the-a2bot-workspace">Setup 1 — Raspberry Pi, step 12</a> if it's the Pi itself running RViz).</p>
+<p><strong>Fix:</strong> Build the workspace locally on whichever machine is running RViz — see <a href="../../part3/setup-2-laptop/#3-build-the-workspace-locally">Setup 2 — Laptop, step 3</a> (or <a href="../../part3/setup-1-raspberry-pi/#11-build-the-workspace">Setup 1 — Raspberry Pi, step 11</a> if it's the Pi itself running RViz).</p>
 <h2 id="ros-2-topics-work-over-pingssh-but-discovery-fails">ROS 2 topics work over ping/SSH but discovery fails<a class="headerlink" href="#ros-2-topics-work-over-pingssh-but-discovery-fails" title="Permanent link">&para;</a></h2>
 <p><strong>Symptom:</strong> <code>ping</code> and <code>ssh</code> between the Pi and laptop both work fine, but <code>ros2 topic list</code> on one machine never shows the other's topics.</p>
 <p><strong>Cause:</strong> AP/client isolation, common on shared or lab WiFi (and even some home routers), blocks device-to-device traffic on the same network while still allowing normal internet access. ROS 2 discovery depends on UDP multicast, which isolation blocks — with no error, since ping and SSH use different traffic paths that isolation doesn't touch.</p>
@@ -2282,7 +2334,7 @@ sed<span class="w"> </span>-i<span class="w"> </span><span class="s1">'s/A2Bot_b
 <p>Then rebuild both packages (<code>colcon build --symlink-install --packages-select a2bot_description a2bot_bringup</code>) and confirm the installed executables land under <code>install/&lt;package&gt;/lib/&lt;package&gt;/</code>, not a differently-cased directory.</p>
 </div>
 <h2 id="a-systemd-service-comes-up-active-on-the-wrong-ros_domain_id-rmw_implementation">A systemd service comes up "active" on the wrong ROS_DOMAIN_ID / RMW_IMPLEMENTATION<a class="headerlink" href="#a-systemd-service-comes-up-active-on-the-wrong-ros_domain_id-rmw_implementation" title="Permanent link">&para;</a></h2>
-<p><strong>The risk:</strong> <code>systemctl status a2bot-robot</code> reporting <code>active (running)</code>, with real processes alive and using real CPU, is not proof the service is on the right ROS graph. This project's setup pages (<a href="../../part3/setup-1-raspberry-pi/#7-set-the-ros-domain-id">Setup 1</a>, <a href="../../part3/setup-2-laptop/#4-match-the-ros-domain-id">Setup 2</a>) have a human export <code>ROS_DOMAIN_ID</code> and <code>RMW_IMPLEMENTATION</code> from <code>~/.bashrc</code>. A systemd unit that starts its process via a login shell (<code>ExecStart=/bin/bash -l -c '...'</code>) runs a <strong>login</strong> shell, but not an <strong>interactive</strong> one — and <code>.bashrc</code>'s early-return guard for non-interactive shells means those <code>export</code> lines can be silently skipped, leaving a service alive but silently on the ROS 2 defaults (domain <code>0</code>, typically FastDDS) — invisible to <code>ros2 node list</code>/<code>ros2 topic list</code> from a correctly-configured terminal, which looks identical to "nothing is running."</p>
+<p><strong>The risk:</strong> <code>systemctl status a2bot-robot</code> reporting <code>active (running)</code>, with real processes alive and using real CPU, is not proof the service is on the right ROS graph. This project's setup pages (<a href="../../part3/setup-1-raspberry-pi/#8-set-the-ros-domain-id">Setup 1</a>, <a href="../../part3/setup-2-laptop/#4-match-the-ros-domain-id">Setup 2</a>) have a human export <code>ROS_DOMAIN_ID</code> and <code>RMW_IMPLEMENTATION</code> from <code>~/.bashrc</code>. A systemd unit that starts its process via a login shell (<code>ExecStart=/bin/bash -l -c '...'</code>) runs a <strong>login</strong> shell, but not an <strong>interactive</strong> one — and <code>.bashrc</code>'s early-return guard for non-interactive shells means those <code>export</code> lines can be silently skipped, leaving a service alive but silently on the ROS 2 defaults (domain <code>0</code>, typically FastDDS) — invisible to <code>ros2 node list</code>/<code>ros2 topic list</code> from a correctly-configured terminal, which looks identical to "nothing is running."</p>
 <p><strong>Verified in <code>services/services_files/</code>: this project already learned this lesson and closed it.</strong> Every service that actually touches ROS2 — <code>a2bot-dashboard.service</code>, <code>a2bot-gpio.service</code>, <code>a2bot-robot.service</code>, and <code>a2bot-rosbridge.service</code> — sets both variables explicitly in <code>[Service]</code>, independent of <code>.bashrc</code>, using <strong>this robot's own domain ID</strong> rather than a value shared across the fleet:</p>
 <div class="highlight"><pre><span></span><code><span class="na">Environment</span><span class="o">=</span><span class="s">ROS_DOMAIN_ID=X</span>
 <span class="na">Environment</span><span class="o">=</span><span class="s">RMW_IMPLEMENTATION=rmw_cyclonedds_cpp</span>
@@ -2333,6 +2385,10 @@ cat<span class="w"> </span>/proc/&lt;that<span class="w"> </span>PID&gt;/environ
 <li>Deliberately no <code>return</code> after the action fires: the code falls through with the LED turned off and keeps polling <code>while button.is_pressed</code>, rather than looping back into the threshold check — so a long or stuck hold sits idle instead of re-arming.</li>
 <li>Two visually distinct LED signals mark two different events, not the same action twice: <strong>3 blinks</strong> the instant the hold is accepted (action fired), and a separate <strong>1 blink</strong> only once the button is actually released (confirms release, not a second trigger).</li>
 </ul>
+<h2 id="return_home-overshoots-after-a-stopped-or-timed-out-move">return_home overshoots after a stopped or timed-out move<a class="headerlink" href="#return_home-overshoots-after-a-stopped-or-timed-out-move" title="Permanent link">&para;</a></h2>
+<p><strong>Symptom:</strong> After a <code>move_distance</code>/<code>turn_angle</code> call that was interrupted by <code>/a2bot/stop</code> or that timed out partway, calling <code>/a2bot/return_home</code> drives further than needed to get back to the actual starting point.</p>
+<p><strong>Cause:</strong> Verified in <code>a2bot_service/a2bot_service/service_server.py</code>'s <code>_move_cb</code>/<code>_turn_cb</code>: every attempted move/turn is recorded for <code>return_home</code> to undo, but what gets recorded is the <strong>requested</strong> distance/angle, not how far the robot actually travelled before it was interrupted. A move stopped 0.3 m into a requested 1.0 m still gets reversed as a full 1.0 m, overshooting the real start point by 0.7 m. A move/turn that completes normally is unaffected — the tolerance keeps requested and actual amounts effectively equal.</p>
+<p><strong>Fix:</strong> none yet — see <a href="../../part2/a2bot-service/#return_home">Closed-Loop Motion: a2bot_service</a> for the full explanation. Until it's fixed, treat <code>return_home</code> as unreliable after any move/turn that reported <code>success: false</code>.</p>
 <h2 id="not-covered-here">Not covered here<a class="headerlink" href="#not-covered-here" title="Permanent link">&para;</a></h2>
 <p>A systemd-service-plus-Node.js PATH interaction (where <code>nvm</code>'s <code>.bashrc</code> fix doesn't apply to non-interactive shells) is a known general gotcha in projects that run a Node.js service under systemd. This repository's dashboard and gesture services are Python (FastAPI/Flask), not Node — no systemd-managed Node.js service was found here, so this gotcha is <strong>not</strong> documented as applying to A2Bot. If a Node-based service is added later, revisit this.</p>
 

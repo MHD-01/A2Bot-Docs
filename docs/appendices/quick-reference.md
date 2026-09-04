@@ -78,5 +78,8 @@ Each requires logging out and back in (or a reboot) to take effect.
 | Localize on a saved map | `ros2 launch a2bot_navigation localization.launch.py map:=<file>.yaml` | 🤖 Pi |
 | Navigate autonomously | `ros2 launch a2bot_navigation nav2.launch.py` | 🤖 Pi |
 | Drive manually | `ros2 run teleop_twist_keyboard teleop_twist_keyboard` | 💻 Laptop |
+| Move a fixed distance | `ros2 run a2bot_service move_client <meters> --speed <m/s>` | 🔗 Both |
+| Turn a fixed angle | `ros2 run a2bot_service turn_client <degrees> --speed <rad/s>` | 🔗 Both |
+| Undo recent moves/turns | `ros2 run a2bot_service return_home_client` | 🔗 Both |
 | Web dashboard | `ros2 run a2bot_extras dashboard` | 🤖 Pi |
 | Stale build reset | `rm -rf build install log && colcon build --symlink-install` | 🔗 Both |
