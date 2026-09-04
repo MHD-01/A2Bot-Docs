@@ -1080,6 +1080,8 @@
       
         
       
+        
+      
     
     
     
@@ -1252,6 +1254,34 @@
     
   
     Sensor Fusion / EKF
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../part2/a2bot-service/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Closed-Loop Motion: a2bot_service
   
 
     
@@ -1868,6 +1898,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#return_home-overshoots-after-a-stopped-or-timed-out-move" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        return_home overshoots after a stopped or timed-out move
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#not-covered-here" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2114,6 +2155,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#return_home-overshoots-after-a-stopped-or-timed-out-move" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        return_home overshoots after a stopped or timed-out move
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#not-covered-here" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2333,6 +2385,10 @@ cat<span class="w"> </span>/proc/&lt;that<span class="w"> </span>PID&gt;/environ
 <li>Deliberately no <code>return</code> after the action fires: the code falls through with the LED turned off and keeps polling <code>while button.is_pressed</code>, rather than looping back into the threshold check — so a long or stuck hold sits idle instead of re-arming.</li>
 <li>Two visually distinct LED signals mark two different events, not the same action twice: <strong>3 blinks</strong> the instant the hold is accepted (action fired), and a separate <strong>1 blink</strong> only once the button is actually released (confirms release, not a second trigger).</li>
 </ul>
+<h2 id="return_home-overshoots-after-a-stopped-or-timed-out-move">return_home overshoots after a stopped or timed-out move<a class="headerlink" href="#return_home-overshoots-after-a-stopped-or-timed-out-move" title="Permanent link">&para;</a></h2>
+<p><strong>Symptom:</strong> After a <code>move_distance</code>/<code>turn_angle</code> call that was interrupted by <code>/a2bot/stop</code> or that timed out partway, calling <code>/a2bot/return_home</code> drives further than needed to get back to the actual starting point.</p>
+<p><strong>Cause:</strong> Verified in <code>a2bot_service/a2bot_service/service_server.py</code>'s <code>_move_cb</code>/<code>_turn_cb</code>: every attempted move/turn is recorded for <code>return_home</code> to undo, but what gets recorded is the <strong>requested</strong> distance/angle, not how far the robot actually travelled before it was interrupted. A move stopped 0.3 m into a requested 1.0 m still gets reversed as a full 1.0 m, overshooting the real start point by 0.7 m. A move/turn that completes normally is unaffected — the tolerance keeps requested and actual amounts effectively equal.</p>
+<p><strong>Fix:</strong> none yet — see <a href="../../part2/a2bot-service/#return_home">Closed-Loop Motion: a2bot_service</a> for the full explanation. Until it's fixed, treat <code>return_home</code> as unreliable after any move/turn that reported <code>success: false</code>.</p>
 <h2 id="not-covered-here">Not covered here<a class="headerlink" href="#not-covered-here" title="Permanent link">&para;</a></h2>
 <p>A systemd-service-plus-Node.js PATH interaction (where <code>nvm</code>'s <code>.bashrc</code> fix doesn't apply to non-interactive shells) is a known general gotcha in projects that run a Node.js service under systemd. This repository's dashboard and gesture services are Python (FastAPI/Flask), not Node — no systemd-managed Node.js service was found here, so this gotcha is <strong>not</strong> documented as applying to A2Bot. If a Node-based service is added later, revisit this.</p>
 

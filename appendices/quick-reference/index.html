@@ -1078,6 +1078,8 @@
       
         
       
+        
+      
     
     
     
@@ -1250,6 +1252,34 @@
     
   
     Sensor Fusion / EKF
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../part2/a2bot-service/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Closed-Loop Motion: a2bot_service
   
 
     
@@ -2185,6 +2215,21 @@
 <td>Drive manually</td>
 <td><code>ros2 run teleop_twist_keyboard teleop_twist_keyboard</code></td>
 <td>💻 Laptop</td>
+</tr>
+<tr>
+<td>Move a fixed distance</td>
+<td><code>ros2 run a2bot_service move_client &lt;meters&gt; --speed &lt;m/s&gt;</code></td>
+<td>🔗 Both</td>
+</tr>
+<tr>
+<td>Turn a fixed angle</td>
+<td><code>ros2 run a2bot_service turn_client &lt;degrees&gt; --speed &lt;rad/s&gt;</code></td>
+<td>🔗 Both</td>
+</tr>
+<tr>
+<td>Undo recent moves/turns</td>
+<td><code>ros2 run a2bot_service return_home_client</code></td>
+<td>🔗 Both</td>
 </tr>
 <tr>
 <td>Web dashboard</td>

@@ -1082,6 +1082,8 @@
       
         
       
+        
+      
     
     
     
@@ -1236,10 +1238,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#a2bots-five-packages" class="md-nav__link">
+  <a href="#a2bots-six-packages" class="md-nav__link">
     <span class="md-ellipsis">
       
-        A2Bot's five packages
+        A2Bot's six packages
       
     </span>
   </a>
@@ -1359,6 +1361,34 @@
     
   
     Sensor Fusion / EKF
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../a2bot-service/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Closed-Loop Motion: a2bot_service
   
 
     
@@ -1839,10 +1869,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#a2bots-five-packages" class="md-nav__link">
+  <a href="#a2bots-six-packages" class="md-nav__link">
     <span class="md-ellipsis">
       
-        A2Bot's five packages
+        A2Bot's six packages
       
     </span>
   </a>
@@ -1902,7 +1932,7 @@
 <h1 id="software-architecture">Software Architecture<a class="headerlink" href="#software-architecture" title="Permanent link">&para;</a></h1>
 <h2 id="concept-composing-a-robot-from-packages">Concept: composing a robot from packages<a class="headerlink" href="#concept-composing-a-robot-from-packages" title="Permanent link">&para;</a></h2>
 <p>A ROS 2 robot is rarely one program — it's a collection of small, focused packages, each independently buildable, that a launch file starts together. This keeps any one piece (say, the motor driver) simple enough to understand and test on its own, while the launch file handles wiring them together at runtime.</p>
-<h2 id="a2bots-five-packages">A2Bot's five packages<a class="headerlink" href="#a2bots-five-packages" title="Permanent link">&para;</a></h2>
+<h2 id="a2bots-six-packages">A2Bot's six packages<a class="headerlink" href="#a2bots-six-packages" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -1928,12 +1958,16 @@
 <td>SLAM (<code>slam_toolbox</code>) and Nav2 configuration for mapping and autonomous driving.</td>
 </tr>
 <tr>
+<td><strong>a2bot_service</strong></td>
+<td>A single node exposing move/turn/return-home/stop as request-response services, closing the loop against <code>/odom</code> instead of leaving <code>/cmd_vel</code> timing to a human. See <a href="../a2bot-service/">Closed-Loop Motion: a2bot_service</a>.</td>
+</tr>
+<tr>
 <td><strong>a2bot_extras</strong></td>
-<td>Optional, decoupled add-ons: a web dashboard, WiFi provisioning, gesture control. Nothing in the other four packages depends on this one.</td>
+<td>Optional add-ons: a web dashboard, WiFi provisioning, gesture control. Nothing in <code>a2bot_driver</code>, <code>a2bot_description</code>, <code>a2bot_bringup</code>, or <code>a2bot_navigation</code> depends on this one — though <code>a2bot_extras</code> itself does depend on <code>a2bot_service</code>, since the dashboard's movement controls call straight into its services.</td>
 </tr>
 </tbody>
 </table>
-<p>All five are plain Python (<code>ament_python</code> build type) — there is no C++ and no <code>ros2_control</code> hardware-interface layer anywhere in this stack. If you've seen ROS 2 robots built on <code>ros2_control</code>, set that model aside; A2Bot's driver nodes talk to hardware directly.</p>
+<p><code>a2bot_service</code> is the one package here that uses <code>ament_cmake</code> rather than <code>ament_python</code> — it needs <code>rosidl_generate_interfaces</code> to build its two custom service types, <code>MoveDistance</code> and <code>TurnAngle</code>. The rest are plain Python. There is no C++ and no <code>ros2_control</code> hardware-interface layer anywhere in this stack. If you've seen ROS 2 robots built on <code>ros2_control</code>, set that model aside; A2Bot's driver nodes talk to hardware directly.</p>
 <h2 id="the-node-graph">The node graph<a class="headerlink" href="#the-node-graph" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code>                    ┌─────────────┐
    /cmd_vel  ─────► │ diff_drive  │ ─────► /wheel_cmd
@@ -1985,7 +2019,7 @@
 <ul>
 <li><code>driver.launch.py</code> — the three <code>a2bot_driver</code> motion nodes plus the IMU and EKF.</li>
 <li><code>a2bot_description</code>'s <code>description.launch.py</code> — <code>robot_state_publisher</code>, turning the URDF into <code>tf</code>.</li>
-<li><code>robot.launch.py</code> (in <code>a2bot_bringup</code>) — includes both of the above, plus the lidar node.</li>
+<li><code>robot.launch.py</code> (in <code>a2bot_bringup</code>) — includes both of the above, plus the lidar node and <code>a2bot_service</code>'s <code>service_server</code> node.</li>
 </ul>
 <p>Deliberately <strong>absent</strong>: any <code>static_transform_publisher</code> for the lidar or IMU frames. The URDF already defines <code>base_link → lidar_link</code> and <code>base_link → imu_link</code>, published by <code>robot_state_publisher</code>; a second, separate transform publisher for the same link would create two publishers of one transform — a source of hard-to-diagnose tf conflicts that recurs throughout this stack's design (see <a href="../sensor-fusion-ekf/">Sensor Fusion / EKF</a> for the same principle applied to <code>odom → base_link</code>).</p>
 <p>Next: <a href="../a2bot-driver/">The Driver: a2bot_driver</a>.</p>

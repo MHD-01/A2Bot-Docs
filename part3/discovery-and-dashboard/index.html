@@ -1080,6 +1080,8 @@
       
         
       
+        
+      
     
     
     
@@ -1252,6 +1254,34 @@
     
   
     Sensor Fusion / EKF
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../part2/a2bot-service/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Closed-Loop Motion: a2bot_service
   
 
     
@@ -1971,7 +2001,7 @@ sudo<span class="w"> </span>chmod<span class="w"> </span><span class="m">0440</s
 <p class="admonition-title">🤖 Pi</p>
 <div class="highlight"><pre><span></span><code>ros2<span class="w"> </span>run<span class="w"> </span>a2bot_extras<span class="w"> </span>dashboard
 </code></pre></div>
-<p>Browse to <code>http://&lt;robot-ip&gt;:8888/dashboard</code> for pose, wheel velocities, which nodes are alive, WiFi status, and a live camera stream (if a camera is running). It also relays start/stop commands to gesture control running on your laptop — see below.</p>
+<p>Browse to <code>http://&lt;robot-ip&gt;:8888/dashboard</code> for pose, wheel velocities, which nodes are alive, WiFi status, and a live camera stream (if a camera is running). Its move/turn/return-home/stop controls call straight into <a href="../../part2/a2bot-service/">a2bot_service</a>'s services — the dashboard doesn't drive the robot itself. It also relays start/stop commands to gesture control running on your laptop — see below.</p>
 </div>
 <p>The dashboard runs <code>ros2 node list</code> in a subprocess to check which nodes are alive, which means it must explicitly set up the ROS environment (<code>PATH</code>, <code>AMENT_PREFIX_PATH</code>, etc.) itself — this matters if you ever run the dashboard from <code>systemd</code>, since a systemd service does <strong>not</strong> automatically source <code>~/.bashrc</code> the way an interactive terminal does.</p>
 <h2 id="physical-recovery-buttons">Physical recovery buttons<a class="headerlink" href="#physical-recovery-buttons" title="Permanent link">&para;</a></h2>
