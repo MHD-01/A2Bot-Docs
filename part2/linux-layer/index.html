@@ -11,26 +11,28 @@
       
       
       
+        <link rel="prev" href="../electronics-hardware/">
       
-        <link rel="next" href="part0/what-you-need/">
+      
+        <link rel="next" href="../software-architecture/">
       
       
         
       
       
-      <link rel="icon" href="assets/images/favicon.png">
+      <link rel="icon" href="../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
-        <title>What is A2Bot - A2Bot Docs</title>
+        <title>Underneath ROS 2 (Linux) - A2Bot Docs</title>
       
     
     
-      <link rel="stylesheet" href="assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
       
         
-        <link rel="stylesheet" href="assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
       
       
 
@@ -49,9 +51,9 @@
       
     
     
-      <link rel="stylesheet" href="stylesheets/extra.css">
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
     
-    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -76,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#what-is-a2bot" class="md-skip">
+        <a href="#underneath-ros-2-the-linux-layer" class="md-skip">
           Skip to content
         </a>
       
@@ -90,7 +92,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="." title="A2Bot Docs" class="md-header__button md-logo" aria-label="A2Bot Docs" data-md-component="logo">
+    <a href="../.." title="A2Bot Docs" class="md-header__button md-logo" aria-label="A2Bot Docs" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -110,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              What is A2Bot
+              Underneath ROS 2 (Linux)
             
           </span>
         </div>
@@ -207,13 +209,11 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="." class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../.." class="md-tabs__link">
           
   
   
@@ -235,7 +235,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="toolkit/" class="md-tabs__link">
+        <a href="../../toolkit/" class="md-tabs__link">
           
   
   
@@ -257,7 +257,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="part1/install-and-source/" class="md-tabs__link">
+        <a href="../../part1/install-and-source/" class="md-tabs__link">
           
   
   
@@ -275,11 +275,13 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="part2/electronics-hardware/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../electronics-hardware/" class="md-tabs__link">
           
   
   
@@ -301,7 +303,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="part3/setup-1-raspberry-pi/" class="md-tabs__link">
+        <a href="../../part3/setup-1-raspberry-pi/" class="md-tabs__link">
           
   
   
@@ -323,7 +325,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="appendices/flashing-arduino-firmware/" class="md-tabs__link">
+        <a href="../../appendices/flashing-arduino-firmware/" class="md-tabs__link">
           
   
   
@@ -359,7 +361,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="." title="A2Bot Docs" class="md-nav__button md-logo" aria-label="A2Bot Docs" data-md-component="logo">
+    <a href="../.." title="A2Bot Docs" class="md-nav__button md-logo" aria-label="A2Bot Docs" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -374,8 +376,6 @@
       
   
   
-    
-  
   
   
     
@@ -395,23 +395,20 @@
     
     
       
-        
-        
-      
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" >
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="." class="md-nav__link md-nav__link--active">
+            <a href="../.." class="md-nav__link ">
               
   
   
@@ -429,13 +426,13 @@
             </a>
             
               
-              <label class="md-nav__link md-nav__link--active" for="__nav_1" id="__nav_1_label" tabindex="">
+              <label class="md-nav__link " for="__nav_1" id="__nav_1_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_1">
             <span class="md-nav__icon md-icon"></span>
             
@@ -455,7 +452,7 @@
   
   
     <li class="md-nav__item">
-      <a href="part0/what-you-need/" class="md-nav__link">
+      <a href="../../part0/what-you-need/" class="md-nav__link">
         
   
   
@@ -483,7 +480,7 @@
   
   
     <li class="md-nav__item">
-      <a href="part0/choose-your-path/" class="md-nav__link">
+      <a href="../../part0/choose-your-path/" class="md-nav__link">
         
   
   
@@ -511,7 +508,7 @@
   
   
     <li class="md-nav__item">
-      <a href="part0/discovering-and-controlling/" class="md-nav__link">
+      <a href="../../part0/discovering-and-controlling/" class="md-nav__link">
         
   
   
@@ -589,7 +586,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="toolkit/" class="md-nav__link ">
+            <a href="../../toolkit/" class="md-nav__link ">
               
   
   
@@ -633,7 +630,7 @@
   
   
     <li class="md-nav__item">
-      <a href="toolkit/ubuntu-terminal-basics/" class="md-nav__link">
+      <a href="../../toolkit/ubuntu-terminal-basics/" class="md-nav__link">
         
   
   
@@ -661,7 +658,7 @@
   
   
     <li class="md-nav__item">
-      <a href="toolkit/ip-addresses-and-your-network/" class="md-nav__link">
+      <a href="../../toolkit/ip-addresses-and-your-network/" class="md-nav__link">
         
   
   
@@ -689,7 +686,7 @@
   
   
     <li class="md-nav__item">
-      <a href="toolkit/ssh-and-remote-access/" class="md-nav__link">
+      <a href="../../toolkit/ssh-and-remote-access/" class="md-nav__link">
         
   
   
@@ -717,7 +714,7 @@
   
   
     <li class="md-nav__item">
-      <a href="toolkit/vscode-remote-development/" class="md-nav__link">
+      <a href="../../toolkit/vscode-remote-development/" class="md-nav__link">
         
   
   
@@ -745,7 +742,7 @@
   
   
     <li class="md-nav__item">
-      <a href="toolkit/bashrc/" class="md-nav__link">
+      <a href="../../toolkit/bashrc/" class="md-nav__link">
         
   
   
@@ -773,7 +770,7 @@
   
   
     <li class="md-nav__item">
-      <a href="toolkit/managing-multiple-terminals/" class="md-nav__link">
+      <a href="../../toolkit/managing-multiple-terminals/" class="md-nav__link">
         
   
   
@@ -801,7 +798,7 @@
   
   
     <li class="md-nav__item">
-      <a href="toolkit/ros2-cli-reference/" class="md-nav__link">
+      <a href="../../toolkit/ros2-cli-reference/" class="md-nav__link">
         
   
   
@@ -829,7 +826,7 @@
   
   
     <li class="md-nav__item">
-      <a href="toolkit/rqt/" class="md-nav__link">
+      <a href="../../toolkit/rqt/" class="md-nav__link">
         
   
   
@@ -857,7 +854,7 @@
   
   
     <li class="md-nav__item">
-      <a href="toolkit/nmcli-and-network-connections/" class="md-nav__link">
+      <a href="../../toolkit/nmcli-and-network-connections/" class="md-nav__link">
         
   
   
@@ -885,7 +882,7 @@
   
   
     <li class="md-nav__item">
-      <a href="toolkit/systemd-and-services/" class="md-nav__link">
+      <a href="../../toolkit/systemd-and-services/" class="md-nav__link">
         
   
   
@@ -980,7 +977,7 @@
   
   
     <li class="md-nav__item">
-      <a href="part1/install-and-source/" class="md-nav__link">
+      <a href="../../part1/install-and-source/" class="md-nav__link">
         
   
   
@@ -1008,7 +1005,7 @@
   
   
     <li class="md-nav__item">
-      <a href="part1/cli-tools-core-concepts/" class="md-nav__link">
+      <a href="../../part1/cli-tools-core-concepts/" class="md-nav__link">
         
   
   
@@ -1036,7 +1033,7 @@
   
   
     <li class="md-nav__item">
-      <a href="part1/writing-your-own-nodes/" class="md-nav__link">
+      <a href="../../part1/writing-your-own-nodes/" class="md-nav__link">
         
   
   
@@ -1068,8 +1065,10 @@
       
   
   
+    
   
   
+  
     
     
       
@@ -1085,19 +1084,22 @@
     
     
       
+        
+        
+      
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
         
           
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
             
   
   
@@ -1115,7 +1117,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             
@@ -1133,7 +1135,7 @@
   
   
     <li class="md-nav__item">
-      <a href="part2/electronics-hardware/" class="md-nav__link">
+      <a href="../electronics-hardware/" class="md-nav__link">
         
   
   
@@ -1158,10 +1160,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="part2/linux-layer/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Underneath ROS 2 (Linux)
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -1177,6 +1206,136 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#concept-ros-2-is-a-userspace-layer-not-an-operating-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Concept: ROS 2 is a userspace layer, not an operating system
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#systemd-the-outer-orchestration-layer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        systemd: the outer orchestration layer
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#udev-turning-usb-chaos-into-stable-names" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        udev: turning USB chaos into stable names
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#i2c-the-bus-underneath-the-imu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        I2C: the bus underneath the IMU
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#serial-the-bus-underneath-the-arduino" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Serial: the bus underneath the Arduino
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#libcamera-the-pis-actual-camera-stack" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        libcamera: the Pi's actual camera stack
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#networkmanager-nmcli-what-wifi-provisioning-is-actually-built-on" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NetworkManager (nmcli): what WiFi provisioning is actually built on
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#polkit-and-sudoers-the-permission-workaround-underneath-nmcli" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        polkit and sudoers: the permission workaround underneath nmcli
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gpio-gpiozero-and-no-ros-2-at-all" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GPIO: gpiozero, and no ROS 2 at all
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-permission-model-tying-it-together" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The permission model tying it together
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1201,17 +1360,20 @@
       
       
         
+          
+          
+        
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_3" >
         
           
-          <label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="">
             
   
   
@@ -1311,7 +1473,7 @@
   
   
     <li class="md-nav__item">
-      <a href="part2/software-architecture/" class="md-nav__link">
+      <a href="../software-architecture/" class="md-nav__link">
         
   
   
@@ -1339,7 +1501,7 @@
   
   
     <li class="md-nav__item">
-      <a href="part2/a2bot-driver/" class="md-nav__link">
+      <a href="../a2bot-driver/" class="md-nav__link">
         
   
   
@@ -1367,7 +1529,7 @@
   
   
     <li class="md-nav__item">
-      <a href="part2/a2bot-description/" class="md-nav__link">
+      <a href="../a2bot-description/" class="md-nav__link">
         
   
   
@@ -1395,7 +1557,7 @@
   
   
     <li class="md-nav__item">
-      <a href="part2/sensor-fusion-ekf/" class="md-nav__link">
+      <a href="../sensor-fusion-ekf/" class="md-nav__link">
         
   
   
@@ -1423,7 +1585,7 @@
   
   
     <li class="md-nav__item">
-      <a href="part2/a2bot-service/" class="md-nav__link">
+      <a href="../a2bot-service/" class="md-nav__link">
         
   
   
@@ -1515,7 +1677,7 @@
   
   
     <li class="md-nav__item">
-      <a href="part2/dashboard-and-rosbridge/" class="md-nav__link">
+      <a href="../dashboard-and-rosbridge/" class="md-nav__link">
         
   
   
@@ -1559,7 +1721,7 @@
   
   
     <li class="md-nav__item">
-      <a href="part2/firmware/" class="md-nav__link">
+      <a href="../firmware/" class="md-nav__link">
         
   
   
@@ -1662,7 +1824,7 @@
   
   
     <li class="md-nav__item">
-      <a href="part3/setup-1-raspberry-pi/" class="md-nav__link">
+      <a href="../../part3/setup-1-raspberry-pi/" class="md-nav__link">
         
   
   
@@ -1690,7 +1852,7 @@
   
   
     <li class="md-nav__item">
-      <a href="part3/setup-2-laptop/" class="md-nav__link">
+      <a href="../../part3/setup-2-laptop/" class="md-nav__link">
         
   
   
@@ -1718,7 +1880,7 @@
   
   
     <li class="md-nav__item">
-      <a href="part3/ros2-on-real-hardware/" class="md-nav__link">
+      <a href="../../part3/ros2-on-real-hardware/" class="md-nav__link">
         
   
   
@@ -1746,7 +1908,7 @@
   
   
     <li class="md-nav__item">
-      <a href="part3/bringup-and-driving/" class="md-nav__link">
+      <a href="../../part3/bringup-and-driving/" class="md-nav__link">
         
   
   
@@ -1774,7 +1936,7 @@
   
   
     <li class="md-nav__item">
-      <a href="part3/discovery-and-dashboard/" class="md-nav__link">
+      <a href="../../part3/discovery-and-dashboard/" class="md-nav__link">
         
   
   
@@ -1802,7 +1964,7 @@
   
   
     <li class="md-nav__item">
-      <a href="part3/slam-and-navigation/" class="md-nav__link">
+      <a href="../../part3/slam-and-navigation/" class="md-nav__link">
         
   
   
@@ -1830,7 +1992,7 @@
   
   
     <li class="md-nav__item">
-      <a href="part3/capstone/" class="md-nav__link">
+      <a href="../../part3/capstone/" class="md-nav__link">
         
   
   
@@ -1925,7 +2087,7 @@
   
   
     <li class="md-nav__item">
-      <a href="appendices/flashing-arduino-firmware/" class="md-nav__link">
+      <a href="../../appendices/flashing-arduino-firmware/" class="md-nav__link">
         
   
   
@@ -1953,7 +2115,7 @@
   
   
     <li class="md-nav__item">
-      <a href="appendices/troubleshooting-index/" class="md-nav__link">
+      <a href="../../appendices/troubleshooting-index/" class="md-nav__link">
         
   
   
@@ -1981,7 +2143,7 @@
   
   
     <li class="md-nav__item">
-      <a href="appendices/quick-reference/" class="md-nav__link">
+      <a href="../../appendices/quick-reference/" class="md-nav__link">
         
   
   
@@ -2036,10 +2198,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#the-two-machine-model" class="md-nav__link">
+  <a href="#concept-ros-2-is-a-userspace-layer-not-an-operating-system" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The two-machine model
+        Concept: ROS 2 is a userspace layer, not an operating system
       
     </span>
   </a>
@@ -2047,10 +2209,98 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#what-a2bot-is-built-from" class="md-nav__link">
+  <a href="#systemd-the-outer-orchestration-layer" class="md-nav__link">
     <span class="md-ellipsis">
       
-        What A2Bot is built from
+        systemd: the outer orchestration layer
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#udev-turning-usb-chaos-into-stable-names" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        udev: turning USB chaos into stable names
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#i2c-the-bus-underneath-the-imu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        I2C: the bus underneath the IMU
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#serial-the-bus-underneath-the-arduino" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Serial: the bus underneath the Arduino
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#libcamera-the-pis-actual-camera-stack" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        libcamera: the Pi's actual camera stack
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#networkmanager-nmcli-what-wifi-provisioning-is-actually-built-on" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NetworkManager (nmcli): what WiFi provisioning is actually built on
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#polkit-and-sudoers-the-permission-workaround-underneath-nmcli" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        polkit and sudoers: the permission workaround underneath nmcli
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gpio-gpiozero-and-no-ros-2-at-all" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GPIO: gpiozero, and no ROS 2 at all
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-permission-model-tying-it-together" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The permission model tying it together
       
     </span>
   </a>
@@ -2074,59 +2324,55 @@
 
 
 
-<h1 id="what-is-a2bot">What is A2Bot?<a class="headerlink" href="#what-is-a2bot" title="Permanent link">&para;</a></h1>
-<p>A2Bot is a small differential-drive robot built for teaching ROS 2. It has two wheels driven by motors, a rear and front caster, a lidar, an IMU, and a camera, all controlled by a Raspberry Pi running ROS 2 Humble. It exists so students can learn robotics concepts — nodes, topics, transforms, SLAM, navigation — on hardware they can see and touch, instead of only in simulation.</p>
-<h2 id="the-two-machine-model">The two-machine model<a class="headerlink" href="#the-two-machine-model" title="Permanent link">&para;</a></h2>
-<p>Every A2Bot session involves <strong>two computers working together</strong>:</p>
+<h1 id="underneath-ros-2-the-linux-layer">Underneath ROS 2: The Linux Layer<a class="headerlink" href="#underneath-ros-2-the-linux-layer" title="Permanent link">&para;</a></h1>
+<h2 id="concept-ros-2-is-a-userspace-layer-not-an-operating-system">Concept: ROS 2 is a userspace layer, not an operating system<a class="headerlink" href="#concept-ros-2-is-a-userspace-layer-not-an-operating-system" title="Permanent link">&para;</a></h2>
+<p>Every node in this stack is, underneath, an ordinary Linux process — DDS discovery rides on the kernel's UDP multicast, and every piece of real hardware (the Arduino, the lidar, the IMU, the camera) is reached through a standard Linux device file, not anything ROS-specific. The principle from <a href="../software-architecture/">Software Architecture</a> — "only a ROS 2 node may touch hardware directly" — describes the <em>ROS graph's</em> internal discipline. This page is one layer further down: the Linux mechanisms that same handful of nodes actually call into to reach the hardware at all, and that the rest of the stack (the dashboard, <code>systemd</code>, WiFi provisioning) depends on outside of ROS entirely.</p>
+<p>None of this is taught in depth here — each mechanism already has its own <a href="../../toolkit/">Toolkit</a> reference for the commands. This page's job is narrower: naming each piece and showing exactly where A2Bot's own nodes and services meet it.</p>
+<h2 id="systemd-the-outer-orchestration-layer">systemd: the outer orchestration layer<a class="headerlink" href="#systemd-the-outer-orchestration-layer" title="Permanent link">&para;</a></h2>
+<p>ROS 2 launch files compose <em>nodes</em>; they know nothing about what starts them or what happens at boot. That's <code>systemd</code>'s job, one level up — six services (<code>a2bot-robot</code>, <code>a2bot-dashboard</code>, <code>a2bot-rosbridge</code>, <code>a2bot-webui</code>, <code>a2bot-gpio</code>, and the <code>ros2-ready</code> gate they depend on) start automatically at every boot, one of which — <code>a2bot-robot</code> — is itself just <code>ros2 launch a2bot_bringup robot.launch.py</code> wrapped in a unit file. See <a href="../../toolkit/systemd-and-services/">systemd &amp; Services</a> for the full command reference, and <a href="../../part3/bringup-and-driving/#before-you-start-stop-the-background-services">Bringup &amp; Driving</a> for why these have to be stopped before launching the same stack by hand.</p>
+<h2 id="udev-turning-usb-chaos-into-stable-names">udev: turning USB chaos into stable names<a class="headerlink" href="#udev-turning-usb-chaos-into-stable-names" title="Permanent link">&para;</a></h2>
+<p>The Arduino and the lidar are both USB-serial devices, and Linux would otherwise hand them out as <code>/dev/ttyUSB0</code>, <code>/dev/ttyUSB1</code> — in whichever order they happened to enumerate at boot, which is not guaranteed to be the same twice. <code>udev</code> rules keyed on each device's USB vendor:product ID (<code>1a86:7523</code> for the Arduino clone's CH340 chip, <code>10c4:ea60</code> for the RPLidar's CP2102) create stable symlinks instead: <code>/dev/arduino</code> and <code>/dev/rplidar</code>. <code>serial_bridge</code> and <code>rplidar_node</code> open those symlinks, never a raw <code>ttyUSB*</code> path. This is also the exact mechanism <code>brltty</code> collides with — see <a href="../../appendices/troubleshooting-index/#brltty-steals-the-arduino">brltty steals the Arduino</a>.</p>
+<h2 id="i2c-the-bus-underneath-the-imu">I2C: the bus underneath the IMU<a class="headerlink" href="#i2c-the-bus-underneath-the-imu" title="Permanent link">&para;</a></h2>
+<p>The GY-85's two active chips sit on the Pi's I2C bus (<code>/dev/i2c-1</code>), read directly by <code>a2bot_driver</code>'s <code>imu</code> node — there's no ROS-level I2C abstraction, just the Linux kernel's <code>i2c-dev</code> interface. <code>i2cdetect -y 1</code> is the standalone way to confirm both chips answer before trusting the node's own logs; see <a href="../a2bot-driver/#imu">a2bot_driver — the imu node</a> for the addresses and the byte-order quirk between the two chips, and <a href="../electronics-hardware/">Electronics &amp; Hardware</a> for the wiring.</p>
+<h2 id="serial-the-bus-underneath-the-arduino">Serial: the bus underneath the Arduino<a class="headerlink" href="#serial-the-bus-underneath-the-arduino" title="Permanent link">&para;</a></h2>
+<p>Same category as I2C, one level simpler: a plain UART over USB, at a fixed 115200 baud, reached only through the <code>/dev/arduino</code> symlink above. <code>serial_bridge</code> is the <em>only</em> node allowed to open it — see <a href="../a2bot-driver/#serial_bridge">a2bot_driver — serial_bridge</a> for the DTR-reset dance this involves and the wire protocol itself.</p>
+<h2 id="libcamera-the-pis-actual-camera-stack">libcamera: the Pi's actual camera stack<a class="headerlink" href="#libcamera-the-pis-actual-camera-stack" title="Permanent link">&para;</a></h2>
+<p><code>camera_ros</code> (the ROS 2 node <code>robot.launch.py</code> starts) is a thin wrapper around <strong>libcamera</strong> — the current Pi camera stack, not the older <code>picamera</code>/<code>raspistill</code> tooling some tutorials still assume. libcamera is also where the "camera image looks zoomed in" surprise actually comes from: it picks the sensor mode from the requested resolution, and a non-4:3 request on the IMX219 can silently select a cropped, narrower-field-of-view mode instead of the full sensor — see <a href="../dashboard-and-rosbridge/#troubleshooting">Dashboard &amp; rosbridge — Troubleshooting</a> for the full explanation.</p>
+<h2 id="networkmanager-nmcli-what-wifi-provisioning-is-actually-built-on">NetworkManager (<code>nmcli</code>): what WiFi provisioning is actually built on<a class="headerlink" href="#networkmanager-nmcli-what-wifi-provisioning-is-actually-built-on" title="Permanent link">&para;</a></h2>
+<p>The hotspot-then-join dance covered in <a href="../../part0/discovering-and-controlling/">Discovering and Controlling A2Bot</a> and <a href="../../part3/discovery-and-dashboard/">Discovery &amp; Dashboard</a> is <code>wifi_manager.py</code> driving <code>nmcli</code> — Ubuntu's standard network configuration tool — not a custom radio driver. See <a href="../../toolkit/nmcli-and-network-connections/">nmcli &amp; Network Connections</a> for the commands themselves.</p>
+<h2 id="polkit-and-sudoers-the-permission-workaround-underneath-nmcli">polkit and sudoers: the permission workaround underneath <code>nmcli</code><a class="headerlink" href="#polkit-and-sudoers-the-permission-workaround-underneath-nmcli" title="Permanent link">&para;</a></h2>
+<p>Creating or joining a WiFi network via <code>nmcli</code> is a privileged NetworkManager operation. The clean fix is a <code>polkit</code> rule granting the <code>netdev</code> group that privilege, but Ubuntu 22.04's <code>polkit</code> version doesn't support the modern rule format cleanly for every operation this project needs — so the actual, documented trade-off is scoped passwordless <code>sudo</code> for <code>nmcli</code> alone. See <a href="../../appendices/troubleshooting-index/#nmcli-fails-with-not-authorized">nmcli fails with "not authorized"</a> for the full reasoning and the exact commands.</p>
+<h2 id="gpio-gpiozero-and-no-ros-2-at-all">GPIO: <code>gpiozero</code>, and no ROS 2 at all<a class="headerlink" href="#gpio-gpiozero-and-no-ros-2-at-all" title="Permanent link">&para;</a></h2>
+<p>The physical recovery buttons (<code>a2bot-gpio.service</code>, running <code>gpio_watcher.py</code>) are worth calling out specifically: unlike every other piece of <code>a2bot_extras</code>, this script has <strong>no <code>rclpy</code> import anywhere in it</strong>. It's plain Python, <code>gpiozero</code>, and <code>subprocess</code> calls (<code>reboot</code>, and the same <code>wifi_manager</code> functions the dashboard uses) — deliberately, so the reboot and forget-WiFi buttons keep working even if the ROS 2 stack never started at all. It uses the <code>lgpio</code> pin-factory backend explicitly rather than <code>gpiozero</code>'s auto-detection, which was silently picking a broken legacy backend under <code>systemd</code> specifically (a <code>Permission denied: /sys/class/gpio/export</code> error that never happened running the same script by hand).</p>
+<h2 id="the-permission-model-tying-it-together">The permission model tying it together<a class="headerlink" href="#the-permission-model-tying-it-together" title="Permanent link">&para;</a></h2>
+<p>Every subsystem above needs the Pi user in a specific Linux group before it works at all — group membership only takes effect after logging out and back in (or rebooting):</p>
 <table>
 <thead>
 <tr>
-<th>Machine</th>
-<th>Role</th>
+<th>Group</th>
+<th>For</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>🤖 <strong>The Pi</strong> (on the robot)</td>
-<td>Runs the driver nodes, reads sensors, talks to the Arduino over serial, and does the actual driving. It has no screen or keyboard — you never sit at it directly.</td>
+<td><code>dialout</code></td>
+<td>Serial (Arduino, RPLidar)</td>
 </tr>
 <tr>
-<td>💻 <strong>Your laptop</strong></td>
-<td>Runs visualization tools (RViz), teleop keyboards, SLAM viewers, and your own code while you develop it. You SSH into the Pi, or let ROS 2's networked discovery connect the two machines' topics automatically.</td>
+<td><code>i2c</code></td>
+<td>IMU</td>
+</tr>
+<tr>
+<td><code>video</code></td>
+<td>Camera</td>
+</tr>
+<tr>
+<td><code>netdev</code></td>
+<td>WiFi management (<code>nmcli</code>)</td>
 </tr>
 </tbody>
 </table>
-<p>Both machines run ROS 2 nodes that discover each other over the network and exchange topics as if they were on one computer. That's the whole trick: ROS 2 doesn't care that "the lidar" and "the map viewer" are on physically different boxes, as long as they can reach each other and agree on a few network settings.</p>
-<p>Because two machines are involved in almost everything on this site, <strong>every command block you'll see from here on is tagged with which machine it runs on</strong>:</p>
-<div class="admonition laptop">
-<p class="admonition-title">💻 Laptop</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># A command that only makes sense on your development laptop —</span>
-<span class="c1"># e.g. RViz, a GUI, or your own workspace build.</span>
-</code></pre></div>
-</div>
-<div class="admonition pi">
-<p class="admonition-title">🤖 Pi</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># A command that only makes sense on the robot's Raspberry Pi —</span>
-<span class="c1"># e.g. reading a sensor plugged into it.</span>
-</code></pre></div>
-</div>
-<div class="admonition both">
-<p class="admonition-title">🔗 Both</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># A command you must run on BOTH machines — e.g. setting the</span>
-<span class="c1"># same ROS_DOMAIN_ID so they can discover each other.</span>
-</code></pre></div>
-</div>
-<p>This tagging is used consistently on every page. When in doubt about where to type a command, check the tag first.</p>
-<h2 id="what-a2bot-is-built-from">What A2Bot is built from<a class="headerlink" href="#what-a2bot-is-built-from" title="Permanent link">&para;</a></h2>
-<p>At a glance, five ROS 2 packages make up the robot's software (covered in depth in <a href="part2/software-architecture/">Part 2</a>):</p>
-<ul>
-<li><strong>a2bot_driver</strong> — talks to the Arduino over serial, converts velocity commands to wheel speeds, and turns encoder ticks into odometry.</li>
-<li><strong>a2bot_description</strong> — the URDF robot model: physical dimensions, sensor frames, and simulation.</li>
-<li><strong>a2bot_bringup</strong> — the launch files that start everything together, and the EKF sensor-fusion config.</li>
-<li><strong>a2bot_navigation</strong> — SLAM (mapping) and Nav2 (autonomous navigation) configuration.</li>
-<li><strong>a2bot_extras</strong> — optional add-ons: a web dashboard, WiFi provisioning, and gesture control.</li>
-</ul>
-<p>If you're brand new to ROS 2, don't worry about any of that yet — <a href="part1/install-and-source/">Part 1</a> starts from zero, using only a simulated turtle, before A2Bot enters the picture at all.</p>
+<p>Next: <a href="../software-architecture/">Software Architecture</a>.</p>
 
 
 
@@ -2182,10 +2428,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": ".", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "navigation.indexes", "content.code.copy", "toc.follow"], "search": "assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "navigation.indexes", "content.code.copy", "toc.follow"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
       
     
   </body>
