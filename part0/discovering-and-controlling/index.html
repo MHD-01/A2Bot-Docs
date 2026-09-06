@@ -650,6 +650,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#6-drive-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Drive it
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1228,6 +1239,8 @@
       
         
       
+        
+      
     
     
     
@@ -1428,6 +1441,34 @@
     
   
     Closed-Loop Motion: a2bot_service
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../part2/dashboard-and-rosbridge/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dashboard & rosbridge: a2bot_extras
   
 
     
@@ -1974,6 +2015,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#6-drive-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Drive it
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2141,6 +2193,16 @@ so you don't need to remember or look them up:</p>
 </code></pre></div>
 <p>New to SSH itself? See <a href="../../toolkit/ssh-and-remote-access/">SSH &amp; Remote Access</a>
 for what's actually happening here.</p>
+<div class="admonition note">
+<p class="admonition-title">Finding the robot's IP directly</p>
+<p>Once you're in over SSH, <code>hostname -I</code> (run <strong>on the robot</strong>) prints
+every IP address it currently holds. Worth noting down: on a personal
+hotspot or classroom WiFi the address is DHCP-assigned, not the fixed
+<code>10.42.0.X</code>/<code>10.0.0.10X</code> patterns from the table above — and if
+<code>a2botX-host.local</code> ever fails to resolve, connecting by that IP
+directly is the fallback. See
+<a href="../../appendices/troubleshooting-index/#ssh-connection-troubleshooting">SSH connection troubleshooting</a>.</p>
+</div>
 <h3 id="5-set-up-your-own-ros2-environment-to-match-this-robot">5. Set up your own ROS2 environment to match this robot<a class="headerlink" href="#5-set-up-your-own-ros2-environment-to-match-this-robot" title="Permanent link">&para;</a></h3>
 <p>Before your laptop can see the robot's topics and nodes, your shell needs
 two things set correctly — <strong>matching the robot's number X</strong>:</p>
@@ -2167,6 +2229,18 @@ yet, do it before continuing here.</p>
 You should see the robot's real topics (<code>/odom</code>, <code>/scan</code>, <code>/joint_states</code>,
 and others) — not an empty list. (For a quick reference on commands like
 this one, see the <a href="../../toolkit/ros2-cli-reference/">ROS 2 CLI Reference</a>.)</p>
+<h3 id="6-drive-it">6. Drive it<a class="headerlink" href="#6-drive-it" title="Permanent link">&para;</a></h3>
+<p>This is the payoff for everything above: with the robot's topics visible,
+the standard keyboard teleop node drives it by publishing <code>/cmd_vel</code> —
+nothing A2Bot-specific about it:</p>
+<div class="highlight"><pre><span></span><code>ros2<span class="w"> </span>run<span class="w"> </span>teleop_twist_keyboard<span class="w"> </span>teleop_twist_keyboard
+</code></pre></div>
+<p>Keep that terminal focused and follow its on-screen key legend to move.
+Found, connected to, and now driving — that's the full loop this page set
+out to close. See <a href="../../part3/bringup-and-driving/">Bringup &amp; Driving</a> for
+closed-loop move/turn commands and viewing the robot in RViz, and
+<a href="../../part3/slam-and-navigation/">SLAM &amp; Navigation</a> for driving
+autonomously rather than by hand.</p>
 <hr />
 <h2 id="networking-service-commands">Networking &amp; Service Commands<a class="headerlink" href="#networking-service-commands" title="Permanent link">&para;</a></h2>
 <p>Once the robot is running, you'll be checking its network status and its

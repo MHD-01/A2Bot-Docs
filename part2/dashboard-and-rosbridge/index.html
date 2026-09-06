@@ -1,0 +1,2462 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentation for the A2Bot ROS 2 Humble educational robot">
+      
+      
+      
+      
+        <link rel="prev" href="../a2bot-service/">
+      
+      
+        <link rel="next" href="../../part3/setup-1-raspberry-pi/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Dashboard & rosbridge: a2bot_extras - A2Bot Docs</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#dashboard-rosbridge-a2bot_extras" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="A2Bot Docs" class="md-header__button md-logo" aria-label="A2Bot Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            A2Bot Docs
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Dashboard & rosbridge: a2bot_extras
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../.." class="md-tabs__link">
+          
+  
+  
+    
+  
+  Part 0 — Getting Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../toolkit/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Toolkit
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../part1/install-and-source/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Part 1 — ROS2 Fundamentals
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../electronics-hardware/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Part 2 — How A2Bot Is Built
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../part3/setup-1-raspberry-pi/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Part 3 — Setup, Connection & Use
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../appendices/flashing-arduino-firmware/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Appendices
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="A2Bot Docs" class="md-nav__button md-logo" aria-label="A2Bot Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    A2Bot Docs
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../.." class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part 0 — Getting Started
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_1" id="__nav_1_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part 0 — Getting Started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../part0/what-you-need/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    What You Need
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../part0/choose-your-path/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Choose Your Path
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../part0/discovering-and-controlling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Discovering and Controlling A2Bot
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../toolkit/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Toolkit
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Toolkit
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../toolkit/ubuntu-terminal-basics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ubuntu Terminal Basics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../toolkit/ip-addresses-and-your-network/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    IP Addresses & Your Network
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../toolkit/ssh-and-remote-access/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SSH & Remote Access
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../toolkit/vscode-remote-development/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VS Code Remote Development
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../toolkit/bashrc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ~/.bashrc
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../toolkit/managing-multiple-terminals/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Managing Multiple Terminals
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../toolkit/ros2-cli-reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ROS 2 CLI Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../toolkit/rqt/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    rqt
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../toolkit/nmcli-and-network-connections/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    nmcli & Network Connections
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../toolkit/systemd-and-services/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    systemd & Services
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part 1 — ROS2 Fundamentals
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part 1 — ROS2 Fundamentals
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../part1/install-and-source/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Install & Source
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../part1/cli-tools-core-concepts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CLI Tools & Core Concepts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../part1/writing-your-own-nodes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Writing Your Own Nodes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part 2 — How A2Bot Is Built
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part 2 — How A2Bot Is Built
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../electronics-hardware/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Electronics & Hardware
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../software-architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Software Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../a2bot-driver/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The Driver: a2bot_driver
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../a2bot-description/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The Robot Model: a2bot_description
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sensor-fusion-ekf/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sensor Fusion / EKF
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../a2bot-service/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Closed-Loop Motion: a2bot_service
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dashboard & rosbridge: a2bot_extras
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dashboard & rosbridge: a2bot_extras
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#two-separate-web-interfaces-do-not-conflate-them" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Two separate web interfaces — do not conflate them
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-the-control-interface-was-built" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How the control interface was built
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#concept-why-browsers-need-rosbridge-at-all" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Concept: why browsers need rosbridge at all
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-data-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The data flow
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#service-configuration-and-startup-order" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Service configuration and startup order
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-the-connection-is-opened" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How the connection is opened
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#subscribing-publishing-and-calling-services" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Subscribing, publishing, and calling services
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#streaming-the-camera-a-performance-lesson" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Streaming the camera — a performance lesson
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Troubleshooting
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quick-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quick reference
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part 3 — Setup, Connection & Use
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part 3 — Setup, Connection & Use
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../part3/setup-1-raspberry-pi/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Setup 1 — Raspberry Pi
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../part3/setup-2-laptop/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Setup 2 — Laptop
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../part3/ros2-on-real-hardware/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ROS2 on Real Hardware
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../part3/bringup-and-driving/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bringup & Driving
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../part3/discovery-and-dashboard/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Discovery & Dashboard
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../part3/slam-and-navigation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SLAM & Navigation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../part3/capstone/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Capstone
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Appendices
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Appendices
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendices/flashing-arduino-firmware/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Flashing the Arduino Firmware
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendices/troubleshooting-index/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Troubleshooting Index
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendices/quick-reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quick Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#two-separate-web-interfaces-do-not-conflate-them" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Two separate web interfaces — do not conflate them
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-the-control-interface-was-built" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How the control interface was built
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#concept-why-browsers-need-rosbridge-at-all" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Concept: why browsers need rosbridge at all
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-data-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The data flow
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#service-configuration-and-startup-order" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Service configuration and startup order
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-the-connection-is-opened" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How the connection is opened
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#subscribing-publishing-and-calling-services" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Subscribing, publishing, and calling services
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#streaming-the-camera-a-performance-lesson" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Streaming the camera — a performance lesson
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Troubleshooting
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quick-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quick reference
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="dashboard-rosbridge-a2bot_extras">Dashboard &amp; rosbridge: a2bot_extras<a class="headerlink" href="#dashboard-rosbridge-a2bot_extras" title="Permanent link">&para;</a></h1>
+<p><code>a2bot_extras</code> also provides WiFi provisioning, the GPIO recovery buttons, and gesture control — all covered in <a href="../../part3/discovery-and-dashboard/">Discovery &amp; Dashboard</a>. This page covers a different slice of the same package: the browser-based <strong>control interface</strong>, and <strong>rosbridge</strong>, the mechanism that lets any browser reach the ROS 2 graph at all without being a ROS 2 node itself.</p>
+<h2 id="two-separate-web-interfaces-do-not-conflate-them">Two separate web interfaces — do not conflate them<a class="headerlink" href="#two-separate-web-interfaces-do-not-conflate-them" title="Permanent link">&para;</a></h2>
+<p>This trips up everyone who works on this robot, so it's worth stating plainly before anything else: <strong>"the dashboard" is two different programs, on two different ports</strong>, with two different ways of reaching ROS.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Control interface</th>
+<th>Setup/telemetry page</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>systemd unit</td>
+<td><code>a2bot-webui.service</code></td>
+<td><code>a2bot-dashboard.service</code></td>
+</tr>
+<tr>
+<td>Port</td>
+<td><strong>7777</strong></td>
+<td><strong>8888</strong></td>
+</tr>
+<tr>
+<td>What it is</td>
+<td>React single-page app</td>
+<td>Python FastAPI server that is <em>also</em> a ROS 2 node</td>
+</tr>
+<tr>
+<td>Talks to ROS via</td>
+<td><strong>rosbridge WebSocket</strong> (port 9090)</td>
+<td><strong><code>rclpy</code> directly</strong> — it's a real node</td>
+</tr>
+<tr>
+<td>Source</td>
+<td><code>a2bot_extras/a2bot_extras/Turtlebot interface/robot-control-interface/</code></td>
+<td><code>a2bot_extras/a2bot_extras/dashboard.py</code></td>
+</tr>
+<tr>
+<td>Pages</td>
+<td>Home / Control / Monitor / Circuit tabs</td>
+<td><code>/</code> WiFi setup, <code>/dashboard</code> telemetry</td>
+</tr>
+</tbody>
+</table>
+<p>The FastAPI page is what <a href="../../part3/discovery-and-dashboard/">Discovery &amp; Dashboard</a> is about — it raises the WiFi provisioning hotspot, and it's what a robot with no known network can still be reached through. The React control interface, covered here, is the other one: it never touches hardware or <code>rclpy</code> itself, and reaches the robot purely as a rosbridge client, exactly like any other browser could. It does call two of the FastAPI page's HTTP endpoints directly (see <a href="#subscribing-publishing-and-calling-services">Subscribing, publishing, and calling services</a>) — that's the only place the two interfaces actually touch.</p>
+<h2 id="how-the-control-interface-was-built">How the control interface was built<a class="headerlink" href="#how-the-control-interface-was-built" title="Permanent link">&para;</a></h2>
+<p>Stack:</p>
+<ul>
+<li><strong>React 19</strong> + <strong>Vite 7</strong> (build tool and dev server)</li>
+<li><strong>Tailwind CSS 3</strong> + <strong>daisyUI 5</strong> for styling/components</li>
+<li><strong>roslib</strong> (roslibjs) 1.4.1 — the ROS 2 client library for JavaScript</li>
+<li><strong>lucide-react</strong> for icons, <strong>nipplejs</strong> for the on-screen joystick</li>
+</ul>
+<p>Layout under <code>robot-control-interface/src/</code>:</p>
+<ul>
+<li><code>App.jsx</code> — the app shell: navbar, tab bar, routing between pages</li>
+<li><code>components/pages/</code> — <code>HomePage</code>, <code>ControlPage</code>, <code>MonitorPage</code>, <code>CircuitPage</code>, <code>ConnectGate</code> (a <code>SettingsPage</code> exists but its tab is currently commented out)</li>
+<li><code>components/</code> — reusable widgets: <code>CameraFeed</code>, <code>LidarVisualization</code>, <code>Map2D</code>, <code>JoystickController</code>, <code>DistanceControl</code>, <code>RobotStatus</code>, <code>NodesTopicsPanel</code>, <code>ServicesStatusPanel</code>, <code>WifiSettings</code></li>
+<li><code>context/</code> — <code>ROSProvider.jsx</code>, <code>ROSContext.js</code>, <code>useROS.js</code></li>
+<li><code>lib/robotConfig.js</code> — connection settings and topic names</li>
+</ul>
+<p><strong>The one architectural decision worth understanding:</strong> every ROS interaction lives in a single React context, <code>ROSProvider</code>. Components never open their own connection — they call <code>useROS()</code> and get the one shared connection. The whole app therefore has <strong>exactly one WebSocket</strong> to rosbridge, and one place where subscriptions are created and torn down. A connection per component would mean every tab switch churns subscriptions — a cost this Pi can't spare.</p>
+<p><strong>How it's served:</strong> <code>a2bot-webui.service</code> runs <code>npm run dev</code> — the Vite dev server, on port <strong>7777</strong>, with <code>host: true</code> (listen on all interfaces, so other machines on the LAN can reach it) and <code>strictPort: true</code> (fail loudly instead of silently drifting to another port and breaking the link the setup page uses to reach it).</p>
+<div class="admonition note">
+<p class="admonition-title">A dev server in production is a known shortcut</p>
+<p><code>npm run dev</code> is a development server, not meant for permanent use. <code>npm run build</code> plus a static file server is the correct long-term setup — worth revisiting once the interface stabilizes.</p>
+</div>
+<h2 id="concept-why-browsers-need-rosbridge-at-all">Concept: why browsers need rosbridge at all<a class="headerlink" href="#concept-why-browsers-need-rosbridge-at-all" title="Permanent link">&para;</a></h2>
+<p>ROS 2 nodes talk to each other over <strong>DDS</strong>, which relies on UDP multicast and shared memory. A web browser cannot speak DDS — it has no access to raw sockets, and the browser security model forbids it outright. A browser can never be a ROS 2 node.</p>
+<p><strong>rosbridge</strong> is what closes that gap. It's a ROS 2 node that:</p>
+<ol>
+<li>Joins the ROS 2 graph normally — it <em>is</em> a real DDS participant.</li>
+<li>Opens a <strong>WebSocket server on port 9090</strong>, which browsers <em>can</em> connect to.</li>
+<li>Translates between the two: <strong>JSON/CBOR messages over the WebSocket</strong> on one side, real ROS 2 pub/sub and service calls on the other.</li>
+</ol>
+<p>The browser itself never joins the graph. It sends rosbridge a JSON message meaning "subscribe me to <code>/scan</code>," and rosbridge — which is in the graph — subscribes on its own behalf and forwards each message back over the WebSocket.</p>
+<p>Three packages are involved, installed together via apt as <code>ros-humble-rosbridge-suite</code>:</p>
+<ul>
+<li><strong><code>rosbridge_server</code></strong> — the WebSocket server itself.</li>
+<li><strong><code>rosbridge_library</code></strong> — the JSON ↔ ROS message conversion.</li>
+<li><strong><code>rosapi</code></strong> — a companion node exposing <strong>graph introspection</strong> as ROS services (<code>/rosapi/nodes</code>, <code>/rosapi/topics</code>, and others). This is what makes a "list all nodes and topics" feature in a browser possible at all — without <code>rosapi</code>, a browser client can publish and subscribe, but it has no way to ask <em>what exists</em>. It starts automatically as part of the standard rosbridge launch file.</li>
+</ul>
+<p>On A2Bot, <code>a2bot-rosbridge.service</code> starts it with:</p>
+<div class="highlight"><pre><span></span><code>ros2<span class="w"> </span>launch<span class="w"> </span>rosbridge_server<span class="w"> </span>rosbridge_websocket_launch.xml
+</code></pre></div>
+<h2 id="the-data-flow">The data flow<a class="headerlink" href="#the-data-flow" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code> Browser (React + roslibjs)             FastAPI dashboard (dashboard.py)
+         │                                        │
+         │  ws://&lt;host&gt;:9090                      │  in-process
+         │  JSON / CBOR                            │  (it IS a ROS 2 node)
+         ▼                                        ▼
+ ┌──────────────────────┐              ┌───────────────────────┐
+ │   rosbridge_server     │◄─── DDS ───►│      ROS 2 graph         │
+ │  + rosbridge_library    │            │  (topics and services)   │
+ │  + rosapi                │◄─── DDS ───┤                          │
+ └──────────────────────┘              └───────────────────────┘
+</code></pre></div>
+<p>The React app and the FastAPI page reach the exact same graph through two structurally different paths — one hops through a WebSocket and a translation layer, the other is a normal in-process ROS 2 node. Neither one talks to hardware directly; both go through the graph, same as everything else in this project.</p>
+<h2 id="service-configuration-and-startup-order">Service configuration and startup order<a class="headerlink" href="#service-configuration-and-startup-order" title="Permanent link">&para;</a></h2>
+<p><code>a2bot-rosbridge.service</code> sets several things that are easy to miss and painful to debug if they're wrong:</p>
+<div class="highlight"><pre><span></span><code><span class="na">WorkingDirectory</span><span class="o">=</span><span class="s">/home/a2bot2</span>
+<span class="na">Environment</span><span class="o">=</span><span class="s">HOME=/home/a2bot2</span>
+<span class="na">Environment</span><span class="o">=</span><span class="s">ROS_DOMAIN_ID=X</span>
+<span class="na">Environment</span><span class="o">=</span><span class="s">RMW_IMPLEMENTATION=rmw_cyclonedds_cpp</span>
+<span class="na">ExecStartPre</span><span class="o">=</span><span class="s">/bin/sleep 10</span>
+<span class="na">ExecStart</span><span class="o">=</span><span class="s">/bin/bash -l -c 'source /opt/ros/humble/setup.bash &amp;&amp; </span>\
+<span class="w">    </span><span class="s">source /home/a2bot2/a2bot/a2bot_ws/install/setup.bash &amp;&amp; </span>\
+<span class="w">    </span><span class="s">ros2 launch rosbridge_server rosbridge_websocket_launch.xml'</span>
+</code></pre></div>
+<p>(<code>X</code> is this robot's own number, matching its hostname and hotspot — see <a href="../../part0/discovering-and-controlling/">Discovering and Controlling A2Bot</a>.)</p>
+<p>Each line here came from a real failure, not from following a template:</p>
+<ul>
+<li><strong><code>HOME</code> and <code>WorkingDirectory</code></strong> — systemd services get <em>no</em> home directory by default, unlike a login shell. Without these, ROS 2's CLI tools try to write to <code>~/.ros</code> and fail silently. This was the actual cause of recurring <code>ros2 node list timed out after 5 seconds</code> errors.</li>
+<li><strong><code>ROS_DOMAIN_ID=X</code> and <code>RMW_IMPLEMENTATION=rmw_cyclonedds_cpp</code></strong> — <em>every</em> node in the system must agree on both. A node on a different domain ID or a different RMW is invisible to the rest of the graph while still showing <code>active (running)</code> in <code>systemctl status</code> — one of the most confusing ROS 2 failure modes there is. See <a href="../../appendices/troubleshooting-index/#a-systemd-service-comes-up-active-on-the-wrong-ros_domain_id-rmw_implementation">A systemd service comes up "active" on the wrong ROS_DOMAIN_ID / RMW_IMPLEMENTATION</a> for a fuller account.</li>
+<li><strong><code>bash -l</code></strong> — a login shell, so <code>.bashrc</code> (where these same variables also live for interactive use) is actually read.</li>
+<li><strong><code>ExecStartPre=/bin/sleep 10</code></strong> — a deliberate stagger so several ROS processes don't all hit the ROS 2 daemon at the exact same instant during boot.</li>
+</ul>
+<p>Boot order across the four units: <code>ros2-ready.service</code> is required by all of them. <code>a2bot-webui.service</code> goes one step further for <code>a2bot-dashboard.service</code> specifically — it doesn't just wait for systemd to have <em>started</em> it, its <code>ExecStartPre</code> polls <code>http://localhost:8888/api/status</code> up to 30 times, 2 seconds apart, until the dashboard genuinely answers HTTP. <strong>"systemd says active" and "the service actually works" are different claims</strong> — see <a href="../../toolkit/systemd-and-services/#what-active-actually-proves-and-what-it-doesnt">systemd &amp; Services</a> for why that gap exists in general, and <a href="../../appendices/troubleshooting-index/#prefer-an-active-readiness-check-over-a-fixed-sleep-for-service-startup-ordering">Prefer an active readiness check over a fixed sleep</a> for why this particular wait is a poll rather than another fixed sleep.</p>
+<h2 id="how-the-connection-is-opened">How the connection is opened<a class="headerlink" href="#how-the-connection-is-opened" title="Permanent link">&para;</a></h2>
+<p>All of this lives in <code>context/ROSProvider.jsx</code>.</p>
+<p><strong>Working out the address.</strong> <code>lib/robotConfig.js</code> builds the WebSocket URL as <code>ws://&lt;host&gt;:9090</code>. <code>host</code> isn't hardcoded — a helper called <code>liveHost()</code> reads <code>window.location.hostname</code>, i.e. whatever address the browser used to load the page in the first place. Since the page is served by the robot itself, that address is by definition a working route back to it. The payoff: the robot's IP never has to be edited by hand as it moves between networks — load the dashboard from wherever it's currently reachable, and rosbridge is targeted correctly automatically. It only falls back to a saved or default IP when the page is served from <code>localhost</code> — i.e. during development against a remote robot.</p>
+<p><strong>Opening the connection:</strong></p>
+<div class="highlight"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">ros</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">ROSLIB</span><span class="p">.</span><span class="nx">Ros</span><span class="p">({</span><span class="w"> </span><span class="nx">url</span><span class="o">:</span><span class="w"> </span><span class="sb">`ws://</span><span class="si">${</span><span class="nx">config</span><span class="p">.</span><span class="nx">host</span><span class="si">}</span><span class="sb">:9090`</span><span class="w"> </span><span class="p">});</span>
+
+<span class="nx">ros</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">"connection"</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* subscribe to topics, start polling node/topic lists */</span><span class="w"> </span><span class="p">});</span>
+<span class="nx">ros</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">"error"</span><span class="p">,</span><span class="w">      </span><span class="p">(</span><span class="nx">e</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* show error, release the handle */</span><span class="w"> </span><span class="p">});</span>
+<span class="nx">ros</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">"close"</span><span class="p">,</span><span class="w">      </span><span class="p">()</span><span class="w">  </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* tear down subscriptions, release the handle */</span><span class="w"> </span><span class="p">});</span>
+</code></pre></div>
+<p>The app auto-connects on load and retries on its own if the connection drops, so a rosbridge restart heals with no user action; a manual <strong>Retry</strong> button covers whatever the automatic retry doesn't.</p>
+<div class="admonition warning">
+<p class="admonition-title">Lesson learned: stale event handlers from a discarded connection</p>
+<p>The reconnect logic here originally had two defects, both worth understanding since they're a textbook case of async state bugs, not anything ROS-specific.</p>
+<p>First, the <code>close</code>/<code>error</code> handlers never cleared the stored connection handle, while <code>connect()</code> began with "if a handle already exists, do nothing." After the <em>first</em> disconnect, the handle stayed pointing at a dead socket, and every future reconnect attempt silently did nothing — the app just looked permanently stuck.</p>
+<p>Second, calling <code>.close()</code> on the old socket fires its <code>close</code> event <strong>asynchronously</strong>, potentially <em>after</em> a replacement connection is already up. The old handler then ran anyway, tore down the <em>new</em> connection's subscriptions, and forced the UI back to "disconnected" even though a working connection existed a moment earlier.</p>
+<p>The fix: release the stored handle inside <code>close</code>/<code>error</code> themselves, and have every handler check that it still owns the <em>current</em> connection before touching shared state. The general lesson travels well beyond this file: <strong>event handlers from a discarded object keep firing — always verify they're still relevant before letting them mutate shared state.</strong></p>
+</div>
+<h2 id="subscribing-publishing-and-calling-services">Subscribing, publishing, and calling services<a class="headerlink" href="#subscribing-publishing-and-calling-services" title="Permanent link">&para;</a></h2>
+<p><strong>Subscribing to a topic:</strong></p>
+<div class="highlight"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">scan</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">ROSLIB</span><span class="p">.</span><span class="nx">Topic</span><span class="p">({</span>
+<span class="w">  </span><span class="nx">ros</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">"/scan"</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">messageType</span><span class="o">:</span><span class="w"> </span><span class="s2">"sensor_msgs/msg/LaserScan"</span><span class="p">,</span>
+<span class="p">});</span>
+<span class="nx">scan</span><span class="p">.</span><span class="nx">subscribe</span><span class="p">((</span><span class="nx">msg</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">setLidarData</span><span class="p">(</span><span class="nx">msg</span><span class="p">));</span>
+</code></pre></div>
+<p>Topics the control interface subscribes to: <code>/battery_state</code>, <code>/odom</code>, <code>/scan</code>, <code>/map</code>, <code>/camera/image_raw/compressed</code>, <code>/imu/data_raw</code>, <code>/joint_states</code>.</p>
+<p><strong>Publishing</strong> (velocity commands):</p>
+<div class="highlight"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">cmdVel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">ROSLIB</span><span class="p">.</span><span class="nx">Topic</span><span class="p">({</span><span class="w"> </span><span class="nx">ros</span><span class="p">,</span><span class="w"> </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">"/cmd_vel"</span><span class="p">,</span><span class="w"> </span><span class="nx">messageType</span><span class="o">:</span><span class="w"> </span><span class="s2">"geometry_msgs/msg/Twist"</span><span class="w"> </span><span class="p">});</span>
+<span class="nx">cmdVel</span><span class="p">.</span><span class="nx">publish</span><span class="p">(</span><span class="ow">new</span><span class="w"> </span><span class="nx">ROSLIB</span><span class="p">.</span><span class="nx">Message</span><span class="p">({</span>
+<span class="w">  </span><span class="nx">linear</span><span class="o">:</span><span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="nx">x</span><span class="o">:</span><span class="w"> </span><span class="o">-</span><span class="nx">linearX</span><span class="p">,</span><span class="w"> </span><span class="nx">y</span><span class="o">:</span><span class="w"> </span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="nx">z</span><span class="o">:</span><span class="w"> </span><span class="mf">0</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">angular</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">x</span><span class="o">:</span><span class="w"> </span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="nx">y</span><span class="o">:</span><span class="w"> </span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="nx">z</span><span class="o">:</span><span class="w"> </span><span class="o">-</span><span class="nx">angularZ</span><span class="w"> </span><span class="p">},</span>
+<span class="p">}));</span>
+</code></pre></div>
+<p>Note the negation: this robot's <code>/cmd_vel</code> sign convention is reversed from the usual ROS convention. It's negated in exactly <strong>one</strong> place, <code>ROSProvider</code>, so every caller — joystick, keyboard, D-pad, distance control — inherits the correction automatically. Normalizing a hardware quirk once, centrally, rather than in every caller, is the right instinct here.</p>
+<div class="admonition note">
+<p class="admonition-title">The same quirk is corrected twice, independently</p>
+<p><a href="../a2bot-service/"><code>a2bot_service</code></a> fixes this exact sign convention a second time, separately — its <code>service_server</code> node defaults <code>invert_cmd_vel</code> to <code>true</code> and negates every command it publishes. The two corrections don't conflict, because they sit on two different, non-overlapping command paths (this React app publishing <code>/cmd_vel</code> directly for manual driving, versus <code>a2bot_service</code>'s own services driving the robot for <code>move_distance</code>/<code>turn_angle</code>). But it does mean the same hardware fact — A2Bot's motors expect the opposite sign from the ROS convention — is encoded independently in two places rather than fixed once at the source (<code>diff_drive</code>, see <a href="../a2bot-driver/">a2bot_driver</a>). Worth knowing if that root cause is ever fixed: both corrections would need removing together, or the robot would end up double-inverted on one of the two paths.</p>
+</div>
+<p><strong>Calling a service:</strong></p>
+<div class="highlight"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">service</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">ROSLIB</span><span class="p">.</span><span class="nx">Service</span><span class="p">({</span>
+<span class="w">  </span><span class="nx">ros</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">"/a2bot/move_distance"</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">serviceType</span><span class="o">:</span><span class="w"> </span><span class="s2">"a2bot_service/srv/MoveDistance"</span><span class="p">,</span>
+<span class="p">});</span>
+<span class="nx">service</span><span class="p">.</span><span class="nx">callService</span><span class="p">(</span><span class="ow">new</span><span class="w"> </span><span class="nx">ROSLIB</span><span class="p">.</span><span class="nx">ServiceRequest</span><span class="p">({</span><span class="w"> </span><span class="nx">distance</span><span class="p">,</span><span class="w"> </span><span class="nx">speed</span><span class="w"> </span><span class="p">}),</span><span class="w"> </span><span class="nx">onResult</span><span class="p">,</span><span class="w"> </span><span class="nx">onError</span><span class="p">);</span>
+</code></pre></div>
+<p>Services the control interface calls, all served by <a href="../a2bot-service/#the-cli-clients"><code>a2bot_service</code></a>'s <code>service_server</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Service</th>
+<th>Type</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/a2bot/move_distance</code></td>
+<td><code>a2bot_service/srv/MoveDistance</code></td>
+<td>Drive a set distance using odometry feedback</td>
+</tr>
+<tr>
+<td><code>/a2bot/turn_angle</code></td>
+<td><code>a2bot_service/srv/TurnAngle</code></td>
+<td>Turn a set angle</td>
+</tr>
+<tr>
+<td><code>/a2bot/return_home</code></td>
+<td><code>std_srvs/srv/Trigger</code></td>
+<td>Reverse the recorded command history</td>
+</tr>
+<tr>
+<td><code>/a2bot/stop</code></td>
+<td><code>std_srvs/srv/Trigger</code></td>
+<td>Stop motion</td>
+</tr>
+<tr>
+<td><code>/a2bot/relaunch_all</code></td>
+<td><code>std_srvs/srv/Trigger</code></td>
+<td>Restart all four <code>a2bot</code> services</td>
+</tr>
+<tr>
+<td><code>/a2bot/camera_start</code></td>
+<td><code>std_srvs/srv/Trigger</code></td>
+<td>Start the camera node on demand</td>
+</tr>
+<tr>
+<td><code>/a2bot/camera_stop</code></td>
+<td><code>std_srvs/srv/Trigger</code></td>
+<td>Stop the camera node</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Graph introspection</strong> (the live Nodes &amp; Topics panel) uses the <code>rosapi</code> services through roslibjs helpers, polled every 2 seconds:</p>
+<div class="highlight"><pre><span></span><code><span class="nx">ros</span><span class="p">.</span><span class="nx">getNodes</span><span class="p">((</span><span class="nx">nodeList</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">setNodes</span><span class="p">(</span><span class="nx">nodeList</span><span class="p">));</span>
+<span class="nx">ros</span><span class="p">.</span><span class="nx">getTopics</span><span class="p">((</span><span class="nx">result</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* result.topics[], result.types[] */</span><span class="w"> </span><span class="p">});</span>
+</code></pre></div>
+<p>Each topic row can also be expanded to echo its live messages — that just opens a temporary subscription for as long as the row stays open, the browser equivalent of <code>ros2 topic echo</code>.</p>
+<p><strong>The two HTTP calls that skip rosbridge entirely:</strong> the React app also fetches <code>http://&lt;host&gt;:8888/api/services/health</code> (systemd + functional health of the core services, polled every 3 s) and the WiFi endpoints, straight from the FastAPI page. These are deliberately <em>not</em> ROS calls: "is the systemd unit running?" is a system question the ROS graph has no way to answer, since a dead service has no ROS presence left to ask.</p>
+<h2 id="streaming-the-camera-a-performance-lesson">Streaming the camera — a performance lesson<a class="headerlink" href="#streaming-the-camera-a-performance-lesson" title="Permanent link">&para;</a></h2>
+<p>The camera subscription isn't a plain subscription — it carries three extra options, each preventing a specific, real failure:</p>
+<div class="highlight"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">camera</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">ROSLIB</span><span class="p">.</span><span class="nx">Topic</span><span class="p">({</span>
+<span class="w">  </span><span class="nx">ros</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">"/camera/image_raw/compressed"</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">messageType</span><span class="o">:</span><span class="w"> </span><span class="s2">"sensor_msgs/msg/CompressedImage"</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">throttle_rate</span><span class="o">:</span><span class="w"> </span><span class="mf">100</span><span class="p">,</span><span class="w">   </span><span class="c1">// ms — cap at ~10 fps</span>
+<span class="w">  </span><span class="nx">queue_length</span><span class="o">:</span><span class="w"> </span><span class="mf">1</span><span class="p">,</span><span class="w">      </span><span class="c1">// drop stale frames instead of queueing them</span>
+<span class="w">  </span><span class="nx">compression</span><span class="o">:</span><span class="w"> </span><span class="s2">"cbor"</span><span class="p">,</span><span class="w">  </span><span class="c1">// binary frames, not base64-inside-JSON</span>
+<span class="p">});</span>
+</code></pre></div>
+<ul>
+<li><strong><code>throttle_rate: 100</code></strong> — tells rosbridge to forward at most one message per 100 ms.</li>
+<li><strong><code>queue_length: 1</code></strong> — the important one. Without it, rosbridge <em>queues</em> every frame it can't deliver in time, and the video feed drifts <strong>further and further behind live</strong> the longer it runs. A queue length of 1 drops stale frames instead of hoarding them — latency that keeps growing over time is the classic symptom of an unbounded queue.</li>
+<li><strong><code>compression: "cbor"</code></strong> — sends raw binary over the WebSocket instead of base64-encoded text inside JSON, dramatically lighter for image data (base64 costs roughly 33% size overhead, plus JSON parsing on both ends).</li>
+</ul>
+<p>Two consequences worth knowing:</p>
+<ol>
+<li>Always subscribe to <code>/camera/image_raw/compressed</code> (JPEG), never raw <code>/camera/image_raw</code>. Raw 640×480 video runs roughly <strong>26 MB/s</strong> — more than the Pi or the WiFi link can carry.</li>
+<li>With CBOR, roslibjs hands back a <code>Uint8Array</code> rather than a base64 string, so the app converts it for display <strong>in chunks</strong>. A single <code>String.fromCharCode.apply(null, hugeArray)</code> call blows the JavaScript call stack on a full-size frame.</li>
+</ol>
+<h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Cause and fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Dashboard shows "Disconnected," nothing loads</td>
+<td>rosbridge is not running. <code>systemctl status a2bot-rosbridge.service</code>; confirm port 9090 is listening with <code>ss -ltn \| grep 9090</code>. It takes ~15 s to accept connections after a restart.</td>
+</tr>
+<tr>
+<td>Nodes/Topics panel is empty but control works</td>
+<td>The <code>rosapi</code> node is not running. Publishing and subscribing don't need it; introspection does.</td>
+</tr>
+<tr>
+<td>Everything "active" in systemd but nodes can't see each other</td>
+<td>Mismatched <code>ROS_DOMAIN_ID</code> or <code>RMW_IMPLEMENTATION</code>. Every node must agree on both.</td>
+</tr>
+<tr>
+<td><code>ros2 node list</code> times out inside a service</td>
+<td>The unit is missing <code>HOME</code>/<code>WorkingDirectory</code>, so ROS CLI tools can't write to <code>~/.ros</code>.</td>
+</tr>
+<tr>
+<td>Camera feed drifts further behind real time the longer it runs</td>
+<td>Missing <code>queue_length: 1</code> — rosbridge is queueing frames it can't keep up with.</td>
+</tr>
+<tr>
+<td>Video feed very slow / low frame rate</td>
+<td>Check CPU load with <code>uptime</code>. rosbridge is CPU-hungry relaying image data on a Pi; frame rate collapses once the machine is saturated.</td>
+</tr>
+<tr>
+<td>Camera image looks zoomed in</td>
+<td>Aspect ratio, not zoom. libcamera picks the sensor mode from the requested resolution: on the IMX219, a 4:3 request selects the full-sensor 1640×1232 mode, while other ratios can select a <strong>cropped</strong> 1920×1080 mode with a narrower field of view.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="quick-reference">Quick reference<a class="headerlink" href="#quick-reference" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Control interface (React)</td>
+<td><code>http://&lt;robot-ip&gt;:7777</code></td>
+</tr>
+<tr>
+<td>Setup / telemetry page (FastAPI)</td>
+<td><code>http://&lt;robot-ip&gt;:8888</code></td>
+</tr>
+<tr>
+<td>rosbridge WebSocket</td>
+<td><code>ws://&lt;robot-ip&gt;:9090</code></td>
+</tr>
+<tr>
+<td><code>ROS_DOMAIN_ID</code></td>
+<td><code>X</code>, this robot's own number</td>
+</tr>
+<tr>
+<td>RMW implementation</td>
+<td><code>rmw_cyclonedds_cpp</code></td>
+</tr>
+<tr>
+<td>Services</td>
+<td><code>a2bot-robot</code>, <code>a2bot-dashboard</code>, <code>a2bot-rosbridge</code>, <code>a2bot-webui</code></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight"><pre><span></span><code><span class="c1"># Are the pieces up?</span>
+systemctl<span class="w"> </span>status<span class="w"> </span>a2bot-rosbridge.service
+ss<span class="w"> </span>-ltn<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="m">9090</span>
+
+<span class="c1"># Watch what the browser would see</span>
+ros2<span class="w"> </span>node<span class="w"> </span>list
+ros2<span class="w"> </span>topic<span class="w"> </span>list
+ros2<span class="w"> </span>topic<span class="w"> </span>hz<span class="w"> </span>/scan
+
+<span class="c1"># Restart the bridge</span>
+sudo<span class="w"> </span>systemctl<span class="w"> </span>restart<span class="w"> </span>a2bot-rosbridge.service
+</code></pre></div>
+<p>Next: <a href="../../part3/setup-1-raspberry-pi/">Part 3 — Setup 1: Raspberry Pi</a> or <a href="../../part3/setup-2-laptop/">Setup 2: Laptop</a>.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "navigation.indexes", "content.code.copy", "toc.follow"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

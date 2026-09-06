@@ -1082,6 +1082,8 @@
       
         
       
+        
+      
     
     
     
@@ -1282,6 +1284,34 @@
     
   
     Closed-Loop Motion: a2bot_service
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../part2/dashboard-and-rosbridge/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dashboard & rosbridge: a2bot_extras
   
 
     
@@ -1537,6 +1567,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#before-you-start-stop-the-background-services" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Before you start: stop the background services
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#start-the-robot" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1574,17 +1615,6 @@
     <span class="md-ellipsis">
       
         Drive it with closed-loop commands
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#simulating-instead" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Simulating instead
       
     </span>
   </a>
@@ -1880,6 +1910,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#before-you-start-stop-the-background-services" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Before you start: stop the background services
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#start-the-robot" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1923,17 +1964,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#simulating-instead" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Simulating instead
-      
-    </span>
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -1954,13 +1984,24 @@
 <h1 id="bringup-driving">Bringup &amp; Driving<a class="headerlink" href="#bringup-driving" title="Permanent link">&para;</a></h1>
 <h2 id="concept-bringup">Concept: bringup<a class="headerlink" href="#concept-bringup" title="Permanent link">&para;</a></h2>
 <p>"Bringup" is the standard ROS 2 term for the single launch command that starts everything needed to consider a robot "up" — as opposed to launching each node by hand in separate terminals, which is how <a href="../../part1/writing-your-own-nodes/">Part 1</a> started nodes individually to make each concept visible.</p>
+<h2 id="before-you-start-stop-the-background-services">Before you start: stop the background services<a class="headerlink" href="#before-you-start-stop-the-background-services" title="Permanent link">&para;</a></h2>
+<p>On a set-up Pi, six <a href="../../toolkit/systemd-and-services/">systemd</a> services — <code>a2bot-robot</code>, <code>a2bot-dashboard</code>, <code>a2bot-rosbridge</code>, <code>a2bot-webui</code>, <code>a2bot-gpio</code>, and the <code>ros2-ready</code> gate they all depend on (unit files under <code>~/a2bot/services/services_files/</code>) — start automatically at every boot, specifically so the robot works the instant it powers on with no one needing to SSH in first. <code>a2bot-robot</code> in particular is already running the exact launch file this page is about to have you start by hand: it has already opened the Arduino's serial port and started the lidar motor.</p>
+<p>Launching <code>robot.launch.py</code> manually on top of that doesn't add a second robot — it fails to open the already-claimed serial port, or fights the running service for <code>/cmd_vel</code> and the lidar. Stop and disable the services first:</p>
+<div class="admonition pi">
+<p class="admonition-title">🤖 Pi</p>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>systemctl<span class="w"> </span>stop<span class="w"> </span>a2bot-robot<span class="w"> </span>a2bot-dashboard<span class="w"> </span>a2bot-webui<span class="w"> </span>a2bot-rosbridge<span class="w"> </span>ros2-ready<span class="w"> </span>a2bot-gpio
+sudo<span class="w"> </span>systemctl<span class="w"> </span>disable<span class="w"> </span>a2bot-robot<span class="w"> </span>a2bot-dashboard<span class="w"> </span>a2bot-webui<span class="w"> </span>a2bot-rosbridge<span class="w"> </span>ros2-ready<span class="w"> </span>a2bot-gpio
+</code></pre></div>
+<p><code>stop</code> ends them for this boot only — the next reboot brings them straight back. <code>disable</code> is the separate step that stops them from auto-starting at the <em>next</em> boot; it does <strong>not</strong> stop something already running, which is why this page runs both together. Confirm with <code>systemctl status a2bot-robot</code> — it should read <code>inactive (dead)</code>.</p>
+</div>
+<p>See <a href="../../toolkit/systemd-and-services/">systemd &amp; Services</a> for the full command reference (including <code>journalctl</code> for reading a service's logs) and what each unit file actually does. Once you're done manually launching things for this page, <code>sudo systemctl enable --now &lt;service&gt;</code> brings each one back to its normal always-on behavior.</p>
 <h2 id="start-the-robot">Start the robot<a class="headerlink" href="#start-the-robot" title="Permanent link">&para;</a></h2>
 <div class="admonition pi">
 <p class="admonition-title">🤖 Pi</p>
 <div class="highlight"><pre><span></span><code>ros2<span class="w"> </span>launch<span class="w"> </span>a2bot_bringup<span class="w"> </span>robot.launch.py
 </code></pre></div>
 </div>
-<p>This starts the full driver chain (<code>serial_bridge</code>, <code>diff_drive</code>, <code>odometry</code>, <code>imu</code>, the EKF — see <a href="../../part2/a2bot-driver/">a2bot_driver</a>), <code>robot_state_publisher</code> (see <a href="../../part2/a2bot-description/">a2bot_description</a>), the lidar node, and <code>a2bot_service</code>'s <code>service_server</code> (see below). After this, the robot can be driven and its full <code>tf</code> tree exists, but no map or navigation is running yet — that's <a href="../slam-and-navigation/">SLAM &amp; Navigation</a>.</p>
+<p>This starts the full driver chain (<code>serial_bridge</code>, <code>diff_drive</code>, <code>odometry</code>, <code>imu</code>, the EKF — see <a href="../../part2/a2bot-driver/">a2bot_driver</a>), <code>robot_state_publisher</code> (see <a href="../../part2/a2bot-description/">a2bot_description</a>), the lidar node, the Pi camera (see below), and <code>a2bot_service</code>'s <code>service_server</code> (see below). After this, the robot can be driven and its full <code>tf</code> tree exists, but no map or navigation is running yet — that's <a href="../slam-and-navigation/">SLAM &amp; Navigation</a>.</p>
 <h2 id="visualize-it">Visualize it<a class="headerlink" href="#visualize-it" title="Permanent link">&para;</a></h2>
 <div class="admonition laptop">
 <p class="admonition-title">💻 Laptop</p>
@@ -1968,24 +2009,17 @@
 </code></pre></div>
 <p>Set the Fixed Frame to <code>odom</code>, then add a <strong>RobotModel</strong> display and a <strong>LaserScan</strong> display (topic <code>/scan</code>). If the robot model doesn't appear, re-check that you built <code>a2bot_description</code> locally on the laptop — see the note in <a href="../setup-2-laptop/#3-build-the-workspace-locally">Setup 2</a>.</p>
 </div>
+<p>To also see the camera feed, add an <strong>Image</strong> display and point it at <code>/camera/image_raw/compressed</code> (check "compressed" under that display's transport hint) — or <code>/camera/image_raw</code> for the uncompressed stream. The same feed is also viewable without RViz at all, from the <a href="../discovery-and-dashboard/#the-dashboard">dashboard</a>.</p>
+<div class="admonition warning">
+<p class="admonition-title">camera_link isn't in the URDF yet</p>
+<p><code>robot.launch.py</code> stamps every camera frame with <code>frame_id: camera_link</code>, but the URDF has no <code>camera_link</code> — so that frame doesn't exist anywhere in the <code>tf</code> tree. A plain <strong>Image</strong> display doesn't care, since it just shows pixels with no <code>tf</code> lookup involved. Anything that <em>does</em> need <code>tf</code> for the camera (a <strong>Camera</strong> display trying to project the image in 3D, or fusing it with the point cloud) will drop it silently until <code>camera_link</code> is added to the URDF the same way <code>lidar_link</code> and <code>imu_link</code> already are — see <a href="../../part2/a2bot-description/">a2bot_description</a>.</p>
+</div>
 <h2 id="drive-it-manually">Drive it manually<a class="headerlink" href="#drive-it-manually" title="Permanent link">&para;</a></h2>
 <p>The standard ROS 2 keyboard teleop node works unchanged — it just publishes <code>/cmd_vel</code>, exactly like it drove the turtle in <a href="../../part1/cli-tools-core-concepts/">Part 1</a>:</p>
 <div class="admonition laptop">
 <p class="admonition-title">💻 Laptop</p>
 <div class="highlight"><pre><span></span><code>ros2<span class="w"> </span>run<span class="w"> </span>teleop_twist_keyboard<span class="w"> </span>teleop_twist_keyboard
 </code></pre></div>
-</div>
-<p>For smoother, less abrupt manual driving, <code>a2bot_navigation</code> provides a standalone velocity smoother that applies acceleration limits between teleop and the motors:</p>
-<div class="admonition pi">
-<p class="admonition-title">🤖 Pi</p>
-<div class="highlight"><pre><span></span><code>ros2<span class="w"> </span>launch<span class="w"> </span>a2bot_navigation<span class="w"> </span>smoother.launch.py
-</code></pre></div>
-</div>
-<div class="admonition laptop">
-<p class="admonition-title">💻 Laptop</p>
-<div class="highlight"><pre><span></span><code>ros2<span class="w"> </span>run<span class="w"> </span>teleop_twist_keyboard<span class="w"> </span>teleop_twist_keyboard<span class="w"> </span>--ros-args<span class="w"> </span>-r<span class="w"> </span>cmd_vel:<span class="o">=</span>cmd_vel_nav
-</code></pre></div>
-<p>Teleop now publishes to <code>/cmd_vel_nav</code>, the smoother publishes the smoothed result to <code>/cmd_vel</code>, and <code>diff_drive</code> never sees a sudden jump in requested speed.</p>
 </div>
 <h2 id="drive-it-with-closed-loop-commands">Drive it with closed-loop commands<a class="headerlink" href="#drive-it-with-closed-loop-commands" title="Permanent link">&para;</a></h2>
 <p>Teleop leaves it to you to watch the robot and release the key at the right moment. For "move exactly 1 m" or "turn exactly 90°" instead, <code>a2bot_service</code> (started automatically above) exposes that as a request that only returns once the odometry confirms the target was reached:</p>
@@ -1997,14 +2031,6 @@ ros2<span class="w"> </span>run<span class="w"> </span>a2bot_service<span class=
 </code></pre></div>
 </div>
 <p>See <a href="../../part2/a2bot-service/">Closed-Loop Motion: a2bot_service</a> for the full service list, and a known limitation of <code>return_home</code> after a stopped or timed-out move.</p>
-<h2 id="simulating-instead">Simulating instead<a class="headerlink" href="#simulating-instead" title="Permanent link">&para;</a></h2>
-<p>No physical robot handy? The same launch pattern works in Gazebo — see <a href="../../part2/a2bot-description/#simulation-gazebo-classic">a2bot_description</a>:</p>
-<div class="admonition laptop">
-<p class="admonition-title">💻 Laptop</p>
-<div class="highlight"><pre><span></span><code>ros2<span class="w"> </span>launch<span class="w"> </span>a2bot_description<span class="w"> </span>sim.launch.py
-</code></pre></div>
-<p>Then drive it exactly the same way: <code>ros2 run teleop_twist_keyboard teleop_twist_keyboard</code>.</p>
-</div>
 <p>Next: <a href="../discovery-and-dashboard/">Discovery &amp; Dashboard</a>.</p>
 
 
