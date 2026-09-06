@@ -1,6 +1,7 @@
 site_name: A2Bot Docs
 site_description: Documentation for the A2Bot ROS 2 Humble educational robot
 docs_dir: docs
+copyright: 'Designed and written by <a href="https://www.linkedin.com/in/mohammed-abdualem" target="_blank" rel="noopener">Mohammed Abdulalem</a>'
 
 theme:
   name: material
