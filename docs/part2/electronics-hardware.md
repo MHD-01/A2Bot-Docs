@@ -78,4 +78,4 @@ These rule files live on the Pi's filesystem under `/etc/udev/rules.d/`, outside
 !!! warning "brltty steals the Arduino"
     Ubuntu ships a service called `brltty` (braille display support) that misidentifies CH340 USB-serial adapters as braille hardware and silently claims the device seconds after it's plugged in — `/dev/arduino` briefly appears, then vanishes, with no obvious error. See [Troubleshooting Index](../appendices/troubleshooting-index.md) for the fix.
 
-Next: [Software Architecture](software-architecture.md).
+Next: [Underneath ROS 2: The Linux Layer](linux-layer.md).

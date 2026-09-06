@@ -260,4 +260,4 @@ ros2 topic hz /scan
 sudo systemctl restart a2bot-rosbridge.service
 ```
 
-Next: [Part 3 — Setup 1: Raspberry Pi](../part3/setup-1-raspberry-pi.md) or [Setup 2: Laptop](../part3/setup-2-laptop.md).
+Next: [Firmware: the Arduino's Side](firmware.md).
