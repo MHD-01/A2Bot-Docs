@@ -60,4 +60,4 @@ Each prints the service's `message` and exits `0` on success, `1` on failure or 
     ros2 service call /a2bot/stop std_srvs/srv/Trigger
     ```
 
-Next: [Part 3 — Setup 1: Raspberry Pi](../part3/setup-1-raspberry-pi.md) or [Setup 2: Laptop](../part3/setup-2-laptop.md).
+Next: [Dashboard & rosbridge: a2bot_extras](dashboard-and-rosbridge.md).

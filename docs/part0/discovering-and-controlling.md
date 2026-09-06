@@ -118,6 +118,15 @@ ssh a2botX@a2botX-host.local
 New to SSH itself? See [SSH & Remote Access](../toolkit/ssh-and-remote-access.md)
 for what's actually happening here.
 
+!!! note "Finding the robot's IP directly"
+    Once you're in over SSH, `hostname -I` (run **on the robot**) prints
+    every IP address it currently holds. Worth noting down: on a personal
+    hotspot or classroom WiFi the address is DHCP-assigned, not the fixed
+    `10.42.0.X`/`10.0.0.10X` patterns from the table above — and if
+    `a2botX-host.local` ever fails to resolve, connecting by that IP
+    directly is the fallback. See
+    [SSH connection troubleshooting](../appendices/troubleshooting-index.md#ssh-connection-troubleshooting).
+
 ### 5. Set up your own ROS2 environment to match this robot
 
 Before your laptop can see the robot's topics and nodes, your shell needs
@@ -152,6 +161,23 @@ ros2 topic list
 You should see the robot's real topics (`/odom`, `/scan`, `/joint_states`,
 and others) — not an empty list. (For a quick reference on commands like
 this one, see the [ROS 2 CLI Reference](../toolkit/ros2-cli-reference.md).)
+
+### 6. Drive it
+
+This is the payoff for everything above: with the robot's topics visible,
+the standard keyboard teleop node drives it by publishing `/cmd_vel` —
+nothing A2Bot-specific about it:
+
+```bash
+ros2 run teleop_twist_keyboard teleop_twist_keyboard
+```
+
+Keep that terminal focused and follow its on-screen key legend to move.
+Found, connected to, and now driving — that's the full loop this page set
+out to close. See [Bringup & Driving](../part3/bringup-and-driving.md) for
+closed-loop move/turn commands and viewing the robot in RViz, and
+[SLAM & Navigation](../part3/slam-and-navigation.md) for driving
+autonomously rather than by hand.
 
 ---
 

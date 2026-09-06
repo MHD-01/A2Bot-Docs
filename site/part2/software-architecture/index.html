@@ -1084,6 +1084,8 @@
       
         
       
+        
+      
     
     
     
@@ -1389,6 +1391,34 @@
     
   
     Closed-Loop Motion: a2bot_service
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dashboard-and-rosbridge/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dashboard & rosbridge: a2bot_extras
   
 
     
@@ -1963,7 +1993,7 @@
 </tr>
 <tr>
 <td><strong>a2bot_extras</strong></td>
-<td>Optional add-ons: a web dashboard, WiFi provisioning, gesture control. Nothing in <code>a2bot_driver</code>, <code>a2bot_description</code>, <code>a2bot_bringup</code>, or <code>a2bot_navigation</code> depends on this one — though <code>a2bot_extras</code> itself does depend on <code>a2bot_service</code>, since the dashboard's movement controls call straight into its services.</td>
+<td>Optional add-ons: <strong>two separate</strong> web interfaces (a FastAPI telemetry/WiFi-setup page and a React control interface reached via rosbridge — see <a href="../dashboard-and-rosbridge/">Dashboard &amp; rosbridge</a>), WiFi provisioning, gesture control. Nothing in <code>a2bot_driver</code>, <code>a2bot_description</code>, <code>a2bot_bringup</code>, or <code>a2bot_navigation</code> depends on this one — though <code>a2bot_extras</code> itself does depend on <code>a2bot_service</code>, since both web interfaces call straight into its movement services.</td>
 </tr>
 </tbody>
 </table>
